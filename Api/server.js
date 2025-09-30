@@ -16,10 +16,13 @@ mongoose.set("strictQuery", true);
 /////////////// Add middleware
 app.use(express.json());
 app.use(cookieParser());
+
 //////////////
 const connect = async () => {
   try {
-    await mongoose.connect(process.env.MONGO);
+    await mongoose.connect(process.env.MONGO,{
+      dbName: "Lug-db", // <-- Add this line
+    });
     console.log("Connected to MongoDB");
   } catch (error) {
     console.log(error);
@@ -35,6 +38,17 @@ app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute); 
 app.use("/api/auth", authRoute); 
 
+// Error middleware should be LAST
+app.use((err, req, res, next) => {
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Something went wrong :( ";
+  res.status(errorStatus).json({
+    success: false,
+    status: errorStatus,
+    message: errorMessage,
+    stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
+  });
+});
 app.listen(8800, () => {
   connect();
   console.log("Server is running on port 8800");
