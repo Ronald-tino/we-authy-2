@@ -1,0 +1,31 @@
+.slide {
+  width: 100%;
+  justify-content: center;
+  padding: 100px 0px;
+}
+
+.slideContainer {
+  max-width: 1400px;
+
+  position: relative;
+}
+
+/* This is the class you passed as containerClass in Slide.jsx */
+.carousel-container {
+  width: 100%;
+}
+
+/* This is the class you passed as itemClass in Slide.jsx */
+.carousel-item-padding-40-px {
+  padding: 0 0px;
+}
+
+/* Optional: keep arrows above nearby content */
+.react-multiple-carousel__arrow {
+  z-index: 2;
+}
+
+/* Optional: dots spacing/position if you enable showDots */
+.react-multi-carousel-dot-list {
+  margin-top: 12px;
+}
