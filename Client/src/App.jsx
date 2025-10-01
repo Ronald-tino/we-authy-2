@@ -18,15 +18,22 @@ import Orders from './pages/orders/Orders'
 import Message from './pages/message/Message'
 import './App.scss'
 import MyGigs from './pages/myGigs/MyGigs'
-
+import {
+  QueryClient,
+  QueryClientProvider,
+  // useQuery,
+} from '@tanstack/react-query'
 ///////////////////////////////////////////
 function App() {
+  const queryClient = new QueryClient()
   const Layout = () => {
     return (
       <div className='app'>
-        <Navbar/>
-        <Outlet/>
-        <Footer/>
+        <QueryClientProvider client={queryClient}>
+          <Navbar/>
+          <Outlet/>
+          <Footer/>
+        </QueryClientProvider>
       </div>
     )
   }

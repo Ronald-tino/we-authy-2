@@ -19,8 +19,10 @@ function Navbar() {
       window.removeEventListener("scroll", isActive);
     };
   }, []);
-
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const stored = localStorage.getItem("currentUser");
+  const parsed = stored ? JSON.parse(stored) : null;
+  // some responses are { info: {...} } — prefer the info object if present
+  const currentUser = parsed?.info ?? parsed;
 
   const navigate = useNavigate();
 
@@ -50,8 +52,11 @@ function Navbar() {
           {!currentUser?.isSeller && <span>Become a Courier</span>}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
-              <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
-              <span>{currentUser?.username}</span>
+              <img
+                src={currentUser?.img || "/img/noavatar.png"}
+                alt="Profile"
+              />
+              <span>{currentUser?.username || "Sign in"}</span>
               {open && (
                 <div className="options">
                   {currentUser.isSeller && (
@@ -78,7 +83,9 @@ function Navbar() {
             </div>
           ) : (
             <>
-              <Link to="/login" className="link">Sign in</Link>
+              <Link to="/login" className="link">
+                Sign in
+              </Link>
               <Link className="link" to="/register">
                 <button>Join</button>
               </Link>
