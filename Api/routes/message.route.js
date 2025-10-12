@@ -1,9 +1,13 @@
 import express from "express";
-import { fn } from "../controllers/message.controller.js";
+import {
+  createMessage,
+  getMessages,
+} from "../controllers/message.controller.js";
+import { verifyToken } from "../middleware/jwt.js";
 
 const router = express.Router();
 
-router.get("/test", fn); // Now it has the handler function
-
+router.post("/", verifyToken, createMessage);
+router.get("/:id", verifyToken, getMessages);
 
 export default router;
