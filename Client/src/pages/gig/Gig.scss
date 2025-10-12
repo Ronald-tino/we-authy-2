@@ -14,6 +14,7 @@
       flex-direction: column;
       gap: 20px;
       min-width: 0; /* allow flex item to shrink so the right panel remains visible */
+      overflow: visible; /* ensure carousel buttons are not clipped */
 
       .breadcrumbs {
         font-weight: 300;
@@ -23,6 +24,7 @@
       }
 
       h1 {
+        font-weight: 500;
       }
 
       .user {
@@ -63,14 +65,71 @@
       .slider {
         width: 100%;
         background-color: #f5f5f5;
+        position: relative;
+
         .react-multi-carousel-list {
           width: 100%;
+          position: relative;
         }
+
+        .react-multi-carousel-track {
+          display: flex;
+          align-items: center;
+        }
+
+        .react-multi-carousel-item {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
         img {
           width: 100%;
           max-height: 500px;
           object-fit: contain;
           display: block;
+        }
+
+        // Carousel arrow buttons styling
+        .react-multiple-carousel__arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          background-color: rgba(0, 0, 0, 0.5);
+          border: none;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+          }
+
+          &::before {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+          }
+        }
+
+        .react-multiple-carousel__arrow--left {
+          left: 10px;
+        }
+
+        .react-multiple-carousel__arrow--right {
+          right: 10px;
+        }
+
+        // Ensure buttons are always clickable
+        .react-multiple-carousel__arrow {
+          pointer-events: auto !important;
+          z-index: 1000 !important;
         }
       }
 

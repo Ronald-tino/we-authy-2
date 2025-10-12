@@ -29,9 +29,9 @@ function Gig() {
   });
 
   const responsive = {
-    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
-    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 3 },
-    tablet: { breakpoint: { max: 1024, min: 464 }, items: 2 },
+    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 1 },
+    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 1 },
+    tablet: { breakpoint: { max: 1024, min: 464 }, items: 1 },
     mobile: { breakpoint: { max: 464, min: 0 }, items: 1 },
   };
 
@@ -52,7 +52,7 @@ function Gig() {
         <div className="container">
           <div className="left">
             <span className="breadcrumbs">
-              Fiverr {">"} Graphics & Design {">"}
+              LuggageShare {">"} Verified Couriers {">"}
             </span>
             <h1>{data?.title}</h1>
 
@@ -84,10 +84,17 @@ function Gig() {
             <Carousel
               responsive={responsive}
               className="slider"
-              arrows
-              swipeable
-              draggable
-              infinite
+              arrows={true}
+              swipeable={true}
+              draggable={true}
+              infinite={true}
+              showDots={false}
+              autoPlay={false}
+              keyBoardControl={true}
+              customTransition="all .5"
+              transitionDuration={500}
+              containerClass="carousel-container"
+              itemClass="carousel-item-padding-40-px"
             >
               {(data?.images || []).map((img) => (
                 <img key={img} src={img} alt="" />
