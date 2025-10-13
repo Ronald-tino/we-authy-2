@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Featured.scss";
 
 const Featured = () => {
+  const [input, setInput] = useState("");
+  const navigate = useNavigate();
+  const handleSubmit = () => {
+    navigate(`/gigs?search=${input}`);
+  };
   return (
     <div className="featured">
       <div className="container-1">
@@ -16,9 +22,11 @@ const Featured = () => {
               <input
                 type="text"
                 placeholder='Try "Beijing to Shanghai" or "China to USA"'
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
               />
             </div>
-            <button>Search</button>
+            <button onClick={handleSubmit}>Search</button>
           </div>
           <div className="popular">
             <button>China ✈ Nigeria</button>
