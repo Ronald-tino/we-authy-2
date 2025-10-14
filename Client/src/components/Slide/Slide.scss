@@ -1,31 +1,77 @@
 .slide {
   width: 100%;
   justify-content: center;
-  padding: 100px 0px;
+  padding: 20px 10px;
+
+  @media screen and (max-width: 768px) {
+    padding: 30px 16px;
+  }
+
+  @media screen and (max-width: 480px) {
+    padding: 24px 12px;
+  }
 }
 
-.slideContainer {
-  max-width: 1400px;
-
+.slide-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
   position: relative;
 }
 
 /* This is the class you passed as containerClass in Slide.jsx */
 .carousel-container {
   width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
 }
 
 /* This is the class you passed as itemClass in Slide.jsx */
 .carousel-item-padding-40-px {
-  padding: 0 0px;
+  padding: 0 2px;
 }
 
-/* Optional: keep arrows above nearby content */
+/* Tighten default library item padding */
+.carousel-container .react-multi-carousel-item {
+  padding: 0 2px !important;
+}
+
+/* Carousel arrow styling */
 .react-multiple-carousel__arrow {
   z-index: 2;
+  background-color: rgba(5, 140, 66, 0.8);
+  border: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--green-bright);
+  }
+
+  &::before {
+    color: var(--text-primary);
+  }
 }
 
-/* Optional: dots spacing/position if you enable showDots */
+/* Keep arrows within container edges */
+.carousel-container .react-multiple-carousel__arrow--left {
+  left: 8px;
+}
+.carousel-container .react-multiple-carousel__arrow--right {
+  right: 8px;
+}
+
+/* Carousel dots styling */
 .react-multi-carousel-dot-list {
-  margin-top: 12px;
+  margin-top: 5px;
+
+  .react-multi-carousel-dot button {
+    background-color: var(--border-secondary);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .react-multi-carousel-dot--active button {
+    background-color: var(--green-bright);
+  }
 }

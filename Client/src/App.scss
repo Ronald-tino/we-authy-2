@@ -1,6 +1,88 @@
-*{
-    .link{
-        text-decoration: none;
-        color: inherit;
-    }
+/* ===== Color Variables ===== */
+:root {
+  /* Background Colors */
+  --bg-primary: #020202;
+  --bg-secondary: #0d2818;
+  --bg-tertiary: #1a1a1a;
+  --bg-card: #1a1a1a;
+  --bg-hover: #2a2a2a;
+  
+  /* Green Accent Colors */
+  --green-darkest: #0d2818;
+  --green-dark: #04471c;
+  --green-medium: #058c42;
+  --green-bright: #16db65;
+  --green-light: #20f078;
+  
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #b0b0b0;
+  --text-muted: #808080;
+  
+  /* Border Colors */
+  --border-primary: #2a2a2a;
+  --border-secondary: #3a3a3a;
+  --border-accent: #058c42;
+  
+  /* Status Colors */
+  --color-success: #16db65;
+  --color-warning: #ffc108;
+  --color-error: #ff4444;
+  --color-info: #058c42;
+}
+
+/* ===== Global Styles ===== */
+* {
+  .link {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Global responsive container */
+.app {
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+}
+
+/* Responsive container utility */
+.responsive-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media screen and (max-width: 1440px) {
+  .responsive-container {
+    max-width: 1200px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .responsive-container {
+    max-width: 960px;
+    padding: 0 24px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .responsive-container {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .responsive-container {
+    padding: 0 12px;
+  }
 }

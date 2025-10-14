@@ -1,14 +1,38 @@
 .message {
   display: flex;
   justify-content: center;
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  padding: 20px;
+
+  @media screen and (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media screen and (max-width: 480px) {
+    padding: 12px;
+  }
+
   .container {
-    width: 1200px;
-    margin: 50px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 50px 0;
+
+    @media screen and (max-width: 768px) {
+      margin: 30px 0;
+    }
+
+    @media screen and (max-width: 480px) {
+      margin: 20px 0;
+    }
+
     .breadcrumbs {
       font-weight: 300;
       font-size: 13px;
-      color: #555;
+      color: var(--text-muted);
+      margin-bottom: 20px;
     }
+
     .messages {
       margin: 30px 0px;
       padding: 50px;
@@ -16,13 +40,54 @@
       flex-direction: column;
       gap: 20px;
       height: 500px;
-      overflow: scroll;
+      overflow-y: auto;
+      background-color: var(--bg-tertiary);
+      border-radius: 12px;
+      border: 1px solid var(--border-secondary);
+
+      @media screen and (max-width: 768px) {
+        padding: 30px 20px;
+        height: 400px;
+      }
+
+      @media screen and (max-width: 480px) {
+        padding: 20px 15px;
+        height: 350px;
+      }
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--bg-primary);
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--green-dark);
+        border-radius: 4px;
+
+        &:hover {
+          background: var(--green-medium);
+        }
+      }
 
       .item {
         display: flex;
         gap: 20px;
         max-width: 600px;
         font-size: 18px;
+
+        @media screen and (max-width: 768px) {
+          font-size: 16px;
+          max-width: 100%;
+        }
+
+        @media screen and (max-width: 480px) {
+          font-size: 14px;
+          gap: 12px;
+        }
 
         &.owner {
           flex-direction: row-reverse;
@@ -31,8 +96,12 @@
           p {
             max-width: 500px;
             border-radius: 20px 0px 20px 20px;
-            background-color: royalblue;
-            color: white;
+            background-color: var(--green-medium);
+            color: var(--text-primary);
+
+            @media screen and (max-width: 768px) {
+              max-width: 100%;
+            }
           }
         }
 
@@ -41,22 +110,39 @@
           height: 40px;
           border-radius: 50%;
           object-fit: cover;
+          border: 2px solid var(--green-medium);
+          flex-shrink: 0;
+
+          @media screen and (max-width: 480px) {
+            width: 32px;
+            height: 32px;
+          }
         }
 
         p {
           max-width: 500px;
           padding: 20px;
-          background-color: rgb(244, 241, 241);
+          background-color: var(--bg-primary);
           border-radius: 0px 20px 20px 20px;
-          color: gray;
+          color: var(--text-secondary);
           font-weight: 300;
+          border: 1px solid var(--border-primary);
+
+          @media screen and (max-width: 768px) {
+            max-width: 100%;
+            padding: 15px;
+          }
+
+          @media screen and (max-width: 480px) {
+            padding: 12px;
+          }
         }
       }
     }
 
     hr {
       height: 0;
-      border: 0.5px solid rgb(232, 230, 230);
+      border: 0.5px solid var(--border-secondary);
       margin-bottom: 20px;
     }
 
@@ -64,24 +150,55 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 15px;
+
+      @media screen and (max-width: 768px) {
+        flex-direction: column;
+        gap: 15px;
+      }
 
       textarea {
         width: 80%;
         height: 100px;
         padding: 10px;
-        border: 1px solid lightgray;
+        border: 1px solid var(--border-secondary);
         border-radius: 10px;
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        outline: none;
+        resize: vertical;
+
+        @media screen and (max-width: 768px) {
+          width: 100%;
+        }
+
+        &::placeholder {
+          color: var(--text-muted);
+        }
+
+        &:focus {
+          border-color: var(--green-medium);
+        }
       }
 
       button {
-        background-color: #862166;
+        background-color: var(--green-medium);
         padding: 20px;
-        color: white;
-        font-weight: 500;
+        color: var(--text-primary);
+        font-weight: 600;
         border: none;
         border-radius: 10px;
         cursor: pointer;
         width: 100px;
+        transition: all 0.3s ease;
+
+        @media screen and (max-width: 768px) {
+          width: 100%;
+        }
+
+        &:hover {
+          background-color: var(--green-bright);
+        }
       }
     }
   }

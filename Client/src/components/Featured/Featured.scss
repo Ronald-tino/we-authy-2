@@ -1,53 +1,127 @@
 .featured {
-  height: 600px;
+  min-height: 5px;
   display: flex;
   justify-content: center;
-  background-color: #4f2455;
-  color: white;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 10px 10px; /* reduced from 40px to tighten space below navbar */
+  position: relative;
+
+  /* Optional: Add a subtle gradient overlay */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(13, 40, 24, 0.3) 0%,
+      rgba(2, 2, 2, 0.8) 100%
+    );
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    min-height: auto;
+    padding: 24px 16px;
+  }
+
+  @media screen and (max-width: 480px) {
+    padding: 20px 12px;
+  }
 
   .container-1 {
-    width: 1400px;
+    max-width: 1400px;
+    width: 100%;
     display: flex;
     align-items: center;
+    position: relative;
+    z-index: 1;
+
+    @media screen and (max-width: 1024px) {
+      flex-direction: column;
+      gap: 40px;
+    }
 
     .left {
       display: flex;
       flex-direction: column;
       gap: 30px;
+      flex: 1;
+
+      @media screen and (max-width: 1024px) {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+      }
 
       h1 {
         font-size: 50px;
+        color: var(--text-primary);
+
+        @media screen and (max-width: 1024px) {
+          font-size: 40px;
+        }
+
+        @media screen and (max-width: 768px) {
+          font-size: 32px;
+        }
+
+        @media screen and (max-width: 480px) {
+          font-size: 24px;
+        }
 
         span {
           font-style: italic;
           font-weight: 300;
+          color: var(--green-bright);
         }
       }
 
       .search {
-        background-color: white;
+        background-color: var(--bg-tertiary);
         border-radius: 5px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         overflow: hidden;
+        width: 100%;
+        border: 1px solid var(--border-secondary);
+
+        @media screen and (max-width: 768px) {
+          flex-direction: column;
+        }
 
         .searchInput {
           display: flex;
           align-items: center;
           gap: 10px;
+          flex: 1;
+          width: 100%;
+
           img {
             width: 20px;
             height: 20px;
             margin: 10px;
+            filter: brightness(0) invert(1);
           }
 
           input {
             border: none;
             outline: none;
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            color: var(--text-primary);
+
+            @media screen and (max-width: 480px) {
+              font-size: 14px;
+            }
 
             &::placeholder {
-              color: gray;
+              color: var(--text-muted);
             }
           }
         }
@@ -56,10 +130,21 @@
           width: 120px;
           height: 50px;
           border: none;
-          background-color: #862166;
-          color: white;
-          align-self: flex-end;
+          background-color: var(--green-bright);
+          color: var(--bg-primary);
           cursor: pointer;
+          flex-shrink: 0;
+          font-weight: 600;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: var(--green-light);
+          }
+
+          @media screen and (max-width: 768px) {
+            width: 100%;
+            height: 45px;
+          }
         }
       }
 
@@ -67,32 +152,69 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        flex-wrap: wrap;
+
+        @media screen and (max-width: 1024px) {
+          justify-content: center;
+        }
 
         span {
           width: max-content;
+          color: var(--text-secondary);
+
+          @media screen and (max-width: 480px) {
+            font-size: 14px;
+          }
         }
 
         button {
           width: max-content;
-          color: white;
-          border: 1px solid white;
+          color: var(--text-primary);
+          border: 1px solid var(--green-medium);
           padding: 5px 10px;
           border-radius: 20px;
           background-color: transparent;
           font-size: 14px;
+          transition: all 0.3s ease;
+
+          @media screen and (max-width: 480px) {
+            font-size: 12px;
+            padding: 4px 8px;
+          }
+
           &:hover {
-            background-color: white;
-            color: #862166;
+            background-color: var(--green-medium);
+            color: var(--text-primary);
+            border-color: var(--green-bright);
           }
         }
       }
     }
 
     .right {
-      height: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      @media screen and (max-width: 1024px) {
+        width: 100%;
+        max-width: 500px;
+      }
+
       img {
-        height: 100%;
+        width: 100%;
+        height: auto;
+        max-height: 500px;
         object-fit: contain;
+
+        @media screen and (max-width: 768px) {
+          max-height: 400px;
+        }
+
+        @media screen and (max-width: 480px) {
+          max-height: 300px;
+        }
       }
     }
   }

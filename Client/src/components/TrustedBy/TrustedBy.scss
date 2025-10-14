@@ -1,20 +1,28 @@
 .trustedBy {
-    background-color: #fafafa;
+    background-color: var(--bg-tertiary);
     height: 100px;
     display: flex;
     justify-content: center;
+    border-top: 1px solid var(--border-primary);
+    border-bottom: 1px solid var(--border-primary);
   
     .container {
       max-width: 760px;
       display: flex;
       align-items: center;
       gap: 20px;
-      color: rgb(200, 200, 200);
+      color: var(--text-muted);
       font-weight: 500;
   
-      img{
+      img {
         height: 50px;
         object-fit: contain;
+        filter: brightness(0) invert(0.6);
+        transition: filter 0.3s ease;
+
+        &:hover {
+          filter: brightness(0) saturate(100%) invert(73%) sepia(51%) saturate(1447%) hue-rotate(101deg) brightness(95%) contrast(93%);
+        }
       }
     }
   }

@@ -46,6 +46,12 @@ function Navbar() {
           <span className="dot">.</span>
         </div>
         <div className="links">
+          <Link
+            className={`link${pathname === "/about" ? " active" : ""}`}
+            to="/about"
+          >
+            About
+          </Link>
           <span>LugShare Business</span>
           <span>Explore</span>
           <span>English</span>
@@ -93,41 +99,6 @@ function Navbar() {
           )}
         </div>
       </div>
-      {(active || pathname !== "/") && (
-        <>
-          <hr />
-          <div className="menu">
-            <Link className="link menuLink" to="/">
-              China ✈ Ghana
-            </Link>
-            <Link className="link menuLink" to="/">
-              3 day Emergency Delivery
-            </Link>
-            <Link className="link menuLink" to="/">
-              China ✈ Kenya
-            </Link>
-            <Link className="link menuLink" to="/">
-              Zimbsbwe ✈ China
-            </Link>
-            <Link className="link menuLink" to="/">
-              Indonesia ✈ China
-            </Link>
-            <Link className="link menuLink" to="/">
-              Zambia ✈ China
-            </Link>
-            <Link className="link menuLink" to="/">
-              China ✈ SouthAfrica
-            </Link>
-            <Link className="link menuLink" to="/">
-              China ✈ Ethiopia
-            </Link>
-            <Link className="link menuLink" to="/">
-              Nigeira ✈ China
-            </Link>
-          </div>
-          <hr />
-        </>
-      )}
     </div>
   );
 }

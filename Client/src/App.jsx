@@ -8,6 +8,7 @@ import Register from "./pages/register/Register";
 import Add from "./pages/add/Add";
 import Gig from "./pages/gig/Gig";
 import Gigs from "./pages/gigs/Gigs";
+import About from "./pages/about/About";
 
 import Messages from "./pages/messages/Messages";
 import Orders from "./pages/orders/Orders";
@@ -49,6 +50,10 @@ function App() {
         {
           path: "/register",
           element: <Register />,
+        },
+        {
+          path: "/about",
+          element: <About />,
         },
         {
           path: "/add",

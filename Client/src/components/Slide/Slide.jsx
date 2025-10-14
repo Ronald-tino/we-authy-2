@@ -5,8 +5,8 @@ import "./Slide.scss";
 
 const Slide = ({
   children,
-  slidesToShow = 5,
-  arrowsScroll = 5,
+  slidesToShow = 2,
+  arrowsScroll = 1,
   infinite = true,
   showDots = false,
   autoPlay = false,
@@ -14,8 +14,9 @@ const Slide = ({
   const responsive = {
     superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: slidesToShow },
     desktop: { breakpoint: { max: 3000, min: 1024 }, items: slidesToShow },
-    tablet: { breakpoint: { max: 1024, min: 640 }, items: Math.min(3, slidesToShow) },
-    mobile: { breakpoint: { max: 640, min: 0 }, items: 1 },
+    tablet: { breakpoint: { max: 1024, min: 768 }, items: Math.min(3, slidesToShow) },
+    mobile: { breakpoint: { max: 768, min: 480 }, items: Math.min(2, slidesToShow) },
+    smallMobile: { breakpoint: { max: 480, min: 0 }, items: 1 },
   };
 
   return (

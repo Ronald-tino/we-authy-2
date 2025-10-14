@@ -2,26 +2,47 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  padding: 0 20px;
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+
+  @media screen and (max-width: 768px) {
+    padding: 0 16px;
+  }
+
+  @media screen and (max-width: 480px) {
+    padding: 0 12px;
+  }
 
   .container {
-    width: 1400px;
+    max-width: 1400px;
+    width: 100%;
     padding: 30px 0px;
     display: flex;
     flex-direction: column;
     gap: 15px;
 
+    @media screen and (max-width: 768px) {
+      padding: 20px 0px;
+    }
+
+    @media screen and (max-width: 480px) {
+      padding: 15px 0px;
+    }
+
     .breadcrumbs {
       font-weight: 300;
       text-transform: uppercase;
       font-size: 13px;
-      color: #555;
+      color: var(--text-muted);
     }
 
     h1 {
+      color: var(--text-primary);
     }
 
     p {
-      color: #999;
+      color: var(--text-tertiary);
       font-weight: 300;
     }
 
@@ -30,33 +51,62 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+
+      @media screen and (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
       .left {
         display: flex;
         align-items: center;
         gap: 10px;
-        color: #555;
+        color: var(--text-secondary);
         font-weight: 300;
+        flex-wrap: wrap;
+
+        @media screen and (max-width: 768px) {
+          width: 100%;
+        }
 
         input {
           padding: 5px;
-          border: 1px solid lightgrey;
+          border: 1px solid var(--border-secondary);
           border-radius: 5px;
           outline: none;
+          flex: 1;
+          min-width: 150px;
+          background-color: var(--bg-tertiary);
+          color: var(--text-primary);
+
+          @media screen and (max-width: 480px) {
+            font-size: 14px;
+          }
 
           &::placeholder {
-            color: #999;
+            color: var(--text-muted);
+          }
+
+          &:focus {
+            border-color: var(--green-medium);
           }
         }
 
         button {
           padding: 5px 10px;
-          background-color: #862166;
-          color: white;
+          background-color: var(--green-medium);
+          color: var(--text-primary);
           border: none;
           font-weight: 500;
           border-radius: 5px;
           cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: var(--green-bright);
+          }
         }
       }
 
@@ -66,24 +116,36 @@
         align-items: center;
         gap: 10px;
 
+        @media screen and (max-width: 768px) {
+          width: 100%;
+          justify-content: space-between;
+        }
+
         .sortBy {
-          color: #555;
+          color: var(--text-secondary);
           font-weight: 300;
         }
 
         .sortType {
           font-weight: 500;
+          color: var(--text-primary);
         }
 
         img {
           width: 15px;
           cursor: pointer;
+          filter: brightness(0) invert(0.7);
+          transition: filter 0.3s ease;
+
+          &:hover {
+            filter: brightness(0) saturate(100%) invert(73%) sepia(51%) saturate(1447%) hue-rotate(101deg) brightness(95%) contrast(93%);
+          }
         }
 
         .rightMenu {
           padding: 20px;
-          background-color: white;
-          border: 0.5px solid lightgrey;
+          background-color: var(--bg-tertiary);
+          border: 0.5px solid var(--border-secondary);
           border-radius: 5px;
           position: absolute;
           top: 30px;
@@ -92,19 +154,35 @@
           display: flex;
           flex-direction: column;
           gap: 20px;
-          color: #555;
+          color: var(--text-secondary);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 
           span {
             cursor: pointer;
+            transition: color 0.3s ease;
+
+            &:hover {
+              color: var(--green-bright);
+            }
           }
         }
       }
     }
 
     .cards {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+
+      @media screen and (max-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+      }
+
+      @media screen and (max-width: 480px) {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
     }
   }
 }

@@ -1,52 +1,145 @@
 .orders {
   display: flex;
   justify-content: center;
-  color: #555;
+  color: var(--text-secondary);
+  padding: 0 20px;
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+
+  @media screen and (max-width: 768px) {
+    padding: 0 16px;
+  }
+
+  @media screen and (max-width: 480px) {
+    padding: 0 12px;
+  }
 
   .container {
-    width: 1400px;
+    max-width: 1400px;
+    width: 100%;
     padding: 50px 0px;
+
+    @media screen and (max-width: 768px) {
+      padding: 30px 0px;
+    }
+
+    @media screen and (max-width: 480px) {
+      padding: 20px 0px;
+    }
 
     .title {
       display: flex;
       justify-content: space-between;
+      margin-bottom: 30px;
+
+      h1 {
+        color: var(--text-primary);
+      }
 
       button {
-        background-color: #862166;
-        color: white;
+        background-color: var(--green-medium);
+        color: var(--text-primary);
         font-weight: 500;
         border: none;
         padding: 10px;
         cursor: pointer;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: var(--green-bright);
+        }
       }
     }
 
     table {
       width: 100%;
+      overflow-x: auto;
+      display: block;
+      background-color: var(--bg-tertiary);
+      border-radius: 8px;
+      border: 1px solid var(--border-secondary);
+
+      @media screen and (max-width: 768px) {
+        font-size: 14px;
+      }
+
+      @media screen and (max-width: 480px) {
+        font-size: 12px;
+      }
 
       tr {
         height: 50px;
+        display: table;
+        width: 100%;
+        border-bottom: 1px solid var(--border-primary);
+
+        @media screen and (max-width: 480px) {
+          height: auto;
+          min-height: 40px;
+        }
+
         th {
           text-align: left;
+          color: var(--text-primary);
+          font-weight: 600;
+          padding: 10px;
+
+          @media screen and (max-width: 480px) {
+            padding: 8px 4px;
+          }
         }
+
         td {
+          color: var(--text-secondary);
+          padding: 10px;
+
+          @media screen and (max-width: 480px) {
+            padding: 8px 4px;
+          }
+
           sup {
             font-size: 12px;
+
+            @media screen and (max-width: 480px) {
+              font-size: 10px;
+            }
           }
 
           .image {
             width: 50px;
             height: 25px;
             object-fit: cover;
+            border-radius: 4px;
+
+            @media screen and (max-width: 480px) {
+              width: 40px;
+              height: 20px;
+            }
           }
 
           .message {
             width: 25px;
             cursor: pointer;
+            filter: brightness(0) invert(0.7);
+            transition: filter 0.3s ease;
+
+            &:hover {
+              filter: brightness(0) saturate(100%) invert(73%) sepia(51%) saturate(1447%) hue-rotate(101deg) brightness(95%) contrast(93%);
+            }
+
+            @media screen and (max-width: 480px) {
+              width: 20px;
+            }
           }
         }
+
         &:nth-child(even) {
-          background-color: #8621660f;
+          background-color: rgba(5, 140, 66, 0.05);
+        }
+
+        &:last-child {
+          border-bottom: none;
         }
       }
     }
