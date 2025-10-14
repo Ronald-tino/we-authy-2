@@ -191,31 +191,6 @@
       }
     }
 
-    .right {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      @media screen and (max-width: 1024px) {
-        width: 100%;
-        max-width: 500px;
-      }
-
-      img {
-        width: 100%;
-        height: auto;
-        max-height: 500px;
-        object-fit: contain;
-
-        @media screen and (max-width: 768px) {
-          max-height: 400px;
-        }
-
-        @media screen and (max-width: 480px) {
-          max-height: 300px;
-        }
-      }
-    }
+    /* removed right image */
   }
 }

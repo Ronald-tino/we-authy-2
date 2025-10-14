@@ -36,9 +36,6 @@ const Featured = () => {
             <button>China ✈ Zimbabwe</button>
           </div>
         </div>
-        <div className="right">
-          <img src="./img/designn.png" alt="" />
-        </div>
       </div>
     </div>
   );
