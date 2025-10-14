@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./MyGigs.scss";
 import getCurrentUser from "../../utils/getCurrentUser";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import newRequest from "../../utils/newRequest";
 function MyGigs() {
   const currentUser = getCurrentUser();
   const user = currentUser?.info || currentUser; // Handle both nested and direct user objects
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
@@ -40,6 +41,10 @@ function MyGigs() {
     mutation.mutate(id);
   };
 
+  const handleGigClick = (gigId) => {
+    navigate(`/gig/${gigId}`);
+  };
+
   return (
     <div className="myGigs">
       {isLoading ? (
@@ -69,14 +74,18 @@ function MyGigs() {
             <tbody>
               {data && data.length > 0 ? (
                 data.map((gig) => (
-                  <tr key={gig._id}>
+                  <tr
+                    key={gig._id}
+                    onClick={() => handleGigClick(gig._id)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <td>
                       <img className="image" src={gig.cover} alt="" />
                     </td>
                     <td>{gig.title}</td>
                     <td>{gig.price}</td>
                     <td>{gig.sales}</td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <img
                         className="delete"
                         src="./img/delete.png"
