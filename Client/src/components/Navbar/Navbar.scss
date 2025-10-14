@@ -2,18 +2,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--bg-primary);
+  background: linear-gradient(
+    180deg,
+    rgba(22, 219, 101) -200%,
+    rgba(2, 2, 2, 0.5) 100%
+  );
   color: var(--text-primary);
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
   position: sticky;
   top: 0;
   z-index: 999;
-  border-bottom: 1px solid var(--border-primary);
+  border-bottom: 0;
+  backdrop-filter: blur(6px);
 
   &.active {
-    background-color: var(--bg-tertiary);
+    background: linear-gradient(
+      180deg,
+      rgba(22, 219, 101) 0%,
+      rgba(2, 2, 2, 0.65) 100%
+    );
     color: var(--text-primary);
-    border-bottom: 1px solid var(--border-secondary);
+    border-bottom: 0;
   }
 
   .container {
@@ -23,10 +32,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 20px;
+    padding: 16px 16px; /* match inspiration p-4 */
 
     @media screen and (max-width: 768px) {
-      padding: 15px 16px;
+      padding: 14px 16px;
     }
 
     @media screen and (max-width: 480px) {
@@ -141,7 +150,7 @@
         border-radius: 5px;
         cursor: pointer;
         background-color: transparent;
-        border: 1px solid var(--green-medium);
+        border: 1px solid var(--green-bright);
         transition: all 0.3s ease;
 
         @media screen and (max-width: 768px) {
@@ -155,9 +164,10 @@
         }
 
         &:hover {
-          background-color: var(--green-medium);
-          color: var(--text-primary);
+          background-color: var(--green-bright);
+          color: var(--bg-primary);
           border-color: var(--green-bright);
+          transform: translateY(-1px);
         }
       }
     }

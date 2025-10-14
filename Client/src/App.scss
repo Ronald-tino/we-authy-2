@@ -3,31 +3,31 @@
   /* Background Colors */
   --bg-primary: #020202;
   --bg-secondary: #0d2818;
-  --bg-tertiary: #1a1a1a;
-  --bg-card: #1a1a1a;
-  --bg-hover: #2a2a2a;
-  
+  --bg-tertiary: #0d2818; /* align tertiary with elevated surface */
+  --bg-card: #0d2818; /* cards/modals per inspiration */
+  --bg-hover: #04471c; /* surface variant for hovers */
+
   /* Green Accent Colors */
   --green-darkest: #0d2818;
   --green-dark: #04471c;
   --green-medium: #058c42;
   --green-bright: #16db65;
-  --green-light: #20f078;
-  
+  --green-light: #16db65; /* prefer brand accent spectrum */
+
   /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: #e0e0e0;
-  --text-tertiary: #b0b0b0;
-  --text-muted: #808080;
-  
+  --text-primary: #ffffff; /* 90% opacity approximated where needed by component */
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-tertiary: rgba(255, 255, 255, 0.4);
+  --text-muted: rgba(255, 255, 255, 0.3);
+
   /* Border Colors */
-  --border-primary: #2a2a2a;
-  --border-secondary: #3a3a3a;
+  --border-primary: rgba(255, 255, 255, 0.12); /* dividers 12% */
+  --border-secondary: #04471c; /* subtle green borders on elevated surfaces */
   --border-accent: #058c42;
-  
+
   /* Status Colors */
   --color-success: #16db65;
-  --color-warning: #ffc108;
+  --color-warning: #ff8c42; /* KYC alerts, notifications */
   --color-error: #ff4444;
   --color-info: #058c42;
 }

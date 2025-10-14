@@ -1,5 +1,6 @@
 .home {
   background-color: var(--bg-primary);
+  padding-bottom: 88px; /* space for fixed bottom nav */
 
   .features {
     background-color: var(--bg-tertiary);
@@ -136,7 +137,8 @@
             width: 24px;
             height: 24px;
             flex-shrink: 0;
-            filter: brightness(0) saturate(100%) invert(73%) sepia(51%) saturate(1447%) hue-rotate(101deg) brightness(95%) contrast(93%);
+            filter: brightness(0) saturate(100%) invert(73%) sepia(51%)
+              saturate(1447%) hue-rotate(101deg) brightness(95%) contrast(93%);
 
             @media screen and (max-width: 480px) {
               width: 20px;
