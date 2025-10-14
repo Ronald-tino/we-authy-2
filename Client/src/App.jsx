@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
+import BottomNav from "./components/BottomNav/BottomNav";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/home/Home";
@@ -30,6 +31,7 @@ function App() {
           <Navbar />
           <Outlet />
           <Footer />
+          <BottomNav />
         </QueryClientProvider>
       </div>
     );

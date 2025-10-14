@@ -1,0 +1,121 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 2, 2, 0.95) 0%,
+    rgba(13, 40, 24, 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-secondary);
+  z-index: 1000;
+  padding: 8px 0;
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: block;
+  }
+
+  .nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-tertiary);
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 8px;
+    min-width: 50px;
+    position: relative;
+
+    &.active {
+      color: var(--green-bright);
+    }
+
+    .icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+      transition: transform 0.3s ease;
+    }
+
+    .label {
+      font-size: 10px;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    &:hover {
+      color: var(--green-bright);
+      transform: translateY(-1px);
+
+      .icon {
+        transform: scale(1.1);
+      }
+    }
+
+    &.center-item {
+      position: relative;
+      margin-top: -12px;
+
+      .center-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(
+          135deg,
+          var(--green-bright) 0%,
+          var(--green-medium) 100%
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(22, 219, 101, 0.3);
+        border: 2px solid var(--bg-primary);
+        transition: all 0.3s ease;
+
+        .icon {
+          font-size: 24px;
+          margin-bottom: 0;
+          color: var(--bg-primary);
+        }
+      }
+
+      .label {
+        margin-top: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--green-bright);
+      }
+
+      &:hover {
+        .center-icon {
+          transform: scale(1.05);
+          box-shadow: 0 6px 16px rgba(22, 219, 101, 0.4);
+        }
+      }
+
+      &.active {
+        .center-icon {
+          background: linear-gradient(
+            135deg,
+            var(--green-light) 0%,
+            var(--green-bright) 100%
+          );
+        }
+      }
+    }
+  }
+}

@@ -6,6 +6,7 @@ import "./Navbar.scss";
 function Navbar() {
   const [active, setActive] = useState(false);
   const [open, setOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { pathname } = useLocation();
 
@@ -45,40 +46,73 @@ function Navbar() {
           </Link>
           <span className="dot">.</span>
         </div>
-        <div className="links">
+
+        {/* Mobile menu button */}
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle mobile menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div className={`links ${mobileMenuOpen ? "mobile-open" : ""}`}>
           <Link
             className={`link${pathname === "/about" ? " active" : ""}`}
             to="/about"
+            onClick={() => setMobileMenuOpen(false)}
           >
             About
           </Link>
-          <span>LugShare Business</span>
-          <span>Explore</span>
-          <span>English</span>
-          {!currentUser?.isSeller && <span>Become a Courier</span>}
+          <span className="desktop-only">LugShare Business</span>
+          <span className="desktop-only">Explore</span>
+          <span className="desktop-only">English</span>
+          {!currentUser?.isSeller && (
+            <span className="desktop-only">Become a Courier</span>
+          )}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img
                 src={currentUser?.img || "/img/noavatar.png"}
                 alt="Profile"
               />
-              <span>{currentUser?.username || "Sign in"}</span>
+              <span className="desktop-only">
+                {currentUser?.username || "Sign in"}
+              </span>
               {open && (
                 <div className="options">
                   {currentUser.isSeller && (
                     <>
-                      <Link className="link" to="/mygigs">
+                      <Link
+                        className="link"
+                        to="/mygigs"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
                         Gigs
                       </Link>
-                      <Link className="link" to="/add">
+                      <Link
+                        className="link"
+                        to="/add"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
                         Add New Gig
                       </Link>
                     </>
                   )}
-                  <Link className="link" to="/orders">
+                  <Link
+                    className="link"
+                    to="/orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     Orders
                   </Link>
-                  <Link className="link" to="/messages">
+                  <Link
+                    className="link"
+                    to="/messages"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     Messages
                   </Link>
                   <Link className="link" onClick={handleLogout}>
@@ -89,10 +123,18 @@ function Navbar() {
             </div>
           ) : (
             <>
-              <Link to="/login" className="link">
+              <Link
+                to="/login"
+                className="link"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Sign in
               </Link>
-              <Link className="link" to="/register">
+              <Link
+                className="link"
+                to="/register"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 <button>Join</button>
               </Link>
             </>
