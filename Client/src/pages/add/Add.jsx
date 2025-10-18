@@ -111,107 +111,213 @@ const Add = () => {
 
   return (
     <div className="add">
-      <div className="container">
-        <h1>Add New Gig</h1>
-        <div className="sections">
-          <div className="info">
-            <label htmlFor="">Title</label>
-            <input
-              type="text"
-              name="title"
-              placeholder="e.g. I will do something I'm really good at"
-              onChange={handleChange}
-            />
-            <label htmlFor="">Category</label>
-            <select
-              name="cat"
-              id="cat"
-              value={state.cat}
-              onChange={handleChange}
-            >
-              <option value="design">Design</option>
-              <option value="web">Web Development</option>
-              <option value="animation">Animation</option>
-              <option value="music">Music</option>
-            </select>
-            <div className="images">
-              <div className="imagesInputs">
-                <label htmlFor="">Cover Image</label>
+      <div className="add-container">
+        <div className="add-header">
+          <h1 className="add-title">Add New Gig</h1>
+          <p className="add-subtitle">
+            Create a new service listing to start earning
+          </p>
+        </div>
+
+        <div className="add-form">
+          <div className="form-sections">
+            <div className="left-section">
+              <h2 className="section-title">Basic Information</h2>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="title">
+                  Title *
+                </label>
                 <input
-                  type="file"
-                  onChange={(e) => setSingleFile(e.target.files[0])}
-                />
-                <label htmlFor="">Upload Images</label>
-                <input
-                  type="file"
-                  multiple
-                  onChange={(e) => setFiles(e.target.files)}
+                  className="form-input"
+                  type="text"
+                  name="title"
+                  id="title"
+                  placeholder="e.g. I will do something I'm really good at"
+                  onChange={handleChange}
                 />
               </div>
-              <button onClick={handleUpload}>
-                {uploading ? "uploading" : "Upload"}
-              </button>
-            </div>
-            <label htmlFor="">Description</label>
-            <textarea
-              name="desc"
-              id=""
-              placeholder="Brief descriptions to introduce your service to customers"
-              cols="0"
-              rows="16"
-              onChange={handleChange}
-            ></textarea>
-            <button onClick={handleSubmit} disabled={mutation.isPending}>
-              {mutation.isPending ? "Creating..." : "Create"}
-            </button>
-          </div>
-          <div className="details">
-            <label htmlFor="">Service Title</label>
-            <input
-              type="text"
-              name="shortTitle"
-              placeholder="e.g. One-page web design"
-              onChange={handleChange}
-            />
-            <label htmlFor="">Short Description</label>
-            <textarea
-              name="shortDesc"
-              onChange={handleChange}
-              id=""
-              placeholder="Short description of your service"
-              cols="30"
-              rows="10"
-            ></textarea>
-            <label htmlFor="">Delivery Time (e.g. 3 days)</label>
-            <input type="number" name="deliveryTime" onChange={handleChange} />
-            <label htmlFor="">Revision Number</label>
-            <input
-              type="number"
-              name="revisionNumber"
-              onChange={handleChange}
-            />
-            <label htmlFor="">Add Features</label>
-            <form action="" className="add" onSubmit={handleFeature}>
-              <input type="text" placeholder="e.g. page design" />
-              <button type="submit">add</button>
-            </form>
-            <div className="addedFeatures">
-              {state?.features?.map((f) => (
-                <div className="item" key={f}>
-                  <button
-                    onClick={() =>
-                      dispatch({ type: "REMOVE_FEATURE", payload: f })
-                    }
-                  >
-                    {f}
-                    <span>delete</span>
-                  </button>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="cat">
+                  Category *
+                </label>
+                <select
+                  className="form-select"
+                  name="cat"
+                  id="cat"
+                  value={state.cat}
+                  onChange={handleChange}
+                >
+                  <option value="">Select a category</option>
+                  <option value="design">Design</option>
+                  <option value="web">Web Development</option>
+                  <option value="animation">Animation</option>
+                  <option value="music">Music</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Description *</label>
+                <textarea
+                  className="form-textarea"
+                  name="desc"
+                  placeholder="Brief descriptions to introduce your service to customers"
+                  rows="6"
+                  onChange={handleChange}
+                ></textarea>
+              </div>
+
+              <div className="file-upload-section">
+                <label className="form-label">Images *</label>
+                <div className="file-inputs">
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="cover">
+                      Cover Image
+                    </label>
+                    <input
+                      className="file-input"
+                      type="file"
+                      id="cover"
+                      onChange={(e) => setSingleFile(e.target.files[0])}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="images">
+                      Additional Images
+                    </label>
+                    <input
+                      className="file-input"
+                      type="file"
+                      id="images"
+                      multiple
+                      onChange={(e) => setFiles(e.target.files)}
+                    />
+                  </div>
                 </div>
-              ))}
+                <button
+                  className="form-button upload-btn"
+                  type="button"
+                  onClick={handleUpload}
+                  disabled={uploading}
+                >
+                  {uploading ? "Uploading..." : "Upload Images"}
+                </button>
+              </div>
             </div>
-            <label htmlFor="">Price</label>
-            <input type="number" onChange={handleChange} name="price" />
+
+            <div className="right-section">
+              <h2 className="section-title">Service Details</h2>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="shortTitle">
+                  Service Title *
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="shortTitle"
+                  id="shortTitle"
+                  placeholder="e.g. One-page web design"
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="shortDesc">
+                  Short Description *
+                </label>
+                <textarea
+                  className="form-textarea"
+                  name="shortDesc"
+                  id="shortDesc"
+                  placeholder="Short description of your service"
+                  rows="4"
+                  onChange={handleChange}
+                ></textarea>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="deliveryTime">
+                  Delivery Time (days) *
+                </label>
+                <input
+                  className="form-input"
+                  type="number"
+                  name="deliveryTime"
+                  id="deliveryTime"
+                  placeholder="e.g. 3"
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="revisionNumber">
+                  Revision Number *
+                </label>
+                <input
+                  className="form-input"
+                  type="number"
+                  name="revisionNumber"
+                  id="revisionNumber"
+                  placeholder="e.g. 2"
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="price">
+                  Price ($) *
+                </label>
+                <input
+                  className="form-input"
+                  type="number"
+                  name="price"
+                  id="price"
+                  placeholder="e.g. 50"
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Add Features</label>
+                <form className="feature-form" onSubmit={handleFeature}>
+                  <input
+                    className="form-input feature-input"
+                    type="text"
+                    placeholder="e.g. page design"
+                  />
+                  <button className="add-feature-btn" type="submit">
+                    Add
+                  </button>
+                </form>
+                <div className="added-features">
+                  {state?.features?.map((f) => (
+                    <div className="feature-tag" key={f}>
+                      <span>{f}</span>
+                      <button
+                        className="remove-btn"
+                        onClick={() =>
+                          dispatch({ type: "REMOVE_FEATURE", payload: f })
+                        }
+                        type="button"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
+
+          <button
+            className="form-button create-btn"
+            onClick={handleSubmit}
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? "Creating Gig..." : "Create Gig"}
+          </button>
         </div>
       </div>
     </div>

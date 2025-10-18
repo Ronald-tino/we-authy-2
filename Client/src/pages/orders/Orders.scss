@@ -36,12 +36,8 @@
       .orders-title {
         font-size: 2.5rem;
         font-weight: 700;
-        color: var(--text-primary);
+        color: var(--green-bright);
         margin: 0 0 8px 0;
-        background: linear-gradient(135deg, var(--text-primary) 0%, var(--green-bright) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
 
         @media screen and (max-width: 768px) {
           font-size: 2rem;
@@ -71,7 +67,7 @@
       .stat-item {
         text-align: center;
         padding: 16px 24px;
-        background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+        background-color: var(--bg-tertiary);
         border-radius: 12px;
         border: 1px solid var(--border-secondary);
         min-width: 120px;
@@ -156,24 +152,13 @@
     }
 
     .order-card {
-      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 100%);
+      background-color: var(--bg-tertiary);
       border-radius: 16px;
       border: 1px solid var(--border-secondary);
       padding: 24px;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--green-medium) 0%, var(--green-bright) 100%);
-        border-radius: 16px 16px 0 0;
-      }
 
       &:hover {
         transform: translateY(-4px);
@@ -293,8 +278,8 @@
           justify-content: center;
           gap: 8px;
           padding: 12px 20px;
-          background: linear-gradient(135deg, var(--green-medium) 0%, var(--green-bright) 100%);
-          color: var(--text-primary);
+          background-color: var(--green-bright);
+          color: #000000;
           border: none;
           border-radius: 10px;
           font-weight: 600;
@@ -353,8 +338,8 @@
 
     .explore-btn {
       padding: 12px 32px;
-      background: linear-gradient(135deg, var(--green-medium) 0%, var(--green-bright) 100%);
-      color: var(--text-primary);
+      background-color: var(--green-bright);
+      color: #000000;
       border: none;
       border-radius: 10px;
       font-weight: 600;
@@ -373,6 +358,10 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
