@@ -144,8 +144,7 @@ function Navbar() {
 
           {/* Desktop-only items */}
           <span className="desktop-only">LugShare Business</span>
-          <span className="desktop-only">Explore</span>
-          <span className="desktop-only">English</span>
+      
           {!currentUser?.isSeller && (
             <span className="desktop-only">Become a Courier</span>
           )}

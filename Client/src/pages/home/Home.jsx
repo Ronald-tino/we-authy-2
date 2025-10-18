@@ -5,7 +5,6 @@ import Gigs from "../gigs/Gigs";
 import Slide from "../../components/Slide/Slide";
 import CatCard from "../../components/CatCard/CatCard";
 import { cards } from "../../data";
-import Footer from "../../components/Footer/Footer";
 
 ///////////////////////
 const Home = () => {
@@ -19,7 +18,6 @@ const Home = () => {
           ))}
         </Slide>
         <Gigs />
-        <Footer />
       </div>
     </>
   );

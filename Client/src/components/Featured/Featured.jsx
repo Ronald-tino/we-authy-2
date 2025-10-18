@@ -29,7 +29,7 @@ const Featured = () => {
             <button onClick={handleSubmit}>Search</button>
           </div>
           <div className="popular">
-            <button>China → Cammeroon</button>
+        
             <button>China ✈ Ghana</button>
             <button>China ✈ South Africa</button>
             <button>China ✈ Kenya</button>

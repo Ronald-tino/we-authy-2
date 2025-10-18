@@ -4,7 +4,7 @@
   align-items: center;
   background: linear-gradient(
     180deg,
-    rgba(22, 219, 101) -200%,
+    rgba(22, 219, 101) -250%,
     rgba(2, 2, 2, 0.5) 100%
   );
   color: var(--text-primary);
@@ -23,7 +23,7 @@
   &.active {
     background: linear-gradient(
       180deg,
-      rgba(22, 219, 101) 0%,
+      rgba(22, 219, 101) -250%,
       rgba(2, 2, 2, 0.65) 100%
     );
     color: var(--text-primary);
@@ -117,7 +117,7 @@
         height: 100vh;
         background: linear-gradient(
           180deg,
-          rgba(22, 219, 101) 0%,
+          rgba(22, 219, 101) -250%,
           rgba(2, 2, 2, 0.95) 100%
         );
         backdrop-filter: blur(10px);
