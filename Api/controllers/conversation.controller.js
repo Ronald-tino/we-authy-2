@@ -1,5 +1,6 @@
 import createError from "../utils/createError.js";
 import Conversation from "../models/conversation.model.js";
+import User from "../models/user.model.js";
 
 export const createConversation = async (req, res, next) => {
   const newConversation = new Conversation({
@@ -42,7 +43,31 @@ export const getSingleConversation = async (req, res, next) => {
   try {
     const conversation = await Conversation.findOne({ id: req.params.id });
     if (!conversation) return next(createError(404, "Not found!"));
-    res.status(200).send(conversation);
+
+    // Get the other user's information
+    const otherUserId = req.isSeller
+      ? conversation.buyerId
+      : conversation.sellerId;
+    const otherUser = await User.findById(otherUserId).select(
+      "username img country"
+    );
+
+    const conversationWithUser = {
+      ...conversation.toObject(),
+      otherUser: otherUser
+        ? {
+            username: otherUser.username,
+            img: otherUser.img,
+            country: otherUser.country,
+          }
+        : {
+            username: "Unknown User",
+            img: null,
+            country: "Unknown",
+          },
+    };
+
+    res.status(200).send(conversationWithUser);
   } catch (err) {
     next(err);
   }
@@ -53,7 +78,35 @@ export const getConversations = async (req, res, next) => {
     const conversations = await Conversation.find(
       req.isSeller ? { sellerId: req.userId } : { buyerId: req.userId }
     ).sort({ updatedAt: -1 });
-    res.status(200).send(conversations);
+
+    // Populate user information for each conversation
+    const conversationsWithUsers = await Promise.all(
+      conversations.map(async (conversation) => {
+        const otherUserId = req.isSeller
+          ? conversation.buyerId
+          : conversation.sellerId;
+        const otherUser = await User.findById(otherUserId).select(
+          "username img country"
+        );
+
+        return {
+          ...conversation.toObject(),
+          otherUser: otherUser
+            ? {
+                username: otherUser.username,
+                img: otherUser.img,
+                country: otherUser.country,
+              }
+            : {
+                username: "Unknown User",
+                img: null,
+                country: "Unknown",
+              },
+        };
+      })
+    );
+
+    res.status(200).send(conversationsWithUsers);
   } catch (err) {
     next(err);
   }

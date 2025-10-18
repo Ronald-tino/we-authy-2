@@ -1,139 +1,337 @@
 .messages {
-  display: flex;
-  justify-content: center;
-  padding: 0 20px;
   background-color: var(--bg-primary);
   min-height: 100vh;
+  padding: 20px;
 
   @media screen and (max-width: 768px) {
-    padding: 0 16px;
+    padding: 16px;
   }
 
   @media screen and (max-width: 480px) {
-    padding: 0 12px;
+    padding: 12px;
   }
 
   .container {
-    max-width: 1400px;
+    max-width: 800px;
     width: 100%;
-    padding: 50px 0px;
+    margin: 0 auto;
+    padding: 20px 0;
 
     @media screen and (max-width: 768px) {
-      padding: 30px 0px;
+      padding: 16px 0;
     }
 
-    @media screen and (max-width: 480px) {
-      padding: 20px 0px;
-    }
-
-    .title {
+    .header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 30px;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-primary);
 
       h1 {
         color: var(--text-primary);
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+
+        @media screen and (max-width: 768px) {
+          font-size: 24px;
+        }
       }
 
-      button {
-        background-color: var(--green-medium);
-        color: var(--text-primary);
-        font-weight: 500;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: all 0.3s ease;
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
 
-        &:hover {
-          background-color: var(--green-bright);
+        .conversation-count {
+          color: var(--text-tertiary);
+          font-size: 14px;
+          font-weight: 500;
         }
       }
     }
 
-    table {
-      width: 100%;
-      overflow-x: auto;
-      display: block;
+    .conversations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .conversation-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
       background-color: var(--bg-tertiary);
-      border-radius: 8px;
       border: 1px solid var(--border-secondary);
+      border-radius: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      position: relative;
 
       @media screen and (max-width: 768px) {
-        font-size: 14px;
+        padding: 16px;
+        gap: 12px;
       }
 
-      @media screen and (max-width: 480px) {
-        font-size: 12px;
+      &:hover {
+        background-color: var(--bg-hover);
+        border-color: var(--border-accent);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(5, 140, 66, 0.15);
       }
 
-      tr {
-        height: 100px;
-        display: table;
-        width: 100%;
-        border-bottom: 1px solid var(--border-primary);
+      &.unread {
+        background-color: rgba(5, 140, 66, 0.08);
+        border-color: var(--green-medium);
 
-        @media screen and (max-width: 768px) {
-          height: 80px;
-        }
-
-        @media screen and (max-width: 480px) {
-          height: auto;
-          min-height: 60px;
-        }
-
-        th {
-          text-align: left;
-          color: var(--text-primary);
+        .conversation-name {
           font-weight: 600;
-          padding: 10px;
+        }
 
-          @media screen and (max-width: 480px) {
-            padding: 8px 4px;
+        .conversation-preview {
+          font-weight: 500;
+        }
+      }
+
+      .conversation-avatar {
+        position: relative;
+        flex-shrink: 0;
+
+        .avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid var(--border-secondary);
+
+          @media screen and (max-width: 768px) {
+            width: 40px;
+            height: 40px;
           }
         }
 
-        td {
-          padding: 10px;
-          color: var(--text-secondary);
+        .unread-indicator {
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 12px;
+          height: 12px;
+          background-color: var(--green-bright);
+          border-radius: 50%;
+          border: 2px solid var(--bg-tertiary);
+        }
+      }
 
-          @media screen and (max-width: 480px) {
-            padding: 8px 4px;
+      .conversation-content {
+        flex: 1;
+        min-width: 0;
+
+        .conversation-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 8px;
+
+          .conversation-name-container {
+            flex: 1;
+            min-width: 0;
+
+            .conversation-name {
+              color: var(--text-primary);
+              font-size: 16px;
+              font-weight: 500;
+              margin: 0 0 2px 0;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              max-width: 200px;
+
+              @media screen and (max-width: 768px) {
+                font-size: 15px;
+                max-width: 150px;
+              }
+            }
+
+            .conversation-location {
+              color: var(--text-tertiary);
+              font-size: 12px;
+              font-weight: 400;
+              display: block;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              max-width: 200px;
+
+              @media screen and (max-width: 768px) {
+                max-width: 150px;
+              }
+            }
           }
 
-          &:first-child {
-            font-weight: 500;
-            color: var(--text-primary);
-          }
-
-          &:nth-child(2),
-          &:nth-child(3) {
+          .conversation-time {
             color: var(--text-tertiary);
+            font-size: 12px;
+            font-weight: 400;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 8px;
           }
         }
 
-        button {
+        .conversation-preview {
+          color: var(--text-secondary);
+          font-size: 14px;
+          line-height: 1.4;
+          margin: 0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          @media screen and (max-width: 768px) {
+            font-size: 13px;
+          }
+        }
+      }
+
+      .conversation-actions {
+        flex-shrink: 0;
+
+        .mark-read-btn {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
           background-color: var(--green-medium);
           color: var(--text-primary);
-          padding: 10px;
           border: none;
           cursor: pointer;
-          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          font-weight: 600;
           transition: all 0.3s ease;
 
           &:hover {
             background-color: var(--green-bright);
+            transform: scale(1.1);
           }
-        }
-
-        &.active {
-          background-color: rgba(5, 140, 66, 0.1);
-        }
-
-        &:last-child {
-          border-bottom: none;
         }
       }
     }
+
+    // Loading skeleton styles
+    .conversation-skeleton {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-secondary);
+      border-radius: 16px;
+
+      .skeleton-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(
+          90deg,
+          var(--bg-hover) 25%,
+          var(--border-secondary) 50%,
+          var(--bg-hover) 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+      }
+
+      .skeleton-content {
+        flex: 1;
+
+        .skeleton-name {
+          height: 16px;
+          width: 40%;
+          background: linear-gradient(
+            90deg,
+            var(--bg-hover) 25%,
+            var(--border-secondary) 50%,
+            var(--bg-hover) 75%
+          );
+          background-size: 200% 100%;
+          animation: skeleton-loading 1.5s infinite;
+          border-radius: 4px;
+          margin-bottom: 8px;
+        }
+
+        .skeleton-message {
+          height: 14px;
+          width: 80%;
+          background: linear-gradient(
+            90deg,
+            var(--bg-hover) 25%,
+            var(--border-secondary) 50%,
+            var(--bg-hover) 75%
+          );
+          background-size: 200% 100%;
+          animation: skeleton-loading 1.5s infinite;
+          border-radius: 4px;
+        }
+      }
+
+      .skeleton-time {
+        width: 60px;
+        height: 12px;
+        background: linear-gradient(
+          90deg,
+          var(--bg-hover) 25%,
+          var(--border-secondary) 50%,
+          var(--bg-hover) 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+      }
+    }
+
+    // Error and empty states
+    .error-state,
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+
+      .error-icon,
+      .empty-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        color: var(--text-primary);
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+      }
+
+      p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
