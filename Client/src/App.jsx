@@ -13,6 +13,8 @@ import About from "./pages/about/About";
 import Messages from "./pages/messages/Messages";
 import Orders from "./pages/orders/Orders";
 import Message from "./pages/message/Message";
+import Profile from "./pages/profile/Profile";
+import Settings from "./pages/settings/Settings";
 import "./App.scss";
 import MyGigs from "./pages/myGigs/MyGigs";
 import {
@@ -73,6 +75,14 @@ function App() {
         {
           path: "/message/:id",
           element: <Message />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
+          path: "/settings",
+          element: <Settings />,
         },
       ],
     },
