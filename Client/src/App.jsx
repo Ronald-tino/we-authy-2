@@ -1,6 +1,5 @@
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
-import BottomNav from "./components/BottomNav/BottomNav";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -29,7 +28,6 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <Navbar />
           <Outlet />
-          <BottomNav />
         </QueryClientProvider>
       </div>
     );
