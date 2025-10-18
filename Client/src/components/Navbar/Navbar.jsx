@@ -20,6 +20,23 @@ function Navbar() {
       window.removeEventListener("scroll", isActive);
     };
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (open && !event.target.closest(".user")) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
   const stored = localStorage.getItem("currentUser");
   const parsed = stored ? JSON.parse(stored) : null;
   // some responses are { info: {...} } — prefer the info object if present
