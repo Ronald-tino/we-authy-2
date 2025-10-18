@@ -27,16 +27,23 @@ function Navbar() {
       if (open && !event.target.closest(".user")) {
         setOpen(false);
       }
+      if (
+        mobileMenuOpen &&
+        !event.target.closest(".links") &&
+        !event.target.closest(".mobile-menu-btn")
+      ) {
+        setMobileMenuOpen(false);
+      }
     };
 
-    if (open) {
+    if (open || mobileMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [open]);
+  }, [open, mobileMenuOpen]);
   const stored = localStorage.getItem("currentUser");
   const parsed = stored ? JSON.parse(stored) : null;
   // some responses are { info: {...} } — prefer the info object if present
@@ -54,6 +61,21 @@ function Navbar() {
     }
   };
 
+  // Handle keyboard navigation
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      setMobileMenuOpen(false);
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
       <div className="container">
@@ -69,13 +91,28 @@ function Navbar() {
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle mobile menu"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
         >
           <span></span>
           <span></span>
           <span></span>
         </button>
 
-        <div className={`links ${mobileMenuOpen ? "mobile-open" : ""}`}>
+        <div
+          className={`links ${mobileMenuOpen ? "mobile-open" : ""}`}
+          id="mobile-menu"
+          role="navigation"
+          aria-label="Main navigation"
+        >
+          {/* Standard navbar options - always visible in mobile menu */}
+          <Link
+            className={`link${pathname === "/" ? " active" : ""}`}
+            to="/"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Home
+          </Link>
           <Link
             className={`link${pathname === "/about" ? " active" : ""}`}
             to="/about"
@@ -83,14 +120,53 @@ function Navbar() {
           >
             About
           </Link>
+          <Link
+            className={`link${pathname === "/gigs" ? " active" : ""}`}
+            to="/gigs"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Explore Gigs
+          </Link>
+          <Link
+            className={`link${pathname === "/orders" ? " active" : ""}`}
+            to="/orders"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Orders
+          </Link>
+          <Link
+            className={`link${pathname === "/messages" ? " active" : ""}`}
+            to="/messages"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Messages
+          </Link>
+
+          {/* Desktop-only items */}
           <span className="desktop-only">LugShare Business</span>
           <span className="desktop-only">Explore</span>
           <span className="desktop-only">English</span>
           {!currentUser?.isSeller && (
             <span className="desktop-only">Become a Courier</span>
           )}
+
+          {/* User section - separate from standard nav options */}
           {currentUser ? (
-            <div className="user" onClick={() => setOpen(!open)}>
+            <div
+              className="user"
+              onClick={() => setOpen(!open)}
+              role="button"
+              tabIndex={0}
+              aria-expanded={open}
+              aria-haspopup="menu"
+              aria-label="User menu"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setOpen(!open);
+                }
+              }}
+            >
               <img
                 src={currentUser?.img || "/img/noavatar.png"}
                 alt="Profile"
@@ -98,41 +174,48 @@ function Navbar() {
               <span className="desktop-only">
                 {currentUser?.username || "Sign in"}
               </span>
+              <span className="mobile-only">
+                {currentUser?.username || "Profile"}
+              </span>
               {open && (
-                <div className="options">
+                <div className="options" role="menu" aria-label="User options">
+                  <Link
+                    className="link"
+                    to="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    role="menuitem"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    className="link"
+                    to="/settings"
+                    onClick={() => setMobileMenuOpen(false)}
+                    role="menuitem"
+                  >
+                    Settings
+                  </Link>
                   {currentUser.isSeller && (
                     <>
                       <Link
                         className="link"
                         to="/mygigs"
                         onClick={() => setMobileMenuOpen(false)}
+                        role="menuitem"
                       >
-                        Gigs
+                        My Gigs
                       </Link>
                       <Link
                         className="link"
                         to="/add"
                         onClick={() => setMobileMenuOpen(false)}
+                        role="menuitem"
                       >
                         Add New Gig
                       </Link>
                     </>
                   )}
-                  <Link
-                    className="link"
-                    to="/orders"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Orders
-                  </Link>
-                  <Link
-                    className="link"
-                    to="/messages"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Messages
-                  </Link>
-                  <Link className="link" onClick={handleLogout}>
+                  <Link className="link" onClick={handleLogout} role="menuitem">
                     Logout
                   </Link>
                 </div>
