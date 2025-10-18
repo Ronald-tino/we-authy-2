@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
+import AuthLayout from "./components/AuthLayout";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -42,14 +43,6 @@ function App() {
           element: <Home />,
         },
         {
-          path: "/login",
-          element: <Login />,
-        },
-        {
-          path: "/register",
-          element: <Register />,
-        },
-        {
           path: "/about",
           element: <About />,
         },
@@ -82,6 +75,22 @@ function App() {
           element: <Message />,
         },
       ],
+    },
+    {
+      path: "/login",
+      element: (
+        <AuthLayout queryClient={queryClient}>
+          <Login />
+        </AuthLayout>
+      ),
+    },
+    {
+      path: "/register",
+      element: (
+        <AuthLayout queryClient={queryClient}>
+          <Register />
+        </AuthLayout>
+      ),
     },
   ]);
   return (

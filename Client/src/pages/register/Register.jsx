@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import upload from "../../utils/upload";
 import "./Register.scss";
 import newRequest from "../../utils/newRequest";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import BackgroundGradient from "../../components/ui/background-gradient";
 
 function Register() {
   const [file, setFile] = useState(null);
@@ -52,79 +54,261 @@ function Register() {
   };
   return (
     <div className="register">
-      <form onSubmit={handleSubmit}>
-        <div className="left">
-          <h1>Create a new account</h1>
-          <label htmlFor="">Username</label>
-          <input
-            name="username"
-            type="text"
-            placeholder="johndoe"
-            onChange={handleChange}
-          />
-          <label htmlFor="">Email</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="email"
-            onChange={handleChange}
-          />
-          <label htmlFor="">Password</label>
-          <input name="password" type="password" onChange={handleChange} />
-          <label htmlFor="file">Profile Picture</label>
-          <input
-            id="file"
-            type="file"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file && file.type.startsWith("image/")) {
-                setFile(file);
-                setError(null);
-              } else {
-                setError("Please select an image file");
-                setFile(null);
-              }
-            }}
-            accept="image/*"
-          />
-          {error && <span style={{ color: "red" }}>{error}</span>}
-          {loading && <span>Uploading...</span>}
-          <label htmlFor="">Country</label>
-          <input
-            name="country"
-            type="text"
-            placeholder="China"
-            onChange={handleChange}
-          />
-          <button type="submit">Register</button>
-        </div>
-        <div className="right">
-          <h1>I want to become a courrier</h1>
-          <div className="toggle">
-            <label htmlFor="">Activate the courrier account</label>
-            <label className="switch">
-              <input type="checkbox" onChange={handleSeller} />
-              <span className="slider round"></span>
-            </label>
-          </div>
-          <label htmlFor="">Phone Number</label>
-          <input
-            name="phone"
-            type="text"
-            placeholder="+86 234 567 89"
-            onChange={handleChange}
-          />
-          <label htmlFor="">Description</label>
-          <textarea
-            placeholder="A short description of yourself"
-            name="desc"
-            id=""
-            cols="30"
-            rows="10"
-            onChange={handleChange}
-          ></textarea>
-        </div>
-      </form>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="register-container"
+      >
+        <BackgroundGradient
+          className="rounded-[22px] max-w-4xl p-4 sm:p-10 bg-zinc-900 dark:bg-zinc-900"
+          containerClassName="w-full max-w-4xl"
+        >
+          <motion.div
+            className="register-header"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <div className="logo">
+              <img
+                src="/img/lug.png"
+                alt="LuggageShare Logo"
+                className="logo-img"
+              />
+              <h1 className="logo-text">LuggageShare</h1>
+            </div>
+            <motion.h2
+              className="register-title"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              Create your account
+            </motion.h2>
+            <p className="register-subtitle">Join LuggageShare today</p>
+          </motion.div>
+
+          <motion.form
+            onSubmit={handleSubmit}
+            className="register-form"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            <div className="form-sections">
+              <div className="left-section">
+                <h3 className="section-title">Basic Information</h3>
+
+                <motion.div
+                  className="form-group"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                >
+                  <label htmlFor="username" className="form-label">
+                    Username
+                  </label>
+                  <motion.input
+                    name="username"
+                    type="text"
+                    placeholder="johndoe"
+                    onChange={handleChange}
+                    className="form-input"
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                </motion.div>
+
+                <motion.div
+                  className="form-group"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                >
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
+                  <motion.input
+                    name="email"
+                    type="email"
+                    placeholder="email@example.com"
+                    onChange={handleChange}
+                    className="form-input"
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                </motion.div>
+
+                <motion.div
+                  className="form-group"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                >
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
+                  <motion.input
+                    name="password"
+                    type="password"
+                    onChange={handleChange}
+                    className="form-input"
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                </motion.div>
+
+                <motion.div
+                  className="form-group"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                >
+                  <label htmlFor="country" className="form-label">
+                    Country
+                  </label>
+                  <motion.input
+                    name="country"
+                    type="text"
+                    placeholder="United States"
+                    onChange={handleChange}
+                    className="form-input"
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                </motion.div>
+
+                <motion.div
+                  className="form-group"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.9, duration: 0.5 }}
+                >
+                  <label htmlFor="file" className="form-label">
+                    Profile Picture
+                  </label>
+                  <motion.input
+                    id="file"
+                    type="file"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file && file.type.startsWith("image/")) {
+                        setFile(file);
+                        setError(null);
+                      } else {
+                        setError("Please select an image file");
+                        setFile(null);
+                      }
+                    }}
+                    accept="image/*"
+                    className="form-input file-input"
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                  {error && <span className="error-text">{error}</span>}
+                  {loading && (
+                    <span className="loading-text">Uploading...</span>
+                  )}
+                </motion.div>
+              </div>
+
+              <div className="right-section">
+                <h3 className="section-title">Courier Options</h3>
+
+                <motion.div
+                  className="toggle-section"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                >
+                  <div className="toggle">
+                    <label htmlFor="courier-toggle" className="toggle-label">
+                      I want to become a courier
+                    </label>
+                    <label className="switch">
+                      <input
+                        id="courier-toggle"
+                        type="checkbox"
+                        onChange={handleSeller}
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="form-group"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                >
+                  <label htmlFor="phone" className="form-label">
+                    Phone Number
+                  </label>
+                  <motion.input
+                    name="phone"
+                    type="text"
+                    placeholder="+1 234 567 8900"
+                    onChange={handleChange}
+                    className="form-input"
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                </motion.div>
+
+                <motion.div
+                  className="form-group"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                >
+                  <label htmlFor="desc" className="form-label">
+                    Description
+                  </label>
+                  <motion.textarea
+                    placeholder="A short description of yourself"
+                    name="desc"
+                    onChange={handleChange}
+                    className="form-textarea"
+                    whileFocus={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  />
+                </motion.div>
+              </div>
+            </div>
+
+            <motion.button
+              type="submit"
+              className="register-button"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 0 30px rgba(22, 219, 101, 0.4)",
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {loading ? "Creating Account..." : "Create Account"}
+            </motion.button>
+          </motion.form>
+
+          <motion.div
+            className="register-footer"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+          >
+            <p className="login-text">
+              Already have an account?{" "}
+              <Link to="/login" className="login-link">
+                Sign in
+              </Link>
+            </p>
+          </motion.div>
+        </BackgroundGradient>
+      </motion.div>
     </div>
   );
 }

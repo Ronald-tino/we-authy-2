@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ===== Color Variables ===== */
 :root {
   /* Background Colors */
@@ -63,6 +67,15 @@ body {
     padding-bottom: 0; /* No bottom nav on desktop */
     padding-top: 90px; /* Slightly more space for navbar on desktop */
   }
+}
+
+/* Auth layout without navbar */
+.auth-layout {
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  position: relative;
 }
 
 /* Ensure navbar dropdown can extend beyond app container */
