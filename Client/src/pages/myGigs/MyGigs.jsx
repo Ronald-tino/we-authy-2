@@ -62,34 +62,58 @@ function MyGigs() {
             )}
           </div>
           <table>
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Sales</th>
-                <th>Action</th>
-              </tr>
-            </thead>
             <tbody>
               {data && data.length > 0 ? (
-                data.map((gig) => (
+                data.map((gig, index) => (
                   <tr
                     key={gig._id}
                     onClick={() => handleGigClick(gig._id)}
                     style={{ cursor: "pointer" }}
                   >
+                    <td className="number-cell">{index + 1}</td>
                     <td>
-                      <img className="image" src={gig.cover} alt="" />
+                      <div className="route">
+                        <span className="city">
+                          {gig.departureCity || "N/A"}
+                        </span>
+                        <span className="arrow">→</span>
+                        <span className="city">
+                          {gig.destinationCity || "N/A"}
+                        </span>
+                      </div>
                     </td>
-                    <td>{gig.title}</td>
-                    <td>{gig.price}</td>
-                    <td>{gig.sales}</td>
+                    <td className="title-cell">{gig.title || "Untitled"}</td>
+                    <td className="price-cell">
+                      {gig.priceRMB ? (
+                        <>
+                          <span className="amount">{gig.priceRMB}</span>
+                          <span className="currency">¥</span>
+                        </>
+                      ) : gig.price ? (
+                        `$${gig.price}`
+                      ) : (
+                        "N/A"
+                      )}
+                    </td>
+                    <td className="space-cell">
+                      {gig.availableSpace ? `${gig.availableSpace} kg` : "N/A"}
+                    </td>
+                    <td className="expires-cell">
+                      {gig.expirationDays ? (
+                        <>
+                          <span className="days">{gig.expirationDays}</span>
+                          <span className="label"> days</span>
+                        </>
+                      ) : (
+                        "N/A"
+                      )}
+                    </td>
+                    <td>{gig.sales || 0}</td>
                     <td onClick={(e) => e.stopPropagation()}>
                       <img
                         className="delete"
                         src="./img/delete.png"
-                        alt=""
+                        alt="Delete"
                         onClick={() => handleDelete(gig._id)}
                       />
                     </td>
@@ -98,7 +122,7 @@ function MyGigs() {
               ) : (
                 <tr>
                   <td
-                    colSpan="5"
+                    colSpan="8"
                     style={{ textAlign: "center", padding: "20px" }}
                   >
                     No gigs found. Create your first gig!

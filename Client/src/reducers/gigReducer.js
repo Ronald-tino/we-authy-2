@@ -1,14 +1,16 @@
 export const INITIAL_STATE = {
   userId: JSON.parse(localStorage.getItem("currentUser"))?._id,
+  title: "",
+  about: "", // Required: Detailed description of the luggage service
   departureCountry: "",
   departureCity: "",
   destinationCountry: "",
   destinationCity: "",
   availableSpace: 0,
-  price: 0,
+  priceRMB: 0, // Price per kg in Chinese Yuan
   expirationDays: 0,
-  title: "",
-  cat: "design",
+  // Legacy fields (optional)
+  cat: "luggage-transport",
   cover: "",
   images: [],
   desc: "",
@@ -17,6 +19,7 @@ export const INITIAL_STATE = {
   deliveryTime: 0,
   revisionNumber: 0,
   features: [],
+  price: 0,
 };
 
 export const gigReducer = (state, action) => {

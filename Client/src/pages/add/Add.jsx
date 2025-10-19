@@ -108,6 +108,18 @@ const Add = () => {
     e.preventDefault();
 
     // Validate required fields
+    if (!state.title || state.title.trim().length < 10) {
+      alert("Please enter a title (minimum 10 characters)");
+      return;
+    }
+
+    if (!state.about || state.about.trim().length < 50) {
+      alert(
+        "Please provide a detailed description (minimum 50 characters). Include what types of goods you can transport."
+      );
+      return;
+    }
+
     if (!state.departureCountry) {
       alert("Please select a departure country");
       return;
@@ -133,8 +145,8 @@ const Add = () => {
       return;
     }
 
-    if (!state.price || state.price <= 0) {
-      alert("Please enter a valid price");
+    if (!state.priceRMB || state.priceRMB <= 0) {
+      alert("Please enter a valid price per kg in RMB (¥)");
       return;
     }
 
@@ -158,6 +170,67 @@ const Add = () => {
         </div>
 
         <div className="add-form">
+          {/* Listing Title and Description */}
+          <div className="form-sections">
+            <div className="full-width-section">
+              <h2 className="section-title">Listing Information</h2>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="title">
+                  Listing Title *
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="title"
+                  id="title"
+                  placeholder="e.g. Dubai to Lahore - Reliable Luggage Transport Service"
+                  onChange={handleChange}
+                  maxLength="100"
+                />
+                <span className="form-helper">
+                  Create a clear, descriptive title for your luggage transport
+                  service
+                </span>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="about">
+                  Service Description * (What goods can you transport?)
+                </label>
+                <textarea
+                  className="form-textarea"
+                  name="about"
+                  id="about"
+                  placeholder="Example: I'm traveling from Dubai to Lahore and have 15kg of extra luggage space available. I can transport the following items:
+
+• Electronics (phones, tablets, laptops - sealed in original packaging)
+• Clothing and textiles
+• Documents and small packages
+• Cosmetics and personal care items
+• Small gifts and souvenirs
+
+I CANNOT transport:
+✗ Prohibited items (weapons, drugs, etc.)
+✗ Liquids over 100ml
+✗ Fragile glass items
+✗ Perishable food items
+
+I'm a verified traveler with 5+ years experience. All items will be handled with care and delivered promptly. I'll provide tracking updates throughout the journey."
+                  onChange={handleChange}
+                  rows="10"
+                  minLength="50"
+                />
+                <span className="form-helper">
+                  <strong>⚠️ IMPORTANT:</strong> You MUST specify what types of
+                  goods you can and cannot transport. Include any restrictions,
+                  handling instructions, and your experience level. Minimum 50
+                  characters.
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div className="form-sections">
             <div className="left-section">
               <h2 className="section-title">Departure Information</h2>
@@ -175,8 +248,8 @@ const Add = () => {
                 >
                   <option value="">Select departure country</option>
                   {COUNTRIES.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.code} - {country.name}
+                    <option key={country.code} value={country.name}>
+                      {country.name}
                     </option>
                   ))}
                 </select>
@@ -205,11 +278,14 @@ const Add = () => {
                   type="number"
                   name="availableSpace"
                   id="availableSpace"
-                  placeholder="e.g. 40"
-                  min="1"
+                  placeholder="e.g. 15"
+                  min="0.5"
                   step="0.5"
                   onChange={handleChange}
                 />
+                <span className="form-helper">
+                  How many kilograms of luggage space can you offer?
+                </span>
               </div>
             </div>
 
@@ -229,8 +305,8 @@ const Add = () => {
                 >
                   <option value="">Select destination country</option>
                   {COUNTRIES.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.code} - {country.name}
+                    <option key={country.code} value={country.name}>
+                      {country.name}
                     </option>
                   ))}
                 </select>
@@ -251,19 +327,22 @@ const Add = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="price">
-                  Price (USD) *
+                <label className="form-label" htmlFor="priceRMB">
+                  Price per kg (¥ RMB) *
                 </label>
                 <input
                   className="form-input"
                   type="number"
-                  name="price"
-                  id="price"
-                  placeholder="e.g. 298"
+                  name="priceRMB"
+                  id="priceRMB"
+                  placeholder="e.g. 120"
                   min="1"
-                  step="0.01"
+                  step="1"
                   onChange={handleChange}
                 />
+                <span className="form-helper">
+                  Set your price per kilogram in Chinese Yuan (¥)
+                </span>
               </div>
 
               <div className="form-group">
@@ -279,6 +358,9 @@ const Add = () => {
                   min="1"
                   onChange={handleChange}
                 />
+                <span className="form-helper">
+                  How many days until this offer expires?
+                </span>
               </div>
             </div>
           </div>
