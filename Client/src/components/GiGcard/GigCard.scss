@@ -188,9 +188,9 @@
     background-image: repeating-linear-gradient(
       to right,
       #ffffff 0,
-      #ffffff 6px,
-      transparent 6px,
-      transparent 12px
+      #ffffff 8px,
+      transparent 8px,
+      transparent 16px
     );
 
     &--long {
@@ -437,10 +437,17 @@
     }
 
     &__dash {
-      min-width: 30px;
+      min-width: 35px;
+      background-image: repeating-linear-gradient(
+        to right,
+        #ffffff 0,
+        #ffffff 7px,
+        transparent 7px,
+        transparent 14px
+      );
 
       &--long {
-        min-width: 45px;
+        min-width: 50px;
       }
     }
 
@@ -514,10 +521,17 @@
     }
 
     &__dash {
-      min-width: 20px;
+      min-width: 25px;
+      background-image: repeating-linear-gradient(
+        to right,
+        #ffffff 0,
+        #ffffff 6px,
+        transparent 6px,
+        transparent 12px
+      );
 
       &--long {
-        min-width: 30px;
+        min-width: 35px;
       }
     }
 

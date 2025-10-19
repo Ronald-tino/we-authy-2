@@ -186,7 +186,10 @@ formatTimestamp("2025-10-19T07:30:00Z");
 ## 🎨 Design Notes
 
 1. **Horizontal plane orientation**: Planes face right (→) not down (↓)
-2. **Dashed lines**: CSS `repeating-linear-gradient` (6px dash, 6px gap)
+2. **Dashed lines**: CSS `repeating-linear-gradient` creating distinct `-  -  -  -` pattern
+   - Desktop: 8px dash, 8px gap
+   - Tablet: 7px dash, 7px gap
+   - Mobile: 6px dash, 6px gap
 3. **Placeholder data**: Falls back to "Dubai, UAE" ↔ "Lahore, Pakistan"
 4. **Price display**: Yuan symbol (¥) used for international appeal
 5. **Accessibility**: Proper alt text, semantic HTML, keyboard navigation
