@@ -19,7 +19,7 @@
   }
 
   .settings-header {
-    background: var(--bg-card);
+    background: var(--bg-primary);
     border: 1px solid var(--border-primary);
     border-radius: 16px;
     padding: 32px;
@@ -46,8 +46,8 @@
       height: 4px;
       background: linear-gradient(
         90deg,
-        var(--green-bright),
-        var(--green-medium)
+        var(--bg-primary),
+        var(--text-primary)
       );
     }
 
@@ -122,7 +122,7 @@
 
   .settings-sidebar {
     .settings-nav {
-      background: var(--bg-card);
+      background: var(--bg-primary);
       border: 1px solid var(--border-primary);
       border-radius: 12px;
       padding: 8px;
@@ -164,9 +164,9 @@
         }
 
         &.active {
-          background: var(--green-dark);
-          color: var(--green-bright);
-          border: 1px solid var(--green-medium);
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+          border: 1px solid var(--border-primary);
         }
 
         .nav-icon {
@@ -187,7 +187,7 @@
   }
 
   .settings-content {
-    background: var(--bg-card);
+    background: var(--bg-primary);
     border: 1px solid var(--border-primary);
     border-radius: 12px;
     padding: 32px;
@@ -217,7 +217,7 @@
           content: "";
           width: 4px;
           height: 24px;
-          background: var(--green-bright);
+          background: var(--text-primary);
           border-radius: 2px;
         }
       }
@@ -288,9 +288,13 @@
             font-size: 1rem;
             transition: all 0.3s ease;
 
+            &:hover {
+              background: var(--bg-hover);
+            }
+
             &:focus {
               outline: none;
-              border-color: var(--green-bright);
+              border-color: var(--green-medium);
               box-shadow: 0 0 0 3px rgba(22, 219, 101, 0.1);
             }
 
@@ -313,10 +317,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
 
+            &:hover {
+              background: var(--bg-hover);
+            }
+
             &:focus {
               outline: none;
-              border-color: var(--green-bright);
-              box-shadow: 0 0 0 3px rgba(22, 219, 101, 0.1);
+              border-color: var(--text-primary);
+              box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
             }
           }
 
@@ -328,6 +336,10 @@
             outline: none;
             -webkit-appearance: none;
             appearance: none;
+
+            &:hover {
+              background: var(--bg-hover);
+            }
 
             &::-webkit-slider-thumb {
               -webkit-appearance: none;
@@ -363,7 +375,7 @@
 
           .range-value {
             font-size: 0.9rem;
-            color: var(--green-bright);
+            color: var(--text-primary);
             font-weight: 600;
             margin-top: 8px;
           }
@@ -400,7 +412,7 @@
               input[type="checkbox"] {
                 width: 16px;
                 height: 16px;
-                accent-color: var(--green-bright);
+                accent-color: var(--text-primary);
                 cursor: pointer;
               }
 
@@ -448,8 +460,8 @@
 
               &:hover {
                 background: var(--bg-hover);
-                border-color: var(--green-medium);
-                color: var(--green-bright);
+                border-color: var(--text-primary);
+                color: var(--text-primary);
               }
             }
           }
@@ -471,7 +483,7 @@
       height: 0;
 
       &:checked + .toggle-slider {
-        background-color: var(--green-bright);
+        background-color: var(--text-primary);
 
         &:before {
           transform: translateX(26px);

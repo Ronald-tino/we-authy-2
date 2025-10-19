@@ -1,385 +1,589 @@
-.gigCard {
+// GigCard Component Styles - BEM Methodology
+.gig-card {
   width: 100%;
   max-width: 100%;
-  background-color: #020202;
-  border: 1px solid #04471c;
-  border-radius: 14px;
+  background-color: #0f0f0f;
+  border: 1px solid #1f2f25;
+  border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;
-  transition: box-shadow 0.25s ease, transform 0.25s ease,
-    border-color 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     border-color: #16db65;
-    box-shadow: 0 8px 24px rgba(22, 219, 101, 0.12);
+    box-shadow: 0 6px 20px rgba(22, 219, 101, 0.15);
   }
 
-  .gc-header {
+  // Header Section
+  &__header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    margin-bottom: 24px;
   }
 
-  .gc-user {
+  &__user {
     display: flex;
     align-items: center;
     gap: 12px;
   }
 
-  .gc-avatar {
+  &__avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1px solid #04471c;
+    border: 2px solid #1f2f25;
     object-fit: cover;
     background: #0a0a0a;
   }
 
-  .gc-user-meta {
+  &__user-info {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  .gc-user-row {
+
+  &__user-top {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .gc-code {
-    font-size: 12px;
-    color: #8b8b8b;
-  }
-  .gc-badge {
+
+  &__id {
     font-size: 11px;
+    color: #8b8b8b;
+    font-weight: 500;
+  }
+
+  &__badge {
+    font-size: 10px;
     color: #0b0b0b;
     background: #16db65;
-    padding: 2px 6px;
+    padding: 2px 8px;
     border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
   }
-  .gc-name-row {
+
+  &__user-name {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-top: 2px;
-  }
-  .gc-name {
-    color: #16db65;
-    font-weight: 600;
-  }
-  .gc-verified {
-    color: #16db65;
-    font-size: 10px;
-    line-height: 1;
-  }
-  .gc-date {
-    font-size: 12px;
-    color: #a1a1a1;
   }
 
-  .gc-route {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0;
-  }
-  .gc-route-side {
-    width: 33%;
-  }
-  .gc-left {
-    text-align: left;
-  }
-  .gc-right {
-    text-align: right;
-  }
-  .gc-route-code {
-    font-size: 24px;
-    font-weight: 700;
+  &__name {
     color: #16db65;
-  }
-  .gc-route-label {
+    font-weight: 600;
     font-size: 14px;
-    color: #e5e5e5;
   }
-  .gc-route-sub {
-    font-size: 12px;
-    color: #8b8b8b;
-  }
-  .gc-route-mid {
+
+  &__verified {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    flex: 1;
-  }
-  .gc-dash {
-    width: 64px;
-    height: 1px;
-    border-top: 2px dashed rgba(204, 204, 204, 0.25);
-  }
-  .gc-plane {
-    width: 18px;
-    height: 18px;
-    transform: rotate(90deg);
-    filter: hue-rotate(90deg) brightness(1.1);
-  }
-
-  .gc-desc {
-    margin-top: 4px;
-    color: #eaeaea;
-    font-weight: 400;
-  }
-
-  .gc-meta {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding-top: 8px;
-  }
-  .gc-meta-block {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .gc-icon {
-    width: 18px;
-    height: 18px;
-    opacity: 0.7;
-  }
-  .gc-meta-title {
-    font-size: 12px;
-    color: #9f9f9f;
-  }
-  .gc-rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #e5e5e5;
-    font-weight: 600;
-  }
-  .gc-star {
-    width: 14px;
-    height: 14px;
-    filter: brightness(0) saturate(100%) invert(73%) sepia(98%) saturate(1447%)
-      hue-rotate(1deg) brightness(103%) contrast(103%);
-  }
-
-  .gc-price-box {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-  }
-  .gc-price {
-    color: #e5e5e5;
-    font-weight: 600;
-  }
-
-  .gc-actions {
-    display: flex;
-    gap: 12px;
-    padding-top: 10px;
-  }
-  .gc-btn {
-    flex: 1;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: background 0.2s ease, border-color 0.2s ease,
-      transform 0.2s ease;
-  }
-  .gc-btn-outline {
-    background: transparent;
-    border: 1px solid #1f2f25;
-    color: #e5e5e5;
-  }
-  .gc-btn-outline:hover {
-    border-color: #16db65;
-    transform: translateY(-1px);
-  }
-  .gc-btn-primary {
+    width: 16px;
+    height: 16px;
     background: #16db65;
-    border: 1px solid #16db65;
-    color: #09110c;
-  }
-  .gc-btn-primary:hover {
-    filter: brightness(0.95);
-    transform: translateY(-1px);
+    color: #0f0f0f;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
   }
 
-  .gc-stats {
+  &__timestamp {
+    font-size: 11px;
+    color: #6b6b6b;
+  }
+
+  &__status {
+    font-size: 12px;
+    color: #16db65;
+    background: rgba(22, 219, 101, 0.1);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  // Route Section (Updated for horizontal planes)
+  &__route {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 24px;
-    padding-top: 10px;
-    font-size: 14px;
-  }
-  .gc-offers {
-    color: #16db65;
-    font-weight: 600;
-  }
-  .gc-sep {
-    color: #8b8b8b;
-  }
-  .gc-bookings {
-    color: #b3b3b3;
-    font-weight: 600;
+    margin: 28px 0 16px;
+    gap: 12px;
   }
 
-  @media screen and (max-width: 768px) {
-    max-width: 100%;
-    padding: 16px;
-    margin-bottom: 16px;
-    width: 100%; /* Ensure full width usage */
-    box-sizing: border-box; /* Include padding in width calculation */
+  &__route-point {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-    .gc-header {
-      margin-bottom: 12px;
+    &--departure {
+      .gig-card__dot {
+        order: 1;
+      }
+      .gig-card__code {
+        order: 2;
+      }
     }
 
-    .gc-user {
+    &--destination {
+      .gig-card__code {
+        order: 1;
+      }
+      .gig-card__dot {
+        order: 2;
+      }
+    }
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    &--white {
+      background: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    &--green {
+      background: #16db65;
+      box-shadow: 0 0 8px rgba(22, 219, 101, 0.5);
+    }
+  }
+
+  &__code {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+
+    &--white {
+      color: #ffffff;
+    }
+
+    &--green {
+      color: #16db65;
+    }
+  }
+
+  &__route-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 0;
+    position: relative;
+    height: 20px;
+  }
+
+  &__dash {
+    height: 2px;
+    flex: 1;
+    min-width: 40px;
+    background-image: repeating-linear-gradient(
+      to right,
+      #ffffff 0,
+      #ffffff 6px,
+      transparent 6px,
+      transparent 12px
+    );
+
+    &--long {
+      min-width: 60px;
+    }
+  }
+
+  &__plane {
+    color: #ffffff;
+    font-size: 18px;
+    z-index: 3;
+    background: #0f0f0f;
+    padding: 0 6px;
+    display: inline-block;
+    transform: rotate(0deg); // Horizontal orientation
+  }
+
+  // Location Details (Updated)
+  &__locations {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 8px;
+    gap: 16px;
+  }
+
+  &__location {
+    display: flex;
+    flex-direction: column;
+
+    &--departure {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    &--destination {
+      align-items: flex-end;
+      text-align: right;
+    }
+  }
+
+  &__location-text {
+    font-size: 13px;
+    color: #ffffff;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  &__expiration {
+    text-align: center;
+    font-size: 12px;
+    color: #8b8b8b;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  // Space & Price Section
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 24px;
+    padding: 20px 0;
+    border-top: 1px solid #1f2f25;
+    border-bottom: 1px solid #1f2f25;
+  }
+
+  &__space,
+  &__price {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  &__icon {
+    color: #16db65;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+
+    svg {
+      display: block;
+    }
+  }
+
+  &__info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  &__label {
+    font-size: 11px;
+    color: #8b8b8b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  &__value {
+    font-size: 16px;
+    color: #ffffff;
+    font-weight: 600;
+
+    &--highlight {
+      color: #16db65;
+    }
+  }
+
+  &__subtext {
+    font-size: 11px;
+    color: #6b6b6b;
+  }
+
+  // Action Buttons
+  &__actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  &__btn {
+    flex: 1;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+
+    &--outline {
+      background: transparent;
+      border: 2px solid #ffffff;
+      color: #ffffff;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    &--primary {
+      background: #16db65;
+      border: 2px solid #16db65;
+      color: #0f0f0f;
+
+      &:hover {
+        background: #12c957;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(22, 219, 101, 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  // Stats Footer
+  &__stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    font-size: 13px;
+  }
+
+  &__stat {
+    font-weight: 600;
+
+    &--offers {
+      color: #16db65;
+    }
+
+    &--bookings {
+      color: #8b8b8b;
+    }
+  }
+
+  &__separator {
+    color: #4b4b4b;
+  }
+
+  // Responsive Design
+  @media screen and (max-width: 768px) {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+
+    &__avatar {
+      width: 42px;
+      height: 42px;
+    }
+
+    &__id {
+      font-size: 10px;
+    }
+
+    &__badge {
+      font-size: 9px;
+      padding: 2px 6px;
+    }
+
+    &__name {
+      font-size: 13px;
+    }
+
+    &__timestamp {
+      font-size: 10px;
+    }
+
+    &__status {
+      font-size: 11px;
+      padding: 5px 12px;
+    }
+
+    &__route {
+      margin: 24px 0 14px;
       gap: 10px;
     }
 
-    .gc-avatar {
-      width: 40px;
-      height: 40px;
+    &__code {
+      font-size: 24px;
     }
 
-    .gc-user-meta {
-      gap: 3px;
+    &__dot {
+      width: 9px;
+      height: 9px;
     }
 
-    .gc-code {
-      font-size: 11px;
+    &__plane {
+      font-size: 16px;
+      padding: 0 5px;
     }
 
-    .gc-badge {
-      font-size: 10px;
-      padding: 1px 5px;
+    &__dash {
+      min-width: 30px;
+
+      &--long {
+        min-width: 45px;
+      }
     }
 
-    .gc-name {
-      font-size: 14px;
-    }
-
-    .gc-date {
-      font-size: 11px;
-    }
-
-    .gc-route {
-      padding: 10px 0;
-    }
-
-    .gc-route-code {
-      font-size: 20px;
-    }
-
-    .gc-route-label {
-      font-size: 13px;
-    }
-
-    .gc-route-sub {
-      font-size: 11px;
-    }
-
-    .gc-dash {
-      width: 40px;
-    }
-
-    .gc-plane {
-      width: 16px;
-      height: 16px;
-    }
-
-    .gc-desc {
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .gc-meta {
-      flex-direction: column;
+    &__locations {
+      margin-bottom: 14px;
+      padding: 0 6px;
       gap: 12px;
-      align-items: flex-start;
-      width: 100%; /* Ensure full width */
-      overflow-x: hidden; /* Prevent horizontal overflow */
     }
 
-    .gc-meta-block {
-      width: 100%;
-      justify-content: space-between;
-      flex-wrap: wrap; /* Allow wrapping if needed */
-      gap: 8px; /* Add gap between elements */
+    &__location-text {
+      font-size: 12px;
     }
 
-    .gc-price-box {
-      align-items: flex-end;
+    &__expiration {
+      font-size: 11px;
+      margin-bottom: 18px;
     }
 
-    .gc-actions {
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .gc-btn {
-      padding: 12px 16px;
-      font-size: 14px;
-    }
-
-    .gc-stats {
+    &__info {
       gap: 16px;
+      padding: 18px 0;
+      margin-bottom: 20px;
+    }
+
+    &__value {
+      font-size: 15px;
+    }
+
+    &__btn {
+      padding: 12px 16px;
       font-size: 13px;
-      width: 100%; /* Ensure full width */
-      text-align: center; /* Center the stats text */
-      flex-wrap: wrap; /* Allow wrapping if needed */
-      justify-content: center; /* Center the stats */
+    }
+
+    &__stats {
+      font-size: 12px;
+      gap: 12px;
     }
   }
 
   @media screen and (max-width: 480px) {
-    padding: 12px;
-    margin-bottom: 12px;
-    width: 100%; /* Ensure full width on small screens */
-    box-sizing: border-box; /* Include padding in width calculation */
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 8px;
 
-    .gc-route-code {
-      font-size: 18px;
+    &__header {
+      margin-bottom: 20px;
     }
 
-    .gc-route-label {
-      font-size: 12px;
+    &__avatar {
+      width: 38px;
+      height: 38px;
     }
 
-    .gc-route-sub {
+    &__route {
+      margin: 20px 0 12px;
+      gap: 8px;
+    }
+
+    &__code {
+      font-size: 22px;
+    }
+
+    &__dot {
+      width: 8px;
+      height: 8px;
+    }
+
+    &__plane {
+      font-size: 14px;
+      padding: 0 4px;
+    }
+
+    &__dash {
+      min-width: 20px;
+
+      &--long {
+        min-width: 30px;
+      }
+    }
+
+    &__locations {
+      margin-bottom: 12px;
+      padding: 0 4px;
+      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__location {
+      &--departure,
+      &--destination {
+        align-items: flex-start;
+        text-align: left;
+      }
+    }
+
+    &__location-text {
+      font-size: 11px;
+    }
+
+    &__expiration {
+      font-size: 10px;
+      margin-bottom: 16px;
+    }
+
+    &__info {
+      gap: 14px;
+      padding: 16px 0;
+      margin-bottom: 18px;
+    }
+
+    &__icon {
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    &__label {
       font-size: 10px;
     }
 
-    .gc-dash {
-      width: 30px;
+    &__value {
+      font-size: 14px;
     }
 
-    .gc-plane {
-      width: 14px;
-      height: 14px;
+    &__subtext {
+      font-size: 10px;
     }
 
-    .gc-actions {
-      gap: 6px;
+    &__actions {
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .gc-btn {
-      padding: 10px 14px;
-      font-size: 13px;
-    }
-
-    .gc-stats {
-      gap: 12px;
+    &__btn {
+      padding: 11px 14px;
       font-size: 12px;
-      width: 100%; /* Ensure full width on small screens */
-      text-align: center; /* Center the stats text */
-      flex-wrap: wrap; /* Allow wrapping if needed */
-      justify-content: center; /* Center the stats */
+    }
+
+    &__stats {
+      font-size: 11px;
+      gap: 10px;
     }
   }
 }

@@ -125,49 +125,6 @@
       resize: vertical;
     }
 
-    .file-upload-section {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-
-      .file-inputs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-
-        @media screen and (max-width: 768px) {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .file-input {
-        cursor: pointer;
-        padding: 16px 20px;
-        border: 2px dashed #374151;
-        background-color: #000000;
-        color: #ffffff;
-        border-radius: 8px;
-        text-align: center;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-        &:hover {
-          border-color: var(--green-bright);
-          background-color: rgba(22, 219, 101, 0.05);
-        }
-
-        &::-webkit-file-upload-button {
-          background: var(--green-bright);
-          color: #000000;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: 500;
-          margin-right: 12px;
-        }
-      }
-    }
-
     .form-button {
       border: none;
       padding: 18px 24px;
@@ -225,83 +182,6 @@
         cursor: not-allowed;
         transform: none;
       }
-    }
-
-    .feature-form {
-      display: flex;
-      gap: 12px;
-      align-items: flex-end;
-
-      @media screen and (max-width: 480px) {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .feature-input {
-        flex: 1;
-      }
-
-      .add-feature-btn {
-        padding: 12px 20px;
-        background-color: var(--green-bright);
-        color: #000000;
-        border: none;
-        border-radius: 6px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-
-        &:hover {
-          background-color: #058c42;
-          color: #ffffff;
-        }
-      }
-    }
-
-    .added-features {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-
-      .feature-tag {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background-color: rgba(22, 219, 101, 0.1);
-        border: 1px solid var(--green-bright);
-        border-radius: 20px;
-        color: var(--green-bright);
-        font-size: 14px;
-        font-weight: 500;
-
-        .remove-btn {
-          background: none;
-          border: none;
-          color: var(--color-error);
-          cursor: pointer;
-          font-size: 16px;
-          padding: 0;
-          width: 20px;
-          height: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          transition: all 0.3s ease;
-
-          &:hover {
-            background-color: var(--color-error);
-            color: #ffffff;
-          }
-        }
-      }
-    }
-
-    .upload-btn {
-      align-self: flex-start;
-      margin-top: 12px;
     }
 
     .create-btn {

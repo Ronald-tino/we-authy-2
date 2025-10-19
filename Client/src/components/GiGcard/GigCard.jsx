@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 
-// Visual refactor: match inspiration TravellerCard look while preserving props/behavior
 const GigCard = ({ item }) => {
   const { isLoading, error, data } = useQuery({
     queryKey: ["gigUser", item.userId],
@@ -15,18 +14,34 @@ const GigCard = ({ item }) => {
     enabled: !!item?.userId,
   });
 
-  const rating = !isNaN(item.totalStars / item.starNumber)
-    ? Math.round(item.totalStars / item.starNumber)
-    : undefined;
+  // Format timestamp
+  const formatTimestamp = () => {
+    if (!item?.createdAt) return "";
+    const date = new Date(item.createdAt);
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  // Calculate price per kg (in Yuan)
+  const pricePerKg = () => {
+    if (!item?.availableSpace || item.availableSpace === 0) return 0;
+    return Math.round(item?.price / item?.availableSpace);
+  };
 
   return (
     <Link to={`/gig/${item._id}`} className="link">
-      <div className="gigCard">
+      <div className="gig-card">
         {/* Header */}
-        <div className="gc-header">
-          <div className="gc-user">
+        <div className="gig-card__header">
+          <div className="gig-card__user">
             <img
-              className="gc-avatar"
+              className="gig-card__avatar"
               src={
                 isLoading || error
                   ? "/img/noavatar.png"
@@ -34,105 +49,175 @@ const GigCard = ({ item }) => {
               }
               alt={isLoading || error ? "User" : data?.username || "User"}
             />
-            <div className="gc-user-meta">
-              <div className="gc-user-row">
-                <span className="gc-code">
+            <div className="gig-card__user-info">
+              <div className="gig-card__user-top">
+                <span className="gig-card__id">
                   #
                   {String(item._id || "")
                     .slice(-6)
                     .toUpperCase()}
                 </span>
-                <span className="gc-badge">New</span>
+                <span className="gig-card__badge">New</span>
               </div>
-              <div className="gc-name-row">
-                <span className="gc-name">
+              <div className="gig-card__user-name">
+                <span className="gig-card__name">
                   {isLoading
                     ? "Loading..."
                     : error
                     ? "Unknown"
                     : data?.username || "Unknown"}
                 </span>
-                <span className="gc-verified" aria-hidden>
-                  ●
-                </span>
+                <span className="gig-card__verified">✓</span>
               </div>
-              {item?.deliveryTime && (
-                <p className="gc-date">Delivery in {item.deliveryTime} days</p>
-              )}
+              <span className="gig-card__timestamp">{formatTimestamp()}</span>
             </div>
           </div>
+          {item?.expirationDays && (
+            <div className="gig-card__status">Abroad</div>
+          )}
         </div>
 
-        {/* Route / Title area (use gig title/desc to mimic centre segment) */}
-        <div className="gc-route">
-          <div className="gc-route-side gc-left">
-            <div className="gc-route-code">
-              {(item?.countryCodeFrom || "")
+        {/* Route Section */}
+        <div className="gig-card__route">
+          <div className="gig-card__route-point gig-card__route-point--departure">
+            <span className="gig-card__dot gig-card__dot--white"></span>
+            <span className="gig-card__code gig-card__code--white">
+              {(item?.departureCountry || "AE")
                 .toString()
                 .slice(0, 2)
-                .toUpperCase() || ""}
-            </div>
-            <div className="gc-route-label">{item?.from || ""}</div>
-            <div className="gc-route-sub">{item?.fromCity || ""}</div>
+                .toUpperCase()}
+            </span>
           </div>
-          <div className="gc-route-mid">
-            <div className="gc-dash" />
-            <img className="gc-plane" src="/img/plane.png" alt="" />
-            <div className="gc-dash" />
+
+          <div className="gig-card__route-line">
+            <span className="gig-card__dash"></span>
+            <span className="gig-card__plane">✈</span>
+            <span className="gig-card__dash gig-card__dash--long"></span>
+            <span className="gig-card__plane">✈</span>
+            <span className="gig-card__dash"></span>
           </div>
-          <div className="gc-route-side gc-right">
-            <div className="gc-route-code">
-              {(item?.countryCodeTo || "")
+
+          <div className="gig-card__route-point gig-card__route-point--destination">
+            <span className="gig-card__code gig-card__code--green">
+              {(item?.destinationCountry || "PK")
                 .toString()
                 .slice(0, 2)
-                .toUpperCase() || ""}
-            </div>
-            <div className="gc-route-label">{item?.to || ""}</div>
-            <div className="gc-route-sub">{item?.toCity || ""}</div>
+                .toUpperCase()}
+            </span>
+            <span className="gig-card__dot gig-card__dot--green"></span>
           </div>
         </div>
 
-        {item?.desc && <p className="gc-desc">{item.desc}</p>}
+        {/* Location Details */}
+        <div className="gig-card__locations">
+          <div className="gig-card__location gig-card__location--departure">
+            <span className="gig-card__location-text">
+              {item?.departureCity || "Dubai"},{" "}
+              {item?.departureCountry || "United Arab Emirates"}
+            </span>
+          </div>
+          <div className="gig-card__location gig-card__location--destination">
+            <span className="gig-card__location-text">
+              {item?.destinationCity || "Lahore"},{" "}
+              {item?.destinationCountry || "Pakistan"}
+            </span>
+          </div>
+        </div>
 
-        {/* Meta */}
-        <div className="gc-meta">
-          <div className="gc-meta-block">
-            <img className="gc-icon" src="/img/clock.png" alt="expiry" />
-            <div>
-              <span className="gc-meta-title">Rating</span>
-              <div className="gc-rating">
-                <img className="gc-star" src="/img/star.png" alt="" />
-                {typeof rating === "number" ? (
-                  <span>{rating}</span>
-                ) : (
-                  <span>—</span>
-                )}
-              </div>
+        {/* Expiration */}
+        {item?.expirationDays && (
+          <div className="gig-card__expiration">
+            EXP in {item.expirationDays} days
+          </div>
+        )}
+
+        {/* Space & Price Section */}
+        <div className="gig-card__info">
+          <div className="gig-card__space">
+            <div className="gig-card__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect
+                  x="4"
+                  y="7"
+                  width="16"
+                  height="12"
+                  rx="2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M9 7V5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <line
+                  x1="4"
+                  y1="11"
+                  x2="20"
+                  y2="11"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </div>
+            <div className="gig-card__info-content">
+              <span className="gig-card__label">Available Space</span>
+              <span className="gig-card__value">
+                {item?.availableSpace || 40} kg
+              </span>
+              <span className="gig-card__subtext">Booked 0 kg</span>
             </div>
           </div>
-          <div className="gc-meta-block">
-            <img className="gc-icon" src="/img/coin.png" alt="price" />
-            <div className="gc-price-box">
-              <span className="gc-meta-title">Price</span>
-              <span className="gc-price">$ {item.price}</span>
+
+          <div className="gig-card__price">
+            <div className="gig-card__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M21 9L21 6C21 4.89543 20.1046 4 19 4L5 4C3.89543 4 3 4.89543 3 6L3 9"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M21 9L18.5 16C18.2239 16.7766 17.4718 17.2984 16.6462 17.2984L7.35382 17.2984C6.52817 17.2984 5.77609 16.7766 5.5 16L3 9L21 9Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </div>
+            <div className="gig-card__info-content">
+              <span className="gig-card__label">Price</span>
+              <span className="gig-card__value gig-card__value--highlight">
+                {pricePerKg() || 120}¥ per kg
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Actions / Footer */}
-        <div className="gc-actions">
-          <button className="gc-btn gc-btn-outline" type="button">
+        {/* Action Buttons */}
+        <div className="gig-card__actions">
+          <button
+            className="gig-card__btn gig-card__btn--outline"
+            type="button"
+          >
             Chat Now
           </button>
-          <button className="gc-btn gc-btn-primary" type="button">
+          <button
+            className="gig-card__btn gig-card__btn--primary"
+            type="button"
+          >
             Make Offer
           </button>
         </div>
 
-        <div className="gc-stats">
-          <span className="gc-offers">0 Offers</span>
-          <span className="gc-sep">|</span>
-          <span className="gc-bookings">0 Bookings</span>
+        {/* Stats Footer */}
+        <div className="gig-card__stats">
+          <span className="gig-card__stat gig-card__stat--offers">
+            0 Offers
+          </span>
+          <span className="gig-card__separator">|</span>
+          <span className="gig-card__stat gig-card__stat--bookings">
+            0 Bookings
+          </span>
         </div>
       </div>
     </Link>
