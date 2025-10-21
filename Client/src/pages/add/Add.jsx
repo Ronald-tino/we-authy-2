@@ -5,74 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import { useNavigate } from "react-router-dom";
 import { useMode } from "../../context/ModeContext";
-
-// ISO Country codes list
-const COUNTRIES = [
-  { code: "AE", name: "United Arab Emirates" },
-  { code: "AF", name: "Afghanistan" },
-  { code: "AL", name: "Albania" },
-  { code: "AM", name: "Armenia" },
-  { code: "AR", name: "Argentina" },
-  { code: "AT", name: "Austria" },
-  { code: "AU", name: "Australia" },
-  { code: "AZ", name: "Azerbaijan" },
-  { code: "BD", name: "Bangladesh" },
-  { code: "BE", name: "Belgium" },
-  { code: "BG", name: "Bulgaria" },
-  { code: "BR", name: "Brazil" },
-  { code: "CA", name: "Canada" },
-  { code: "CH", name: "Switzerland" },
-  { code: "CN", name: "China" },
-  { code: "CZ", name: "Czech Republic" },
-  { code: "DE", name: "Germany" },
-  { code: "DK", name: "Denmark" },
-  { code: "EG", name: "Egypt" },
-  { code: "ES", name: "Spain" },
-  { code: "FI", name: "Finland" },
-  { code: "FR", name: "France" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "GR", name: "Greece" },
-  { code: "HK", name: "Hong Kong" },
-  { code: "HU", name: "Hungary" },
-  { code: "ID", name: "Indonesia" },
-  { code: "IE", name: "Ireland" },
-  { code: "IL", name: "Israel" },
-  { code: "IN", name: "India" },
-  { code: "IQ", name: "Iraq" },
-  { code: "IR", name: "Iran" },
-  { code: "IT", name: "Italy" },
-  { code: "JP", name: "Japan" },
-  { code: "KE", name: "Kenya" },
-  { code: "KR", name: "South Korea" },
-  { code: "KW", name: "Kuwait" },
-  { code: "LB", name: "Lebanon" },
-  { code: "LK", name: "Sri Lanka" },
-  { code: "MA", name: "Morocco" },
-  { code: "MX", name: "Mexico" },
-  { code: "MY", name: "Malaysia" },
-  { code: "NG", name: "Nigeria" },
-  { code: "NL", name: "Netherlands" },
-  { code: "NO", name: "Norway" },
-  { code: "NZ", name: "New Zealand" },
-  { code: "OM", name: "Oman" },
-  { code: "PH", name: "Philippines" },
-  { code: "PK", name: "Pakistan" },
-  { code: "PL", name: "Poland" },
-  { code: "PT", name: "Portugal" },
-  { code: "QA", name: "Qatar" },
-  { code: "RO", name: "Romania" },
-  { code: "RU", name: "Russia" },
-  { code: "SA", name: "Saudi Arabia" },
-  { code: "SE", name: "Sweden" },
-  { code: "SG", name: "Singapore" },
-  { code: "TH", name: "Thailand" },
-  { code: "TR", name: "Turkey" },
-  { code: "TW", name: "Taiwan" },
-  { code: "UA", name: "Ukraine" },
-  { code: "US", name: "United States" },
-  { code: "VN", name: "Vietnam" },
-  { code: "ZA", name: "South Africa" },
-];
+import CountrySelect from "../../components/CountrySelect/CountrySelect";
 
 const Add = () => {
   const [state, dispatch] = useReducer(gigReducer, INITIAL_STATE);
@@ -244,23 +177,15 @@ I'm a verified traveler with 5+ years experience. All items will be handled with
               <h2 className="section-title">Departure Information</h2>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="departureCountry">
-                  Departure Country *
-                </label>
-                <select
-                  className="form-select"
+                <CountrySelect
                   name="departureCountry"
                   id="departureCountry"
                   value={state.departureCountry || ""}
                   onChange={handleChange}
-                >
-                  <option value="">Select departure country</option>
-                  {COUNTRIES.map((country) => (
-                    <option key={country.code} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                  label="Departure Country"
+                  placeholder="Select departure country"
+                  required
+                />
               </div>
 
               <div className="form-group">
@@ -301,23 +226,15 @@ I'm a verified traveler with 5+ years experience. All items will be handled with
               <h2 className="section-title">Destination Information</h2>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="destinationCountry">
-                  Destination Country *
-                </label>
-                <select
-                  className="form-select"
+                <CountrySelect
                   name="destinationCountry"
                   id="destinationCountry"
                   value={state.destinationCountry || ""}
                   onChange={handleChange}
-                >
-                  <option value="">Select destination country</option>
-                  {COUNTRIES.map((country) => (
-                    <option key={country.code} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                  label="Destination Country"
+                  placeholder="Select destination country"
+                  required
+                />
               </div>
 
               <div className="form-group">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import "./Settings.scss";
+import CountrySelect from "../../components/CountrySelect/CountrySelect";
 
 function Settings() {
   const [activeTab, setActiveTab] = useState("account");
@@ -10,6 +11,7 @@ function Settings() {
     username: "johndoe",
     fullName: "John Doe",
     phone: "+1 (555) 123-4567",
+    country: "United States",
     location: "New York, NY",
 
     // Privacy Settings
@@ -144,7 +146,19 @@ function Settings() {
           />
         </div>
         <div className="setting-item">
-          <label className="setting-label">Location</label>
+          <CountrySelect
+            name="country"
+            id="country"
+            value={settings.country || ""}
+            onChange={(e) =>
+              handleSettingChange("account", "country", e.target.value)
+            }
+            label="Country"
+            placeholder="Select your country"
+          />
+        </div>
+        <div className="setting-item">
+          <label className="setting-label">City/Location</label>
           <input
             type="text"
             className="setting-input"
@@ -152,6 +166,7 @@ function Settings() {
             onChange={(e) =>
               handleSettingChange("account", "location", e.target.value)
             }
+            placeholder="e.g., New York, NY"
           />
         </div>
       </div>

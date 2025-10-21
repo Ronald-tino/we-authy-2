@@ -5,6 +5,7 @@ import "./Register.scss";
 import newRequest from "../../utils/newRequest";
 import { useNavigate, Link } from "react-router-dom";
 import BackgroundGradient from "../../components/ui/background-gradient";
+import CountrySelect from "../../components/CountrySelect/CountrySelect";
 
 function Register() {
   const [file, setFile] = useState(null);
@@ -165,17 +166,13 @@ function Register() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8, duration: 0.5 }}
                 >
-                  <label htmlFor="country" className="form-label">
-                    Country
-                  </label>
-                  <motion.input
+                  <CountrySelect
                     name="country"
-                    type="text"
-                    placeholder="United States"
+                    id="country"
+                    value={user.country || ""}
                     onChange={handleChange}
-                    className="form-input"
-                    whileFocus={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                    label="Country"
+                    placeholder="Select your country"
                   />
                 </motion.div>
 
