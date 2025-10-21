@@ -359,6 +359,87 @@
               color: var(--green-bright);
             }
           }
+
+          .mode-toggle-container {
+            width: 100%;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 5px;
+
+            @media screen and (max-width: 768px) {
+              padding: 12px 0;
+            }
+
+            .mode-toggle {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              padding: 10px 16px;
+              border-radius: 8px;
+              font-size: 13px;
+              font-weight: 500;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              border: 1px solid transparent;
+              background: linear-gradient(
+                135deg,
+                rgba(22, 219, 101, 0.1),
+                rgba(22, 219, 101, 0.05)
+              );
+              color: var(--text-primary);
+
+              @media screen and (max-width: 768px) {
+                padding: 12px 20px;
+                font-size: 15px;
+              }
+
+              .mode-icon {
+                font-size: 16px;
+
+                @media screen and (max-width: 768px) {
+                  font-size: 18px;
+                }
+              }
+
+              &.seller-active {
+                background: linear-gradient(
+                  135deg,
+                  rgba(22, 219, 101, 0.2),
+                  rgba(22, 219, 101, 0.1)
+                );
+                border-color: rgba(22, 219, 101, 0.3);
+                color: var(--green-bright);
+              }
+
+              &.user-active {
+                background: linear-gradient(
+                  135deg,
+                  rgba(100, 150, 255, 0.2),
+                  rgba(100, 150, 255, 0.1)
+                );
+                border-color: rgba(100, 150, 255, 0.3);
+                color: #6496ff;
+              }
+
+              &:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                border-color: var(--green-bright);
+              }
+            }
+          }
+        }
+      }
+
+      .become-seller-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: var(--green-bright);
         }
       }
 

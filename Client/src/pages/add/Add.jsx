@@ -1,9 +1,10 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import "./Add.scss";
 import { gigReducer, INITIAL_STATE } from "../../reducers/gigReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import { useNavigate } from "react-router-dom";
+import { useMode } from "../../context/ModeContext";
 
 // ISO Country codes list
 const COUNTRIES = [
@@ -75,6 +76,16 @@ const COUNTRIES = [
 
 const Add = () => {
   const [state, dispatch] = useReducer(gigReducer, INITIAL_STATE);
+  const { isInSellerMode, isSeller } = useMode();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  // Redirect if user is not in seller mode
+  useEffect(() => {
+    if (!isSeller || !isInSellerMode) {
+      navigate("/");
+    }
+  }, [isSeller, isInSellerMode, navigate]);
 
   const handleChange = (e) => {
     dispatch({
@@ -82,9 +93,6 @@ const Add = () => {
       payload: { name: e.target.name, value: e.target.value },
     });
   };
-
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (gig) => {

@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./MyGigs.scss";
 import getCurrentUser from "../../utils/getCurrentUser";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
+import { useMode } from "../../context/ModeContext";
 
 function MyGigs() {
   const currentUser = getCurrentUser();
   const user = currentUser?.info || currentUser; // Handle both nested and direct user objects
   const navigate = useNavigate();
+  const { isInSellerMode, isSeller } = useMode();
 
   const queryClient = useQueryClient();
+
+  // Redirect if user is not in seller mode
+  useEffect(() => {
+    if (!isSeller || !isInSellerMode) {
+      navigate("/");
+    }
+  }, [isSeller, isInSellerMode, navigate]);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["myGigs", user?._id],
@@ -55,7 +64,7 @@ function MyGigs() {
         <div className="container">
           <div className="title">
             <h1>Gigs</h1>
-            {user?.isSeller && (
+            {isInSellerMode && (
               <Link to="/add">
                 <button>Add New Gig</button>
               </Link>

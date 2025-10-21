@@ -7,7 +7,9 @@ import moment from "moment";
 
 const Message = () => {
   const { id } = useParams();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const stored = localStorage.getItem("currentUser");
+  const parsed = stored ? JSON.parse(stored) : null;
+  const currentUser = parsed?.info ?? parsed;
   const [messageText, setMessageText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
@@ -48,7 +50,7 @@ const Message = () => {
       const optimistic = {
         _id: `optimistic-${Date.now()}`,
         conversationId: id,
-        userId: (currentUser?.info?._id || currentUser?._id) ?? "",
+        userId: currentUser?._id ?? "",
         desc: message.desc,
         createdAt: new Date().toISOString(),
       };
@@ -179,9 +181,7 @@ const Message = () => {
           ) : (
             <div className="messages">
               {data.map((m) => {
-                const currentUserId =
-                  currentUser?.info?._id || currentUser?._id;
-                const isOwner = m.userId === currentUserId;
+                const isOwner = m.userId === currentUser?._id;
 
                 return (
                   <div
@@ -192,9 +192,7 @@ const Message = () => {
                       <img
                         src={
                           isOwner
-                            ? currentUser?.info?.img ||
-                              currentUser?.img ||
-                              "/img/noavatar.png"
+                            ? currentUser?.img || "/img/noavatar.png"
                             : "/img/noavatar.png"
                         }
                         alt="User avatar"

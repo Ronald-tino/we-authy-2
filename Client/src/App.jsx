@@ -15,6 +15,7 @@ import Orders from "./pages/orders/Orders";
 import Message from "./pages/message/Message";
 import Profile from "./pages/profile/Profile";
 import Settings from "./pages/settings/Settings";
+import BecomeSeller from "./pages/becomeSeller/BecomeSeller";
 import "./App.scss";
 import MyGigs from "./pages/myGigs/MyGigs";
 import {
@@ -22,6 +23,7 @@ import {
   QueryClientProvider,
   // useQuery,
 } from "@tanstack/react-query";
+import { ModeProvider } from "./context/ModeContext";
 ///////////////////////////////////////////
 function App() {
   const queryClient = new QueryClient();
@@ -29,8 +31,10 @@ function App() {
     return (
       <div className="app">
         <QueryClientProvider client={queryClient}>
-          <Navbar />
-          <Outlet />
+          <ModeProvider>
+            <Navbar />
+            <Outlet />
+          </ModeProvider>
         </QueryClientProvider>
       </div>
     );
@@ -83,6 +87,10 @@ function App() {
         {
           path: "/settings",
           element: <Settings />,
+        },
+        {
+          path: "/become-seller",
+          element: <BecomeSeller />,
         },
       ],
     },

@@ -21,7 +21,7 @@ export const createConversation = async (req, res, next) => {
       return res.status(200).send(existingConversation);
     }
 
-    // Determine correct roles using user records (robust regardless of initiator)
+    // Determine correct roles using user records
     const [current, other] = await Promise.all([
       User.findById(req.userId).select("isSeller"),
       User.findById(req.body.to).select("isSeller"),
@@ -31,8 +31,25 @@ export const createConversation = async (req, res, next) => {
       return next(createError(404, "User not found for conversation"));
     }
 
-    const sellerId = current.isSeller ? req.userId : req.body.to;
-    const buyerId = sellerId === req.userId ? req.body.to : req.userId;
+    // IMPORTANT: In most cases, req.body.to is the gig owner (seller)
+    // and req.userId is the person contacting them (buyer).
+    // However, both could be sellers on the platform.
+    // We assign roles based on who has seller status, preferring the "to" user as seller.
+    let sellerId, buyerId;
+
+    if (other.isSeller) {
+      // The person being contacted is a seller, so they're the seller in this conversation
+      sellerId = req.body.to;
+      buyerId = req.userId;
+    } else if (current.isSeller) {
+      // Only the current user is a seller
+      sellerId = req.userId;
+      buyerId = req.body.to;
+    } else {
+      // Neither is a seller (edge case) - assign based on who initiated
+      sellerId = req.body.to;
+      buyerId = req.userId;
+    }
 
     const newConversation = new Conversation({
       id: conversationId,
@@ -106,12 +123,14 @@ export const getSingleConversation = async (req, res, next) => {
     if (!conversation) return next(createError(404, "Not found!"));
 
     // Get the other user's information
-    const otherUserId = req.isSeller
-      ? conversation.buyerId
-      : conversation.sellerId;
+    // Determine who the "other" user is (not the current user)
+    const otherUserId =
+      conversation.sellerId === req.userId
+        ? conversation.buyerId
+        : conversation.sellerId;
     console.log("Other user ID:", otherUserId);
     const otherUser = await User.findById(otherUserId).select(
-      "username img country"
+      "username img country isSeller"
     );
     console.log("Other user data:", otherUser);
 
@@ -122,11 +141,13 @@ export const getSingleConversation = async (req, res, next) => {
             username: otherUser.username,
             img: otherUser.img,
             country: otherUser.country,
+            isSeller: otherUser.isSeller,
           }
         : {
             username: "Unknown User",
             img: null,
             country: "Unknown",
+            isSeller: false,
           },
     };
 
@@ -139,18 +160,27 @@ export const getSingleConversation = async (req, res, next) => {
 
 export const getConversations = async (req, res, next) => {
   try {
-    const conversations = await Conversation.find(
-      req.isSeller ? { sellerId: req.userId } : { buyerId: req.userId }
-    ).sort({ updatedAt: -1 });
+    // Find ALL conversations where user is either seller OR buyer
+    // This ensures sellers can see all their conversations regardless of "mode"
+    const conversations = await Conversation.find({
+      $or: [{ sellerId: req.userId }, { buyerId: req.userId }],
+    }).sort({ updatedAt: -1 });
+
+    console.log(
+      `Found ${conversations.length} conversations for user ${req.userId}`
+    );
 
     // Populate user information for each conversation
     const conversationsWithUsers = await Promise.all(
       conversations.map(async (conversation) => {
-        const otherUserId = req.isSeller
-          ? conversation.buyerId
-          : conversation.sellerId;
+        // Determine who the "other" user is
+        const otherUserId =
+          conversation.sellerId === req.userId
+            ? conversation.buyerId
+            : conversation.sellerId;
+
         const otherUser = await User.findById(otherUserId).select(
-          "username img country"
+          "username img country isSeller"
         );
 
         return {
@@ -160,11 +190,13 @@ export const getConversations = async (req, res, next) => {
                 username: otherUser.username,
                 img: otherUser.img,
                 country: otherUser.country,
+                isSeller: otherUser.isSeller,
               }
             : {
                 username: "Unknown User",
                 img: null,
                 country: "Unknown",
+                isSeller: false,
               },
         };
       })
@@ -172,6 +204,7 @@ export const getConversations = async (req, res, next) => {
 
     res.status(200).send(conversationsWithUsers);
   } catch (err) {
+    console.error("Error getting conversations:", err);
     next(err);
   }
 };

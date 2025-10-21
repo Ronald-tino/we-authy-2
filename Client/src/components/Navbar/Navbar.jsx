@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
+import { useMode } from "../../context/ModeContext";
 import "./Navbar.scss";
 
 function Navbar() {
@@ -9,6 +10,7 @@ function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { pathname } = useLocation();
+  const { isInSellerMode, isSeller, toggleMode, currentMode } = useMode();
 
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false);
@@ -55,6 +57,7 @@ function Navbar() {
     try {
       await newRequest.post("/auth/logout");
       localStorage.setItem("currentUser", null);
+      localStorage.removeItem("userMode"); // Clear mode on logout
       navigate("/");
     } catch (err) {
       console.log(err);
@@ -149,8 +152,13 @@ function Navbar() {
           {/* Desktop-only items */}
           <span className="desktop-only">LugShare Business</span>
 
-          {!currentUser?.isSeller && (
-            <span className="desktop-only">Become a Courier</span>
+          {!isSeller && currentUser && (
+            <Link
+              to="/become-seller"
+              className="desktop-only become-seller-link"
+            >
+              Become a Courier
+            </Link>
           )}
 
           {/* User section - separate from standard nav options */}
@@ -198,24 +206,55 @@ function Navbar() {
                   >
                     Settings
                   </Link>
-                  {currentUser.isSeller && (
+                  {isSeller && (
                     <>
-                      <Link
-                        className="link"
-                        to="/mygigs"
-                        onClick={() => setMobileMenuOpen(false)}
-                        role="menuitem"
-                      >
-                        My Gigs
-                      </Link>
-                      <Link
-                        className="link"
-                        to="/add"
-                        onClick={() => setMobileMenuOpen(false)}
-                        role="menuitem"
-                      >
-                        Add New Gig
-                      </Link>
+                      <div className="mode-toggle-container">
+                        <button
+                          className={`mode-toggle ${
+                            currentMode === "seller"
+                              ? "seller-active"
+                              : "user-active"
+                          }`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleMode();
+                          }}
+                          role="menuitem"
+                        >
+                          {currentMode === "seller" ? (
+                            <>
+                              <span className="mode-icon">👤</span>
+                              <span>Switch to User Mode</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="mode-icon">💼</span>
+                              <span>Switch to Seller Mode</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      {isInSellerMode && (
+                        <>
+                          <Link
+                            className="link"
+                            to="/mygigs"
+                            onClick={() => setMobileMenuOpen(false)}
+                            role="menuitem"
+                          >
+                            My Gigs
+                          </Link>
+                          <Link
+                            className="link"
+                            to="/add"
+                            onClick={() => setMobileMenuOpen(false)}
+                            role="menuitem"
+                          >
+                            Add New Gig
+                          </Link>
+                        </>
+                      )}
                     </>
                   )}
                   <Link className="link" onClick={handleLogout} role="menuitem">

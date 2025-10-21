@@ -9,7 +9,9 @@ function Gig() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const stored = localStorage.getItem("currentUser");
+  const parsed = stored ? JSON.parse(stored) : null;
+  const currentUser = parsed?.info ?? parsed;
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["gig", id],

@@ -6,7 +6,9 @@ import "./Messages.scss";
 import moment from "moment";
 
 const Messages = () => {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const stored = localStorage.getItem("currentUser");
+  const parsed = stored ? JSON.parse(stored) : null;
+  const currentUser = parsed?.info ?? parsed;
 
   const queryClient = useQueryClient();
 
@@ -84,9 +86,15 @@ const Messages = () => {
         ) : (
           <div className="conversations-list">
             {data.map((conversation) => {
-              const isUnread =
-                (currentUser.isSeller && !conversation.readBySeller) ||
-                (!currentUser.isSeller && !conversation.readByBuyer);
+              // Determine if current user is the seller or buyer in THIS conversation
+              const currentUserId = currentUser?._id;
+              const isSellerInConversation =
+                conversation.sellerId === currentUserId;
+
+              // Check read status based on role in this specific conversation
+              const isUnread = isSellerInConversation
+                ? !conversation.readBySeller
+                : !conversation.readByBuyer;
 
               return (
                 <Link
