@@ -4,6 +4,11 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import Reviews from "../../components/Reviews/Reviews";
+import {
+  calculateDaysRemaining,
+  getExpirationMessage,
+  getExpirationClass,
+} from "../../utils/calculateDaysRemaining";
 
 function Gig() {
   const { id } = useParams();
@@ -72,6 +77,16 @@ function Gig() {
     if (!data?.availableSpace || data.availableSpace === 0) return 0;
     return Math.round(data?.price / data?.availableSpace);
   };
+
+  // Calculate days remaining for expiration
+  const expirationInfo = data
+    ? calculateDaysRemaining(data.createdAt, data.expirationDays)
+    : { daysRemaining: 0, status: "expired", isExpired: true };
+  const expirationMessage = getExpirationMessage(
+    expirationInfo.daysRemaining,
+    expirationInfo.isExpired
+  );
+  const expirationClass = getExpirationClass(expirationInfo.status);
 
   return (
     <div className="gig">
@@ -174,8 +189,10 @@ function Gig() {
 
             {/* Expiration */}
             {data?.expirationDays && (
-              <div className="gig-details__expiration">
-                EXP in {data.expirationDays} days
+              <div
+                className={`gig-details__expiration gig-details__expiration--${expirationClass}`}
+              >
+                {expirationMessage}
               </div>
             )}
 

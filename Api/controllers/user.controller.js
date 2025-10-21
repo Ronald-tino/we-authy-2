@@ -64,7 +64,23 @@ export const becomeSeller = async (req, res, next) => {
       return next(createError(404, "User not found"));
     }
 
-    res.status(200).json(updatedUser);
+    // Generate new JWT token with updated isSeller status
+    const token = jwt.sign(
+      {
+        id: updatedUser._id,
+        isSeller: updatedUser.isSeller,
+      },
+      process.env.JWT_SECRET
+    );
+
+    // Send updated token as cookie along with user data
+    // Return in same format as login/register: { info: userData }
+    res
+      .cookie("accessToken", token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .json({ info: updatedUser });
   } catch (err) {
     next(err);
   }

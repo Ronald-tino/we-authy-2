@@ -5,6 +5,7 @@ import getCurrentUser from "../../utils/getCurrentUser";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import { useMode } from "../../context/ModeContext";
+import { calculateDaysRemaining } from "../../utils/calculateDaysRemaining";
 
 function MyGigs() {
   const currentUser = getCurrentUser();
@@ -52,6 +53,16 @@ function MyGigs() {
 
   const handleGigClick = (gigId) => {
     navigate(`/gig/${gigId}`);
+  };
+
+  // Helper function to get expiration status
+  const getExpirationStatus = (createdAt, expirationDays) => {
+    if (!createdAt || !expirationDays) return null;
+    const { daysRemaining, status, isExpired } = calculateDaysRemaining(
+      createdAt,
+      expirationDays
+    );
+    return { daysRemaining, status, isExpired };
   };
 
   return (
@@ -108,14 +119,32 @@ function MyGigs() {
                       {gig.availableSpace ? `${gig.availableSpace} kg` : "N/A"}
                     </td>
                     <td className="expires-cell">
-                      {gig.expirationDays ? (
-                        <>
-                          <span className="days">{gig.expirationDays}</span>
-                          <span className="label"> days</span>
-                        </>
-                      ) : (
-                        "N/A"
-                      )}
+                      {gig.expirationDays
+                        ? (() => {
+                            const expirationStatus = getExpirationStatus(
+                              gig.createdAt,
+                              gig.expirationDays
+                            );
+                            return expirationStatus ? (
+                              <span
+                                className={`expiration-status expiration-status--${expirationStatus.status}`}
+                              >
+                                {expirationStatus.isExpired ? (
+                                  "EXPIRED"
+                                ) : (
+                                  <>
+                                    <span className="days">
+                                      {expirationStatus.daysRemaining}
+                                    </span>
+                                    <span className="label"> days left</span>
+                                  </>
+                                )}
+                              </span>
+                            ) : (
+                              "N/A"
+                            );
+                          })()
+                        : "N/A"}
                     </td>
                     <td>{gig.sales || 0}</td>
                     <td onClick={(e) => e.stopPropagation()}>

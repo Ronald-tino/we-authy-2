@@ -416,15 +416,50 @@
       color: #8b8b8b;
       margin-bottom: 24px;
       font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
 
       @media screen and (max-width: 768px) {
         font-size: 12px;
         margin-bottom: 20px;
+        padding: 7px 14px;
       }
 
       @media screen and (max-width: 480px) {
         font-size: 11px;
         margin-bottom: 18px;
+        padding: 6px 12px;
+      }
+
+      // Active status (more than 7 days remaining)
+      &--active {
+        color: #16db65;
+        background: rgba(22, 219, 101, 0.05);
+      }
+
+      // Expiring soon (2-7 days remaining)
+      &--expiring-soon {
+        color: #ffa726;
+        background: rgba(255, 167, 38, 0.1);
+        font-weight: 600;
+      }
+
+      // Urgent (1-2 days remaining)
+      &--urgent {
+        color: #ff5722;
+        background: rgba(255, 87, 34, 0.15);
+        font-weight: 700;
+        animation: pulse-urgent 2s ease-in-out infinite;
+      }
+
+      // Expired
+      &--expired {
+        color: #e53935;
+        background: rgba(229, 57, 53, 0.15);
+        font-weight: 700;
+        text-decoration: line-through;
+        opacity: 0.8;
       }
     }
 
@@ -1050,5 +1085,16 @@
         }
       }
     }
+  }
+}
+
+// Pulse animation for urgent status
+@keyframes pulse-urgent {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
   }
 }

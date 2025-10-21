@@ -18,10 +18,36 @@ export const ModeProvider = ({ children }) => {
     return savedMode || "user";
   });
 
-  // Check if user is actually a seller
-  const currentUser = getCurrentUser();
+  // Use state to track current user for proper reactivity
+  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+
+  // Listen for changes to localStorage
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setCurrentUser(getCurrentUser());
+    };
+
+    // Listen for custom user update event
+    window.addEventListener("userUpdated", handleUserUpdate);
+
+    return () => {
+      window.removeEventListener("userUpdated", handleUserUpdate);
+    };
+  }, []);
+
   const user = currentUser?.info || currentUser;
   const isSeller = user?.isSeller || false;
+
+  // Debug logging
+  useEffect(() => {
+    console.log("ModeContext state:", {
+      currentUser,
+      user,
+      isSeller,
+      currentMode,
+      isInSellerMode: isSeller && currentMode === "seller",
+    });
+  }, [currentUser, user, isSeller, currentMode]);
 
   // Persist mode to localStorage whenever it changes
   useEffect(() => {

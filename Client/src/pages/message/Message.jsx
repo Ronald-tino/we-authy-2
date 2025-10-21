@@ -26,7 +26,7 @@ const Message = () => {
           .slice()
           .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       }),
-    refetchInterval: 3000,
+    // refetchInterval: 3000, // Disabled during development
     refetchOnWindowFocus: true,
   });
 

@@ -16,7 +16,18 @@ const Add = () => {
   // Redirect if user is not in seller mode
   useEffect(() => {
     if (!isSeller || !isInSellerMode) {
-      navigate("/");
+      console.log("Add page access denied:", { isSeller, isInSellerMode });
+      if (!isSeller) {
+        alert(
+          "You need to become a seller first. Redirecting to the registration page..."
+        );
+        navigate("/become-seller");
+      } else if (!isInSellerMode) {
+        alert(
+          "Please toggle to seller mode first using the switch in the navigation bar."
+        );
+        navigate("/");
+      }
     }
   }, [isSeller, isInSellerMode, navigate]);
 

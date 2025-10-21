@@ -72,6 +72,9 @@ const BecomeSeller = () => {
       const updatedUser = response.data;
       localStorage.setItem("currentUser", JSON.stringify(updatedUser));
 
+      // Dispatch custom event to notify context of user update
+      window.dispatchEvent(new Event("userUpdated"));
+
       // Switch to seller mode and navigate
       switchToSellerMode();
       navigate("/mygigs");

@@ -42,10 +42,17 @@ function Register() {
       // Only attempt upload if a file was selected
       const url = file ? await upload(file) : "";
 
-      await newRequest.post("/auth/register", {
+      const res = await newRequest.post("/auth/register", {
         ...user,
         img: url,
       });
+
+      // Store user data in localStorage (auto-login)
+      localStorage.setItem("currentUser", JSON.stringify(res.data));
+
+      // Dispatch custom event to notify context of user update
+      window.dispatchEvent(new Event("userUpdated"));
+
       setLoading(false);
       navigate("/");
     } catch (err) {

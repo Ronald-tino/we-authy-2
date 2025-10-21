@@ -3,6 +3,11 @@ import "./GigCard.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
+import {
+  calculateDaysRemaining,
+  getExpirationMessage,
+  getExpirationClass,
+} from "../../utils/calculateDaysRemaining";
 
 const GigCard = ({ item }) => {
   const navigate = useNavigate();
@@ -36,6 +41,17 @@ const GigCard = ({ item }) => {
     if (!item?.availableSpace || item.availableSpace === 0) return 0;
     return Math.round(item?.price / item?.availableSpace);
   };
+
+  // Calculate days remaining for expiration
+  const expirationInfo = calculateDaysRemaining(
+    item?.createdAt,
+    item?.expirationDays
+  );
+  const expirationMessage = getExpirationMessage(
+    expirationInfo.daysRemaining,
+    expirationInfo.isExpired
+  );
+  const expirationClass = getExpirationClass(expirationInfo.status);
 
   // Create conversation mutation
   const createConversationMutation = useMutation({
@@ -161,8 +177,10 @@ const GigCard = ({ item }) => {
 
         {/* Expiration */}
         {item?.expirationDays && (
-          <div className="gig-card__expiration">
-            EXP in {item.expirationDays} days
+          <div
+            className={`gig-card__expiration gig-card__expiration--${expirationClass}`}
+          >
+            {expirationMessage}
           </div>
         )}
 

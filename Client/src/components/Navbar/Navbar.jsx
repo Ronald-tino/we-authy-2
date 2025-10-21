@@ -58,6 +58,10 @@ function Navbar() {
       await newRequest.post("/auth/logout");
       localStorage.setItem("currentUser", null);
       localStorage.removeItem("userMode"); // Clear mode on logout
+
+      // Dispatch custom event to notify context of user update
+      window.dispatchEvent(new Event("userUpdated"));
+
       navigate("/");
     } catch (err) {
       console.log(err);

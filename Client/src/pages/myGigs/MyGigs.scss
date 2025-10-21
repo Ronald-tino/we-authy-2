@@ -199,22 +199,79 @@
 
           // Expires cell
           &.expires-cell {
-            .days {
-              color: var(--text-primary);
-              font-weight: 600;
-              font-size: 15px;
+            .expiration-status {
+              display: inline-flex;
+              align-items: center;
+              padding: 4px 10px;
+              border-radius: 4px;
+              transition: all 0.3s ease;
 
-              @media screen and (max-width: 768px) {
-                font-size: 14px;
+              .days {
+                font-weight: 600;
+                font-size: 15px;
+
+                @media screen and (max-width: 768px) {
+                  font-size: 14px;
+                }
               }
-            }
 
-            .label {
-              color: var(--text-secondary);
-              font-size: 13px;
+              .label {
+                font-size: 13px;
 
-              @media screen and (max-width: 768px) {
-                font-size: 12px;
+                @media screen and (max-width: 768px) {
+                  font-size: 12px;
+                }
+              }
+
+              // Active status (more than 7 days remaining)
+              &--active {
+                background: rgba(22, 219, 101, 0.05);
+
+                .days {
+                  color: #16db65;
+                }
+
+                .label {
+                  color: #16db65;
+                  opacity: 0.8;
+                }
+              }
+
+              // Expiring soon (2-7 days remaining)
+              &--expiring-soon {
+                background: rgba(255, 167, 38, 0.1);
+
+                .days {
+                  color: #ffa726;
+                }
+
+                .label {
+                  color: #ffa726;
+                  opacity: 0.8;
+                }
+              }
+
+              // Urgent (1-2 days remaining)
+              &--urgent {
+                background: rgba(255, 87, 34, 0.15);
+                animation: pulse-urgent 2s ease-in-out infinite;
+
+                .days {
+                  color: #ff5722;
+                }
+
+                .label {
+                  color: #ff5722;
+                  opacity: 0.8;
+                }
+              }
+
+              // Expired
+              &--expired {
+                background: rgba(229, 57, 53, 0.15);
+                color: #e53935;
+                text-decoration: line-through;
+                opacity: 0.8;
               }
             }
           }
@@ -247,5 +304,16 @@
         }
       }
     }
+  }
+}
+
+// Pulse animation for urgent status
+@keyframes pulse-urgent {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
   }
 }

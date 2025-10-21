@@ -18,7 +18,7 @@ const Messages = () => {
       newRequest.get(`/conversations`).then((res) => {
         return res.data;
       }),
-    refetchInterval: 5000,
+    // refetchInterval: 5000, // Disabled during development
   });
 
   const mutation = useMutation({
