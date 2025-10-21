@@ -19,8 +19,13 @@ const Message = () => {
     queryKey: ["messages", id],
     queryFn: () =>
       newRequest.get(`/messages/${id}`).then((res) => {
-        return res.data;
+        // ensure ordered ascending in case backend misses sort
+        return (res.data || [])
+          .slice()
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       }),
+    refetchInterval: 3000,
+    refetchOnWindowFocus: true,
   });
 
   const { data: conversationData } = useQuery({

@@ -21,12 +21,25 @@ export const createConversation = async (req, res, next) => {
       return res.status(200).send(existingConversation);
     }
 
+    // Determine correct roles using user records (robust regardless of initiator)
+    const [current, other] = await Promise.all([
+      User.findById(req.userId).select("isSeller"),
+      User.findById(req.body.to).select("isSeller"),
+    ]);
+
+    if (!current || !other) {
+      return next(createError(404, "User not found for conversation"));
+    }
+
+    const sellerId = current.isSeller ? req.userId : req.body.to;
+    const buyerId = sellerId === req.userId ? req.body.to : req.userId;
+
     const newConversation = new Conversation({
       id: conversationId,
-      sellerId: req.isSeller ? req.userId : req.body.to,
-      buyerId: req.isSeller ? req.body.to : req.userId,
-      readBySeller: req.isSeller,
-      readByBuyer: !req.isSeller,
+      sellerId,
+      buyerId,
+      readBySeller: req.userId === sellerId,
+      readByBuyer: req.userId === buyerId,
     });
 
     const savedConversation = await newConversation.save();
