@@ -9,11 +9,15 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setError(null);
+    setIsSubmitting(true);
     try {
       const res = await newRequest.post("/auth/login", { username, password });
       localStorage.setItem("currentUser", JSON.stringify(res.data));
@@ -23,7 +27,14 @@ function Login() {
 
       navigate("/");
     } catch (err) {
-      setError(err.response.data);
+      const message =
+        err?.response?.data?.message ||
+        (typeof err?.response?.data === "string" ? err.response.data : null) ||
+        err?.message ||
+        "Invalid username or password";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -113,6 +124,7 @@ function Login() {
             <motion.button
               type="submit"
               className="login-button"
+              disabled={isSubmitting}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
@@ -122,17 +134,18 @@ function Login() {
               }}
               whileTap={{ scale: 0.95 }}
             >
-              Login
+              {isSubmitting ? "Logging in..." : "Login"}
             </motion.button>
 
             {error && (
               <motion.div
                 className="error-message"
+                role="alert"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                {error}
+                {String(error)}
               </motion.div>
             )}
           </motion.form>

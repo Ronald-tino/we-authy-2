@@ -36,17 +36,25 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
-    //error
+    const { username, password } = req.body || {};
+    // Basic input validation
+    if (
+      !username ||
+      !password ||
+      typeof username !== "string" ||
+      typeof password !== "string"
+    ) {
+      return next(createError(400, "Username and password are required"));
+    }
 
-    if (!user) return next(createError(404, "User not found"));
+    const trimmedUsername = username.trim();
+    const user = await User.findOne({ username: trimmedUsername });
+    // Use generic error messages to avoid leaking which field was wrong
+    if (!user) return next(createError(401, "Invalid username or password"));
 
-    const isPasswordCorrect = await bcrypt.compareSync(
-      req.body.password.trim(),
-      user.password
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return next(createError(400, "Wrong password for username"));
+      return next(createError(401, "Invalid username or password"));
     }
     //////////////////////////////////////////////////////
     const token = jwt.sign(
@@ -57,7 +65,7 @@ export const login = async (req, res, next) => {
       process.env.JWT_SECRET
     );
     //////////////////////////////////////////////////////
-    const { password, ...info } = user._doc;
+    const { password: _password, ...info } = user._doc;
     res
       .cookie("accessToken", token, {
         httpOnly: true,
