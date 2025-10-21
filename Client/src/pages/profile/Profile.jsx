@@ -1,9 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import newRequest from "../../utils/newRequest";
 import "./Profile.scss";
 
 function Profile() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [isEditing, setIsEditing] = useState(false);
+
+  // Fetch user data from the API
+  const {
+    isLoading,
+    error,
+    data: userData,
+  } = useQuery({
+    queryKey: ["user", currentUser?._id],
+    queryFn: async () => {
+      const res = await newRequest.get(`/users/${currentUser._id}`);
+      return res.data;
+    },
+    enabled: !!currentUser?._id,
+  });
+
   const [profileData, setProfileData] = useState({
     username: "johndoe",
     email: "john@example.com",
@@ -14,10 +32,37 @@ function Profile() {
     joinDate: "January 2023",
     rating: 4.8,
     totalDeliveries: 127,
+    tripsCompleted: 0,
     responseTime: "1 hour",
     languages: ["English", "Spanish"],
     verificationStatus: "Verified",
   });
+
+  // Update profileData when userData is fetched
+  useEffect(() => {
+    if (userData) {
+      setProfileData((prev) => ({
+        ...prev,
+        username: userData.username || prev.username,
+        email: userData.email || prev.email,
+        fullName: userData.username || prev.fullName,
+        bio: userData.desc || prev.bio,
+        location: userData.country || prev.location,
+        phone: userData.phone || prev.phone,
+        joinDate: userData.createdAt
+          ? new Date(userData.createdAt).toLocaleDateString("en-US", {
+              month: "long",
+              year: "numeric",
+            })
+          : prev.joinDate,
+        rating:
+          userData.starNumber > 0
+            ? (userData.totalStars / userData.starNumber).toFixed(1)
+            : prev.rating,
+        tripsCompleted: userData.tripsCompleted || 0,
+      }));
+    }
+  }, [userData]);
 
   const handleInputChange = (field, value) => {
     setProfileData((prev) => ({
@@ -114,9 +159,9 @@ function Profile() {
                   </div>
                   <div className="stat">
                     <span className="stat-value">
-                      {profileData.totalDeliveries}
+                      {profileData.tripsCompleted}
                     </span>
-                    <span className="stat-label">Deliveries</span>
+                    <span className="stat-label">Trips Completed</span>
                   </div>
                   <div className="stat">
                     <span className="stat-value">
@@ -281,10 +326,10 @@ function Profile() {
                         </svg>
                       </div>
                       <div className="activity-content">
-                        <span className="activity-value">127</span>
-                        <span className="activity-label">
-                          Completed Deliveries
+                        <span className="activity-value">
+                          {profileData.tripsCompleted}
                         </span>
+                        <span className="activity-label">Trips Completed</span>
                       </div>
                     </div>
                     <div className="activity-item">

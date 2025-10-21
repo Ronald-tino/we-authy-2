@@ -421,6 +421,24 @@
 
     &--bookings {
       color: #8b8b8b;
+      position: relative;
+      cursor: pointer;
+      padding-right: 16px;
+
+      &:after {
+        content: "\25BC"; // down caret
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%) rotate(0deg);
+        font-size: 9px;
+        color: #8b8b8b;
+        transition: transform 0.2s ease;
+      }
+
+      &.gig-card__stat--open:after {
+        transform: translateY(-50%) rotate(180deg);
+      }
     }
   }
 
@@ -644,4 +662,43 @@
       gap: 10px;
     }
   }
+}
+
+// Interested dropdown list
+.gig-card__interested-list {
+  margin-top: 8px;
+  background: #0c0c0c;
+  border: 1px solid #1f2f25;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.gig-card__interested-empty {
+  color: #6b6b6b;
+  font-size: 12px;
+  padding: 6px 4px;
+}
+
+.gig-card__interested-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: 6px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.gig-card__interested-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.gig-card__interested-name {
+  color: #ffffff;
+  font-size: 12px;
 }

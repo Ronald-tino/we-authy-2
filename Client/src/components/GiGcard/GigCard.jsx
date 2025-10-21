@@ -13,6 +13,11 @@ const GigCard = ({ item }) => {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
+  const [interestedOpen, setInterestedOpen] = React.useState(false);
+  const [interestedUsers, setInterestedUsers] = React.useState([]);
+  const [interestedCount, setInterestedCount] = React.useState(0);
+  const [isInterested, setIsInterested] = React.useState(false);
+
   const { isLoading, error, data } = useQuery({
     queryKey: ["gigUser", item.userId],
     queryFn: async () => {
@@ -83,6 +88,75 @@ const GigCard = ({ item }) => {
     }
 
     createConversationMutation.mutate(item.userId);
+  };
+
+  // Toggle interest (Make Offer)
+  const toggleInterestMutation = useMutation({
+    mutationFn: async () => {
+      return await newRequest.post(`/gigs/${item._id}/interest`);
+    },
+    onSuccess: (res) => {
+      const payload = res.data || {};
+      setInterestedCount(payload.interestedCount || 0);
+      setInterestedUsers(payload.interestedUsers || []);
+      setIsInterested(Boolean(payload.interested));
+    },
+    onError: (error) => {
+      console.error("Error toggling interest:", error);
+      alert(
+        error?.response?.data?.message ||
+          "Failed to update interest. Please try again."
+      );
+    },
+  });
+
+  const handleMakeOffer = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    if (currentUser._id === item.userId) {
+      alert("You cannot make an offer on your own gig!");
+      return;
+    }
+
+    toggleInterestMutation.mutate();
+  };
+
+  // Fetch interested users list on demand (when opening dropdown)
+  const handleToggleInterestedList = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      // If opening and list is empty, fetch
+      if (!interestedOpen) {
+        const res = await newRequest.get(`/gigs/${item._id}/interested`);
+        setInterestedUsers(res.data?.interestedUsers || []);
+        setInterestedCount(res.data?.interestedCount || 0);
+        // Determine if current user is in the list
+        const inList = (res.data?.interestedUsers || []).some(
+          (u) => u?._id === currentUser._id
+        );
+        setIsInterested(inList);
+      }
+      setInterestedOpen((prev) => !prev);
+    } catch (err) {
+      console.error("Error fetching interested users:", err);
+      alert(
+        err?.response?.data?.message ||
+          "Unable to load interested users. Please try again."
+      );
+    }
   };
 
   return (
@@ -259,21 +333,55 @@ const GigCard = ({ item }) => {
           <button
             className="gig-card__btn gig-card__btn--primary"
             type="button"
+            onClick={handleMakeOffer}
+            disabled={toggleInterestMutation.isPending}
           >
-            Make Offer
+            {toggleInterestMutation.isPending
+              ? "Saving..."
+              : isInterested
+              ? "Interested"
+              : "Make Offer"}
           </button>
         </div>
 
         {/* Stats Footer */}
         <div className="gig-card__stats">
           <span className="gig-card__stat gig-card__stat--offers">
-            0 Offers
+            {data?.tripsCompleted || 0} Trips Done
           </span>
           <span className="gig-card__separator">|</span>
-          <span className="gig-card__stat gig-card__stat--bookings">
-            0 Bookings
+          <span
+            className={`gig-card__stat gig-card__stat--bookings ${
+              interestedOpen ? "gig-card__stat--open" : ""
+            }`}
+            onClick={handleToggleInterestedList}
+          >
+            Interested{interestedCount ? ` (${interestedCount})` : ""}
           </span>
         </div>
+
+        {interestedOpen && (
+          <div className="gig-card__interested-list">
+            {interestedUsers.length === 0 ? (
+              <div className="gig-card__interested-empty">
+                No interested users yet.
+              </div>
+            ) : (
+              interestedUsers.map((u) => (
+                <div className="gig-card__interested-item" key={u._id}>
+                  <img
+                    className="gig-card__interested-avatar"
+                    src={u.img || "/img/noavatar.png"}
+                    alt={u.username || "User"}
+                  />
+                  <span className="gig-card__interested-name">
+                    {u.username}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );

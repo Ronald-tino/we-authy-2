@@ -47,8 +47,22 @@ function MyGigs() {
     },
   });
 
+  const completeMutation = useMutation({
+    mutationFn: (id) => {
+      return newRequest.post(`/gigs/${id}/complete`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["myGigs"]);
+    },
+  });
+
   const handleDelete = (id) => {
     mutation.mutate(id);
+  };
+
+  const handleComplete = (e, id) => {
+    e.stopPropagation();
+    completeMutation.mutate(id);
   };
 
   const handleGigClick = (gigId) => {
@@ -130,7 +144,23 @@ function MyGigs() {
                                 className={`expiration-status expiration-status--${expirationStatus.status}`}
                               >
                                 {expirationStatus.isExpired ? (
-                                  "EXPIRED"
+                                  gig.isCompleted ? (
+                                    <span className="completed-badge">
+                                      ✓ COMPLETED
+                                    </span>
+                                  ) : (
+                                    <button
+                                      className="complete-btn"
+                                      onClick={(e) =>
+                                        handleComplete(e, gig._id)
+                                      }
+                                      disabled={completeMutation.isPending}
+                                    >
+                                      {completeMutation.isPending
+                                        ? "Marking..."
+                                        : "Mark Complete"}
+                                    </button>
+                                  )
                                 ) : (
                                   <>
                                     <span className="days">

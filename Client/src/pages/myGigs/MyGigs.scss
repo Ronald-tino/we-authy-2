@@ -268,10 +268,50 @@
 
               // Expired
               &--expired {
-                background: rgba(229, 57, 53, 0.15);
-                color: #e53935;
-                text-decoration: line-through;
-                opacity: 0.8;
+                background: transparent;
+                padding: 0;
+              }
+            }
+
+            .complete-btn {
+              background-color: var(--green-medium);
+              color: var(--text-primary);
+              font-weight: 500;
+              border: none;
+              padding: 6px 12px;
+              cursor: pointer;
+              border-radius: 4px;
+              transition: all 0.3s ease;
+              font-size: 13px;
+
+              @media screen and (max-width: 768px) {
+                font-size: 12px;
+                padding: 4px 8px;
+              }
+
+              &:hover {
+                background-color: var(--green-bright);
+              }
+
+              &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+              }
+            }
+
+            .completed-badge {
+              display: inline-flex;
+              align-items: center;
+              padding: 4px 10px;
+              border-radius: 4px;
+              background: rgba(22, 219, 101, 0.15);
+              color: #16db65;
+              font-weight: 600;
+              font-size: 13px;
+
+              @media screen and (max-width: 768px) {
+                font-size: 12px;
+                padding: 3px 8px;
               }
             }
           }

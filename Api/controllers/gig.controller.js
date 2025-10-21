@@ -1,4 +1,5 @@
 import Gig from "../models/gig.model.js";
+import User from "../models/user.model.js";
 import createError from "../utils/createError.js";
 
 export const createGig = async (req, res, next) => {
@@ -152,6 +153,110 @@ export const getGigs = async (req, res, next) => {
   try {
     const gigs = await Gig.find(filters).sort({ [q.sort]: -1 });
     res.status(200).send(gigs);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const completeGig = async (req, res, next) => {
+  try {
+    const gig = await Gig.findById(req.params.id);
+
+    if (!gig) {
+      return next(createError(404, "Gig not found!"));
+    }
+
+    if (gig.userId.toString() !== req.userId) {
+      return next(createError(403, "You can only complete your own gig!"));
+    }
+
+    if (gig.isCompleted) {
+      return next(createError(400, "Gig is already completed!"));
+    }
+
+    // Calculate days remaining
+    const creationDate = new Date(gig.createdAt);
+    const currentDate = new Date();
+    const expirationDate = new Date(creationDate);
+    expirationDate.setDate(expirationDate.getDate() + gig.expirationDays);
+    const timeDiff = expirationDate - currentDate;
+    const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    // Only mark as completed if expired (days remaining <= 0)
+    if (daysRemaining > 0) {
+      return next(
+        createError(400, "Gig can only be completed when it has expired!")
+      );
+    }
+
+    // Mark gig as completed
+    gig.isCompleted = true;
+    await gig.save();
+
+    // Increment user's trips completed
+    await User.findByIdAndUpdate(req.userId, {
+      $inc: { tripsCompleted: 1 },
+    });
+
+    res.status(200).json({ message: "Gig marked as completed!", gig });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Toggle current user interest in a gig
+export const toggleInterest = async (req, res, next) => {
+  try {
+    const gigId = req.params.id;
+    const userId = req.userId;
+
+    const gig = await Gig.findById(gigId);
+    if (!gig) {
+      return next(createError(404, "Gig not found!"));
+    }
+
+    const alreadyInterested = (gig.interestedUsers || []).some(
+      (u) => u.toString() === userId
+    );
+
+    let updated;
+    if (alreadyInterested) {
+      updated = await Gig.findByIdAndUpdate(
+        gigId,
+        { $pull: { interestedUsers: userId } },
+        { new: true }
+      ).populate("interestedUsers", "username img");
+    } else {
+      updated = await Gig.findByIdAndUpdate(
+        gigId,
+        { $addToSet: { interestedUsers: userId } },
+        { new: true }
+      ).populate("interestedUsers", "username img");
+    }
+
+    res.status(200).json({
+      interestedCount: updated.interestedUsers?.length || 0,
+      interestedUsers: updated.interestedUsers || [],
+      interested: !alreadyInterested,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Get list of interested users for a gig
+export const getInterestedUsers = async (req, res, next) => {
+  try {
+    const gig = await Gig.findById(req.params.id).populate(
+      "interestedUsers",
+      "username img"
+    );
+    if (!gig) return next(createError(404, "Gig not found!"));
+
+    res.status(200).json({
+      interestedCount: gig.interestedUsers?.length || 0,
+      interestedUsers: gig.interestedUsers || [],
+    });
   } catch (err) {
     next(err);
   }

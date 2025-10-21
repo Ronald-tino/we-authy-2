@@ -98,6 +98,18 @@ const GigSchema = new Schema(
       type: Number,
       default: 0,
     },
+    isCompleted: {
+      type: Boolean,
+      default: false,
+    },
+    // Users who have expressed interest in this gig
+    interestedUsers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        default: undefined,
+      },
+    ],
   },
   {
     timestamps: true,

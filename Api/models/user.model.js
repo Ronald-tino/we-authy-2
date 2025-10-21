@@ -45,6 +45,10 @@ const userSchema = new Schema(
       type: Number,
       default: 0,
     },
+    tripsCompleted: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
