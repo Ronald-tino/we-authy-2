@@ -1,10 +1,13 @@
 import React from "react";
 import "./GigCard.scss";
-import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 
 const GigCard = ({ item }) => {
+  const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
   const { isLoading, error, data } = useQuery({
     queryKey: ["gigUser", item.userId],
     queryFn: async () => {
@@ -32,6 +35,38 @@ const GigCard = ({ item }) => {
   const pricePerKg = () => {
     if (!item?.availableSpace || item.availableSpace === 0) return 0;
     return Math.round(item?.price / item?.availableSpace);
+  };
+
+  // Create conversation mutation
+  const createConversationMutation = useMutation({
+    mutationFn: (to) => {
+      return newRequest.post("/conversations", { to });
+    },
+    onSuccess: (data) => {
+      // Navigate to the message page with the conversation ID
+      navigate(`/message/${data.data.id}`);
+    },
+    onError: (error) => {
+      console.error("Error creating conversation:", error);
+      alert("Failed to start conversation. Please try again.");
+    },
+  });
+
+  const handleChatNow = (e) => {
+    e.preventDefault(); // Prevent the Link navigation
+    e.stopPropagation();
+
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    if (currentUser._id === item.userId) {
+      alert("You cannot chat with yourself!");
+      return;
+    }
+
+    createConversationMutation.mutate(item.userId);
   };
 
   return (
@@ -198,8 +233,10 @@ const GigCard = ({ item }) => {
           <button
             className="gig-card__btn gig-card__btn--outline"
             type="button"
+            onClick={handleChatNow}
+            disabled={createConversationMutation.isPending}
           >
-            Chat Now
+            {createConversationMutation.isPending ? "Creating..." : "Chat Now"}
           </button>
           <button
             className="gig-card__btn gig-card__btn--primary"

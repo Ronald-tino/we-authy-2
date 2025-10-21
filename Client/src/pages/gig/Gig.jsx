@@ -1,12 +1,15 @@
 import React from "react";
 import "./Gig.scss";
-import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
 import Reviews from "../../components/Reviews/Reviews";
 
 function Gig() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["gig", id],
@@ -27,10 +30,39 @@ function Gig() {
   });
 
   const avgStars = () => {
-    const total = Number(data?.totalStars || 0);
-    const count = Number(data?.starNumber || 0);
+    const total = Number(dataUser?.totalStars || 0);
+    const count = Number(dataUser?.starNumber || 0);
     if (!count) return 0;
     return Math.round(total / count);
+  };
+
+  // Create conversation mutation
+  const createConversationMutation = useMutation({
+    mutationFn: (to) => {
+      return newRequest.post("/conversations", { to });
+    },
+    onSuccess: (data) => {
+      // Navigate to the message page with the conversation ID
+      navigate(`/message/${data.data.id}`);
+    },
+    onError: (error) => {
+      console.error("Error creating conversation:", error);
+      alert("Failed to start conversation. Please try again.");
+    },
+  });
+
+  const handleChatNow = () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    if (currentUser._id === userId) {
+      alert("You cannot chat with yourself!");
+      return;
+    }
+
+    createConversationMutation.mutate(userId);
   };
 
   // Calculate price per kg (in Yuan)
@@ -207,11 +239,18 @@ function Gig() {
               </div>
             </div>
 
+            {/* Title */}
+            {data?.title && (
+              <div className="gig-details__title">
+                <h2>{data.title}</h2>
+              </div>
+            )}
+
             {/* Description */}
-            {data?.desc && (
+            {data?.about && (
               <div className="gig-details__description">
-                <h3>About This Gig</h3>
-                <p>{data.desc}</p>
+                <h3>About This Service</h3>
+                <p>{data.about}</p>
               </div>
             )}
 
@@ -220,8 +259,12 @@ function Gig() {
               <button
                 className="gig-details__btn gig-details__btn--outline"
                 type="button"
+                onClick={handleChatNow}
+                disabled={createConversationMutation.isPending}
               >
-                Chat Now
+                {createConversationMutation.isPending
+                  ? "Creating..."
+                  : "Chat Now"}
               </button>
               <button
                 className="gig-details__btn gig-details__btn--primary"
@@ -254,7 +297,14 @@ function Gig() {
                       <span>{avgStars()}</span>
                     </div>
                   )}
-                  <button>Contact Me</button>
+                  <button
+                    onClick={handleChatNow}
+                    disabled={createConversationMutation.isPending}
+                  >
+                    {createConversationMutation.isPending
+                      ? "Creating..."
+                      : "Contact Me"}
+                  </button>
                 </div>
               </div>
               <div className="seller__box">
@@ -287,7 +337,7 @@ function Gig() {
           )}
 
           {/* Reviews Section */}
-          <Reviews gigId={id} />
+          <Reviews sellerId={userId} />
         </div>
       )}
     </div>

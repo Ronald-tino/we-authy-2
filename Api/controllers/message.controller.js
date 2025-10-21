@@ -10,6 +10,12 @@ export const createMessage = async (req, res, next) => {
     isSeller: req.isSeller,
   });
 
+  // Check if conversation exists
+  const conversation = await Conversation.findOne({
+    id: req.body.conversationId,
+  });
+  console.log("Conversation found:", conversation);
+
   const newMessage = new Message({
     conversationId: req.body.conversationId,
     userId: req.userId,
@@ -42,9 +48,60 @@ export const createMessage = async (req, res, next) => {
 };
 export const getMessages = async (req, res, next) => {
   try {
-    const messages = await Message.find({ conversationId: req.params.id });
+    console.log("Getting messages for conversation ID:", req.params.id);
+    let messages = await Message.find({ conversationId: req.params.id }).sort({
+      createdAt: 1,
+    });
+
+    // If no messages found with the given ID, try to find with alternative formats
+    if (messages.length === 0) {
+      console.log(
+        "No messages found with given ID, trying alternative formats..."
+      );
+
+      // Try to find conversation first to get the correct ID
+      const conversation = await Conversation.findOne({ id: req.params.id });
+      if (conversation) {
+        console.log(
+          "Found conversation, searching for messages with conversation ID:",
+          conversation.id
+        );
+        messages = await Message.find({ conversationId: conversation.id }).sort(
+          { createdAt: 1 }
+        );
+      } else {
+        // Try old format - look for messages with concatenated IDs
+        const userIds = req.params.id.split("_");
+        if (userIds.length === 2) {
+          // New format with underscore
+          messages = await Message.find({ conversationId: req.params.id }).sort(
+            { createdAt: 1 }
+          );
+        } else {
+          // Old format - try different combinations
+          const possibleIds = [
+            req.params.id,
+            req.userId + req.params.id.replace(req.userId, ""),
+            req.params.id.replace(req.userId, "") + req.userId,
+          ];
+
+          for (const possibleId of possibleIds) {
+            messages = await Message.find({ conversationId: possibleId }).sort({
+              createdAt: 1,
+            });
+            if (messages.length > 0) {
+              console.log("Found messages with alternative ID:", possibleId);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    console.log("Found messages:", messages);
     res.status(200).send(messages);
   } catch (err) {
+    console.error("Error getting messages:", err);
     next(err);
   }
 };

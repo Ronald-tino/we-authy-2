@@ -81,9 +81,13 @@ function Navbar() {
       <div className="container">
         <div className="logo">
           <Link className="link" to="/">
+            <img
+              src="/img/lug.png"
+              alt="LuggageShare Logo"
+              className="logo-img"
+            />
             <span className="text">LuggageShare</span>
           </Link>
-          <span className="dot">.</span>
         </div>
 
         {/* Mobile menu button */}
@@ -144,7 +148,7 @@ function Navbar() {
 
           {/* Desktop-only items */}
           <span className="desktop-only">LugShare Business</span>
-      
+
           {!currentUser?.isSeller && (
             <span className="desktop-only">Become a Courier</span>
           )}

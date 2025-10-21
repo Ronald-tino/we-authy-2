@@ -1,6 +1,6 @@
 import createError from "../utils/createError.js";
 import Review from "../models/review.model.js";
-import Gig from "../models/gig.model.js";
+import User from "../models/user.model.js";
 
 export const createReview = async (req, res, next) => {
   if (req.isSeller)
@@ -8,27 +8,27 @@ export const createReview = async (req, res, next) => {
 
   const newReview = new Review({
     userId: req.userId,
-    gigId: req.body.gigId,
+    sellerId: req.body.sellerId,
     desc: req.body.desc,
     star: req.body.star,
   });
 
   try {
     const review = await Review.findOne({
-      gigId: req.body.gigId,
+      sellerId: req.body.sellerId,
       userId: req.userId,
     });
 
     if (review)
       return next(
-        createError(403, "You have already created a review for this gig!")
+        createError(403, "You have already created a review for this seller!")
       );
 
-    //TODO: check if the user purchased the gig.
+    //TODO: check if the user purchased from this seller.
 
     const savedReview = await newReview.save();
 
-    await Gig.findByIdAndUpdate(req.body.gigId, {
+    await User.findByIdAndUpdate(req.body.sellerId, {
       $inc: { totalStars: req.body.star, starNumber: 1 },
     });
     res.status(201).send(savedReview);
@@ -39,7 +39,7 @@ export const createReview = async (req, res, next) => {
 
 export const getReviews = async (req, res, next) => {
   try {
-    const reviews = await Review.find({ gigId: req.params.gigId });
+    const reviews = await Review.find({ sellerId: req.params.sellerId });
     res.status(200).send(reviews);
   } catch (err) {
     next(err);

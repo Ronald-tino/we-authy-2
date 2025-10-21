@@ -3,18 +3,37 @@ import Conversation from "../models/conversation.model.js";
 import User from "../models/user.model.js";
 
 export const createConversation = async (req, res, next) => {
-  const newConversation = new Conversation({
-    id: req.isSeller ? req.userId + req.body.to : req.body.to + req.userId,
-    sellerId: req.isSeller ? req.userId : req.body.to,
-    buyerId: req.isSeller ? req.body.to : req.userId,
-    readBySeller: req.isSeller,
-    readByBuyer: !req.isSeller,
-  });
+  // Create a consistent conversation ID by sorting the user IDs
+  const userIds = [req.userId, req.body.to].sort();
+  const conversationId = userIds.join("_");
+
+  console.log("Creating conversation with ID:", conversationId);
+  console.log("User IDs:", userIds);
+  console.log("Is seller:", req.isSeller);
 
   try {
+    // Check if conversation already exists
+    const existingConversation = await Conversation.findOne({
+      id: conversationId,
+    });
+    if (existingConversation) {
+      console.log("Conversation already exists:", existingConversation);
+      return res.status(200).send(existingConversation);
+    }
+
+    const newConversation = new Conversation({
+      id: conversationId,
+      sellerId: req.isSeller ? req.userId : req.body.to,
+      buyerId: req.isSeller ? req.body.to : req.userId,
+      readBySeller: req.isSeller,
+      readByBuyer: !req.isSeller,
+    });
+
     const savedConversation = await newConversation.save();
+    console.log("New conversation created:", savedConversation);
     res.status(201).send(savedConversation);
   } catch (err) {
+    console.error("Error creating conversation:", err);
     next(err);
   }
 };
@@ -41,16 +60,47 @@ export const updateConversation = async (req, res, next) => {
 
 export const getSingleConversation = async (req, res, next) => {
   try {
-    const conversation = await Conversation.findOne({ id: req.params.id });
+    console.log("Getting conversation for ID:", req.params.id);
+    let conversation = await Conversation.findOne({ id: req.params.id });
+
+    // If not found with new format, try old format
+    if (!conversation) {
+      console.log(
+        "Conversation not found with new format, trying old format..."
+      );
+      // Try to find with old format (concatenated IDs)
+      const conversations = await Conversation.find({
+        $or: [
+          { id: req.params.id },
+          {
+            sellerId: req.userId,
+            buyerId: req.params.id.replace(req.userId, ""),
+          },
+          {
+            buyerId: req.userId,
+            sellerId: req.params.id.replace(req.userId, ""),
+          },
+        ],
+      });
+
+      if (conversations.length > 0) {
+        conversation = conversations[0];
+        console.log("Found conversation with old format:", conversation);
+      }
+    }
+
+    console.log("Found conversation:", conversation);
     if (!conversation) return next(createError(404, "Not found!"));
 
     // Get the other user's information
     const otherUserId = req.isSeller
       ? conversation.buyerId
       : conversation.sellerId;
+    console.log("Other user ID:", otherUserId);
     const otherUser = await User.findById(otherUserId).select(
       "username img country"
     );
+    console.log("Other user data:", otherUser);
 
     const conversationWithUser = {
       ...conversation.toObject(),
@@ -69,6 +119,7 @@ export const getSingleConversation = async (req, res, next) => {
 
     res.status(200).send(conversationWithUser);
   } catch (err) {
+    console.error("Error getting conversation:", err);
     next(err);
   }
 };

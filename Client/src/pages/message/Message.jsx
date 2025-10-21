@@ -35,10 +35,36 @@ const Message = () => {
     mutationFn: (message) => {
       return newRequest.post(`/messages`, message);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["messages", id]);
+    onMutate: async (message) => {
+      await queryClient.cancelQueries(["messages", id]);
+      const previous = queryClient.getQueryData(["messages", id]);
+
+      // optimistic message
+      const optimistic = {
+        _id: `optimistic-${Date.now()}`,
+        conversationId: id,
+        userId: (currentUser?.info?._id || currentUser?._id) ?? "",
+        desc: message.desc,
+        createdAt: new Date().toISOString(),
+      };
+
+      queryClient.setQueryData(["messages", id], (old = []) => [
+        ...old,
+        optimistic,
+      ]);
       setMessageText("");
       setIsTyping(false);
+
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["messages", id], context.previous);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["messages", id]);
+      queryClient.invalidateQueries(["conversations"]);
     },
   });
 

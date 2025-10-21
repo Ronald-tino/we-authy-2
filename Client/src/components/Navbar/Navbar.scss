@@ -51,23 +51,85 @@
     }
 
     .logo {
-      font-size: 34px;
-      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 28px;
+      font-weight: 700;
+      transition: all 0.3s ease;
 
       @media screen and (max-width: 768px) {
-        font-size: 24px;
+        font-size: 22px;
+        gap: 10px;
       }
 
       @media screen and (max-width: 480px) {
-        font-size: 20px;
+        font-size: 18px;
+        gap: 8px;
+      }
+
+      .link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-1px);
+        }
+
+        @media screen and (max-width: 768px) {
+          gap: 10px;
+        }
+
+        @media screen and (max-width: 480px) {
+          gap: 8px;
+        }
+      }
+
+      .logo-img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        filter: brightness(0) invert(1);
+        transition: all 0.3s ease;
+
+        @media screen and (max-width: 768px) {
+          width: 32px;
+          height: 32px;
+        }
+
+        @media screen and (max-width: 480px) {
+          width: 28px;
+          height: 28px;
+        }
       }
 
       .text {
         color: var(--text-primary);
-      }
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        background: linear-gradient(
+          135deg,
+          var(--text-primary),
+          var(--green-bright)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        transition: all 0.3s ease;
 
-      .dot {
-        color: var(--green-bright);
+        &:hover {
+          background: linear-gradient(
+            135deg,
+            var(--green-bright),
+            var(--green-medium)
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
       }
     }
 

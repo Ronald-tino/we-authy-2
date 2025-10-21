@@ -107,7 +107,9 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
-      overflow: hidden;
+      /* allow the messages list to control scrolling; avoid clipping */
+      max-height: none;
+      overflow: visible;
 
       .messages {
         flex: 1;
