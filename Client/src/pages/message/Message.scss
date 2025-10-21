@@ -1,36 +1,42 @@
 .message {
   background-color: var(--bg-primary);
-  height: 100vh;
-  padding: 20px;
-  overflow: hidden;
+  min-height: 100vh;
+  padding-top: 90px;
 
   @media screen and (max-width: 768px) {
-    padding: 16px;
+    padding-top: 80px;
   }
 
   @media screen and (max-width: 480px) {
-    padding: 12px;
+    padding-top: 70px;
   }
 
   .container {
     max-width: 800px;
     width: 100%;
     margin: 0 auto;
-    height: 100vh;
+    height: calc(100vh - 90px);
     display: flex;
     flex-direction: column;
-    position: relative;
+    padding: 0 20px;
+
+    @media screen and (max-width: 768px) {
+      height: calc(100vh - 80px);
+      padding: 0 16px;
+    }
+
+    @media screen and (max-width: 480px) {
+      height: calc(100vh - 70px);
+      padding: 0 12px;
+    }
 
     .chat-header {
       display: flex;
       align-items: center;
       gap: 16px;
-      padding: 16px 0;
+      padding: 20px 0;
       border-bottom: 1px solid var(--border-primary);
-      margin-bottom: 20px;
       flex-shrink: 0;
-      position: sticky;
-      top: 0;
       background-color: var(--bg-primary);
       z-index: 10;
 
@@ -107,16 +113,22 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
-      /* allow the messages list to control scrolling; avoid clipping */
-      max-height: none;
-      overflow: visible;
+      padding-top: 20px;
+
+      @media screen and (max-width: 768px) {
+        padding-top: 16px;
+      }
+
+      @media screen and (max-width: 480px) {
+        padding-top: 12px;
+      }
 
       .messages {
         flex: 1;
         display: flex;
         flex-direction: column;
         gap: 16px;
-        padding: 20px;
+        padding: 24px 20px;
         background-color: var(--bg-tertiary);
         border-radius: 16px;
         border: 1px solid var(--border-secondary);
@@ -316,17 +328,15 @@
       .message-input {
         margin-top: 20px;
         flex-shrink: 0;
-        position: sticky;
-        bottom: 0;
-        background-color: var(--bg-primary);
         padding-bottom: 20px;
-        z-index: 10;
 
         @media screen and (max-width: 768px) {
+          margin-top: 16px;
           padding-bottom: 16px;
         }
 
         @media screen and (max-width: 480px) {
+          margin-top: 12px;
           padding-bottom: 12px;
         }
 
