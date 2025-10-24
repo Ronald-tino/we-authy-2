@@ -23,12 +23,12 @@ export const register = async (req, res, next) => {
     );
 
     const { password, ...info } = newUser._doc;
-    res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-      })
-      .status(201)
-      .send({ info });
+    const cookieOptions =
+      process.env.NODE_ENV === "production"
+        ? { httpOnly: true, sameSite: "none", secure: true }
+        : { httpOnly: true };
+
+    res.cookie("accessToken", token, cookieOptions).status(201).send({ info });
   } catch (err) {
     next(err);
   }
@@ -66,12 +66,12 @@ export const login = async (req, res, next) => {
     );
     //////////////////////////////////////////////////////
     const { password: _password, ...info } = user._doc;
-    res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-      })
-      .status(200)
-      .send({ info });
+    const cookieOptions =
+      process.env.NODE_ENV === "production"
+        ? { httpOnly: true, sameSite: "none", secure: true }
+        : { httpOnly: true };
+
+    res.cookie("accessToken", token, cookieOptions).status(200).send({ info });
     //////////////////////////////////////////////////////
   } catch (err) {
     next(err);
@@ -79,11 +79,13 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = async (req, res) => {
+  const clearOptions =
+    process.env.NODE_ENV === "production"
+      ? { sameSite: "none", secure: true }
+      : undefined;
+
   res
-    .clearCookie("accessToken", {
-      sameSite: "none",
-      secure: true,
-    })
+    .clearCookie("accessToken", clearOptions)
     .status(200)
     .send("User has been logged out");
 };
