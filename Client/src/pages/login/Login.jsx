@@ -58,21 +58,11 @@ function Login() {
           >
             <div className="logo">
               <img
-                src="/img/lug.png"
+                src="/img/OFFICIAL-LOGO.png"
                 alt="LuggageShare Logo"
                 className="logo-img"
               />
-              <h1 className="logo-text">LuggageShare</h1>
             </div>
-            <motion.h2
-              className="login-title"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              Welcome back
-            </motion.h2>
-            <p className="login-subtitle">Sign in to your account</p>
           </motion.div>
 
           <motion.form

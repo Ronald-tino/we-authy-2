@@ -89,11 +89,10 @@ function Navbar() {
         <div className="logo">
           <Link className="link" to="/">
             <img
-              src="/img/lug.png"
+              src="/img/OFFICIAL-LOGO.png"
               alt="LuggageShare Logo"
-              className="logo-img"
+              className="logo-img official"
             />
-            <span className="text">LuggageShare</span>
           </Link>
         </div>
 

@@ -80,21 +80,11 @@ function Register() {
           >
             <div className="logo">
               <img
-                src="/img/lug.png"
+                src="/img/OFFICIAL-LOGO.png"
                 alt="LuggageShare Logo"
                 className="logo-img"
               />
-              <h1 className="logo-text">LuggageShare</h1>
             </div>
-            <motion.h2
-              className="register-title"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              Create your account
-            </motion.h2>
-            <p className="register-subtitle">Join LuggageShare today</p>
           </motion.div>
 
           <motion.form

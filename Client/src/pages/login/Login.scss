@@ -26,9 +26,17 @@
       margin-bottom: 24px;
 
       .logo-img {
-        width: 40px;
-        height: 40px;
+        width: auto;
+        height: 96px; /* Large for prominence on auth pages */
         object-fit: contain;
+
+        @media screen and (max-width: 768px) {
+          height: 80px;
+        }
+
+        @media screen and (max-width: 480px) {
+          height: 72px;
+        }
       }
 
       .logo-text {

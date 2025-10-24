@@ -116,7 +116,7 @@ function About() {
               <button>Get Started</button>
             </div>
             <div className="item">
-              <img src="/img/wallpaper.png" alt="" />
+              <img src="/img/plane.png.png" alt="" />
             </div>
           </div>
         </section>
