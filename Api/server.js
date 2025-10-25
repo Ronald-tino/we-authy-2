@@ -16,8 +16,31 @@ dotenv.config();
 mongoose.set("strictQuery", true);
 
 /////////////// Add middleware
-const allowedOrigin = process.env.CORS_ORIGIN || "http://localhost:5173";
-app.use(cors({ origin: allowedOrigin, credentials: true }));
+app.set("trust proxy", 1);
+
+// Support comma-separated CORS origins via CORS_ORIGIN
+const originEnv = process.env.CORS_ORIGIN || "http://localhost:5173";
+const allowedOrigins = originEnv
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean)
+  // Normalize to include scheme if missing
+  .map((o) =>
+    o.startsWith("http://") || o.startsWith("https://") ? o : `https://${o}`
+  );
+
+const corsOptions = {
+  credentials: true,
+  origin: (origin, callback) => {
+    // Allow non-browser requests (no origin)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
