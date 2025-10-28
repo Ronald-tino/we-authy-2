@@ -10,7 +10,7 @@ const upload = async (file) => {
       "https://api.cloudinary.com/v1_1/dzmrfifoq/image/upload", // Your Cloudinary cloud name
       data
     );
-    return res.data.url;
+    return res.data.secure_url;
   } catch (err) {
     console.log(err);
   }
