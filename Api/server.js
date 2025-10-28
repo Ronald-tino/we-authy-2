@@ -10,10 +10,20 @@ import conversationRoute from "./routes/conversation.route.js";
 import messageRoute from "./routes/message.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
 //////////////////////////////
 const app = express();
 dotenv.config();
 mongoose.set("strictQuery", true);
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "dzmrfifoq",
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+export { cloudinary };
 
 /////////////// Add middleware
 app.set("trust proxy", 1);
