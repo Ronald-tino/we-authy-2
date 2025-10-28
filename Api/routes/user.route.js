@@ -14,9 +14,12 @@ const router = express.Router();
 router.get("/public/:id", getPublicUser);
 
 // Protected routes (auth required)
+// Specific routes MUST come before parameterized routes (/:id)
+router.put("/become-seller", verifyToken, becomeSeller);
+
+// Parameterized routes (/:id) - MUST come last
 router.delete("/:id", verifyToken, deleteUser);
 router.get("/:id", verifyToken, getUser);
 router.put("/:id", verifyToken, updateUser);
-router.put("/become-seller", verifyToken, becomeSeller);
 
 export default router;
