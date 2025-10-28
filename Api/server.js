@@ -78,7 +78,8 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 8800;
 app.listen(PORT, () => {
   connect();
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 export default app;
