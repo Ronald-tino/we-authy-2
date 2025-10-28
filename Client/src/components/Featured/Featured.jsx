@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Featured.scss";
+import { Plane } from "lucide-react";
 
 const Featured = () => {
   const [input, setInput] = useState("");
@@ -29,11 +30,18 @@ const Featured = () => {
             <button onClick={handleSubmit}>Search</button>
           </div>
           <div className="popular">
-        
-            <button>China ✈ Ghana</button>
-            <button>China ✈ South Africa</button>
-            <button>China ✈ Kenya</button>
-            <button>China ✈ Zimbabwe</button>
+            <button>
+              China <Plane size={14} /> Ghana
+            </button>
+            <button>
+              China <Plane size={14} /> South Africa
+            </button>
+            <button>
+              China <Plane size={14} /> Kenya
+            </button>
+            <button>
+              China <Plane size={14} /> Zimbabwe
+            </button>
           </div>
         </div>
       </div>

@@ -1,22 +1,32 @@
 .slide {
   width: 100%;
   justify-content: center;
-  padding: 20px 10px;
+  padding: 40px 0;
+  background: transparent;
 
   @media screen and (max-width: 768px) {
-    padding: 30px 16px;
+    padding: 30px 0;
   }
 
   @media screen and (max-width: 480px) {
-    padding: 24px 12px;
+    padding: 24px 0;
   }
 }
 
 .slide-container {
-  max-width: 1200px;
+  max-width: 1600px;
   width: 100%;
   margin: 0 auto;
   position: relative;
+  padding: 0 20px;
+
+  @media screen and (max-width: 768px) {
+    padding: 0 16px;
+  }
+
+  @media screen and (max-width: 480px) {
+    padding: 0 12px;
+  }
 }
 
 /* This is the class you passed as containerClass in Slide.jsx */
@@ -29,12 +39,12 @@
 
 /* This is the class you passed as itemClass in Slide.jsx */
 .carousel-item-padding-40-px {
-  padding: 0 2px;
+  padding: 0 6px;
 }
 
 /* Tighten default library item padding */
 .carousel-container .react-multi-carousel-item {
-  padding: 0 2px !important;
+  padding: 0 6px !important;
 }
 
 /* Carousel arrow styling */

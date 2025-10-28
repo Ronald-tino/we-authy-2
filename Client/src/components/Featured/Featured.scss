@@ -176,6 +176,14 @@
           background-color: transparent;
           font-size: 14px;
           transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+
+          svg {
+            vertical-align: middle;
+            color: var(--green-bright);
+          }
 
           @media screen and (max-width: 480px) {
             font-size: 12px;
@@ -186,6 +194,10 @@
             background-color: var(--green-medium);
             color: var(--text-primary);
             border-color: var(--green-bright);
+
+            svg {
+              color: var(--text-primary);
+            }
           }
         }
       }

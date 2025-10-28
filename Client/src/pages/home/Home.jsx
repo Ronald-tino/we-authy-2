@@ -5,6 +5,14 @@ import Slide from "../../components/Slide/Slide";
 import CatCard from "../../components/CatCard/CatCard";
 import { cards } from "../../data";
 import { Link } from "react-router-dom";
+import {
+  Plane,
+  Package,
+  DollarSign,
+  Ship,
+  BarChart3,
+  Lock,
+} from "lucide-react";
 
 ///////////////////////
 const Home = () => {
@@ -12,7 +20,7 @@ const Home = () => {
     <>
       <div className="home">
         <Featured />
-        <Slide slidesToShow={3} arrowsScroll={1}>
+        <Slide slidesToShow={4} arrowsScroll={2}>
           {cards.map((c) => (
             <CatCard key={c.id} card={c} />
           ))}
@@ -20,63 +28,33 @@ const Home = () => {
 
         {/* Business Lines Section */}
         <div className="business-lines">
-          <div className="business-line">
-            <div className="business-line__header">
-              <h2 className="business-line__title">Luggage Share</h2>
-              <p className="business-line__subtitle">
-                Find travelers with extra luggage space for your goods
-              </p>
-              <Link to="/gigs" className="business-line__cta-button">
-                Explore Luggage Share →
-              </Link>
+          <Link to="/gigs" className="business-tile">
+            <div className="icon-group">
+              <Plane size={28} />
+              <Package size={28} />
+              <DollarSign size={28} />
             </div>
-            <div className="business-line__features">
-              <div className="feature-card">
-                <div className="feature-icon">✈️</div>
-                <h3>Travel with Extra Space</h3>
-                <p>Connect with travelers who have luggage capacity</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-icon">📦</div>
-                <h3>Send Your Goods</h3>
-                <p>Safely ship items with verified couriers</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-icon">💰</div>
-                <h3>Affordable Pricing</h3>
-                <p>Competitive rates per kilogram</p>
-              </div>
-            </div>
-          </div>
+            <h2 className="business-tile__title">Luggage Share</h2>
+            <p className="business-tile__description">
+              Find travelers with extra luggage space for your goods. Connect
+              with verified couriers, ship items safely, and enjoy competitive
+              rates per kilogram.
+            </p>
+          </Link>
 
-          <div className="business-line">
-            <div className="business-line__header">
-              <h2 className="business-line__title">Container Share</h2>
-              <p className="business-line__subtitle">
-                Discover shipping containers with available cargo space
-              </p>
-              <Link to="/containers" className="business-line__cta-button">
-                Explore Container Share →
-              </Link>
+          <Link to="/containers" className="business-tile">
+            <div className="icon-group">
+              <Ship size={28} />
+              <BarChart3 size={28} />
+              <Lock size={28} />
             </div>
-            <div className="business-line__features">
-              <div className="feature-card">
-                <div className="feature-icon">🚢</div>
-                <h3>Shipping Containers</h3>
-                <p>20ft, 40ft, and High Cube containers available</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-icon">📊</div>
-                <h3>Bulk Cargo</h3>
-                <p>Ship large volumes at competitive rates</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-icon">🔒</div>
-                <h3>Secure Transport</h3>
-                <p>Professional handling and tracking</p>
-              </div>
-            </div>
-          </div>
+            <h2 className="business-tile__title">Container Share</h2>
+            <p className="business-tile__description">
+              Discover shipping containers with available cargo space. Ship
+              large volumes at competitive rates with professional handling and
+              tracking.
+            </p>
+          </Link>
         </div>
       </div>
     </>

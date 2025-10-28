@@ -5,18 +5,18 @@ import "./Slide.scss";
 
 const Slide = ({
   children,
-  slidesToShow = 2,
+  slidesToShow = 4,
   arrowsScroll = 1,
   infinite = true,
   showDots = false,
   autoPlay = false,
 }) => {
   const responsive = {
-    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: slidesToShow },
-    desktop: { breakpoint: { max: 3000, min: 1024 }, items: slidesToShow },
-    tablet: { breakpoint: { max: 1024, min: 768 }, items: Math.min(3, slidesToShow) },
-    mobile: { breakpoint: { max: 768, min: 480 }, items: Math.min(2, slidesToShow) },
-    smallMobile: { breakpoint: { max: 480, min: 0 }, items: 1 },
+    superLargeDesktop: { breakpoint: { max: 4000, min: 1400 }, items: 5 },
+    desktop: { breakpoint: { max: 1400, min: 1024 }, items: 4 },
+    tablet: { breakpoint: { max: 1024, min: 768 }, items: 3 },
+    mobile: { breakpoint: { max: 768, min: 480 }, items: 2.5 },
+    smallMobile: { breakpoint: { max: 480, min: 0 }, items: 1.5 },
   };
 
   return (

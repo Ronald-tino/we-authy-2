@@ -181,6 +181,22 @@
       gap: 24px;
       font-weight: 500;
 
+      .link {
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+
+        &:hover {
+          color: var(--green-bright);
+        }
+
+        &.active {
+          color: var(--green-bright);
+          font-weight: 600;
+        }
+      }
+
       @media screen and (max-width: 1024px) {
         gap: 16px;
         font-size: 14px;
