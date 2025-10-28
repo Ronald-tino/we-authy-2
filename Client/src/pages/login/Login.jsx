@@ -57,17 +57,13 @@ function Login() {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <div className="logo">
-              <picture>
-                <source srcSet="/img/OFFICIAL-LOGO.webp" type="image/webp" />
-                <img
-                  src="/img/OFFICIAL-LOGO.png"
-                  alt="LuggageShare Logo"
-                  className="logo-img"
-                  width="180"
-                  height="60"
-                  loading="eager"
-                />
-              </picture>
+              <img
+                src="/img/OFFICIAL-LOGO.svg"
+                alt="LuggageShare Logo"
+                className="logo-img"
+                width="180"
+                height="60"
+              />
             </div>
           </motion.div>
 

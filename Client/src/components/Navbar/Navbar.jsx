@@ -88,18 +88,13 @@ function Navbar() {
       <div className="container">
         <div className="logo">
           <Link className="link" to="/">
-            <picture>
-              <source srcSet="/img/OFFICIAL-LOGO.webp" type="image/webp" />
-              <img
-                src="/img/OFFICIAL-LOGO.png"
-                alt="LuggageShare Logo"
-                className="logo-img official"
-                width="180"
-                height="60"
-                loading="eager"
-                fetchPriority="high"
-              />
-            </picture>
+            <img
+              src="/img/OFFICIAL-LOGO.svg"
+              alt="LuggageShare Logo"
+              className="logo-img official"
+              width="180"
+              height="60"
+            />
           </Link>
         </div>
 
