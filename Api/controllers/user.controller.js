@@ -47,9 +47,38 @@ export const deleteUser = async (req, res, next) => {
 };
 
 export const getUser = async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-  res.status(200).send(user);
+    if (!user) {
+      return next(createError(404, "User not found"));
+    }
+
+    res.status(200).send(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getPublicUser = async (req, res, next) => {
+  try {
+    console.log("📖 Fetching public profile for user:", req.params.id);
+
+    const user = await User.findById(req.params.id).select(
+      "username img country desc isSeller totalStars starNumber tripsCompleted createdAt"
+    );
+
+    if (!user) {
+      console.log("❌ User not found:", req.params.id);
+      return next(createError(404, "User not found"));
+    }
+
+    console.log("✅ Public profile found for:", user.username);
+    res.status(200).send(user);
+  } catch (err) {
+    console.error("❌ Error fetching public profile:", err.message);
+    next(err);
+  }
 };
 
 export const becomeSeller = async (req, res, next) => {

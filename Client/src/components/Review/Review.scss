@@ -36,6 +36,26 @@
     display: flex;
     align-items: center;
     gap: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 12px;
+    margin: -8px;
+
+    &:hover {
+      background: rgba(34, 197, 94, 0.05);
+
+      .pp {
+        transform: scale(1.05);
+        border-color: var(--green-bright);
+        box-shadow: 0 6px 18px rgba(34, 197, 94, 0.4);
+      }
+
+      .info span {
+        color: var(--green-bright);
+      }
+    }
 
     .pp {
       height: 65px;
@@ -54,6 +74,7 @@
         color: var(--text-primary);
         display: block;
         margin-bottom: 5px;
+        transition: color 0.3s ease;
       }
     }
 

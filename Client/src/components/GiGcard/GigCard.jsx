@@ -165,7 +165,14 @@ const GigCard = ({ item }) => {
       <div className="gig-card">
         {/* Header */}
         <div className="gig-card__header">
-          <div className="gig-card__user">
+          <div
+            className="gig-card__user"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigate(`/profile/${item.userId}`);
+            }}
+          >
             <img
               className="gig-card__avatar"
               src={

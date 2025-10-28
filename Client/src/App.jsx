@@ -85,6 +85,10 @@ function App() {
           element: <Profile />,
         },
         {
+          path: "/profile/:userId",
+          element: <Profile />,
+        },
+        {
           path: "/settings",
           element: <Settings />,
         },

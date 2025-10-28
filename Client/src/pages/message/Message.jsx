@@ -38,6 +38,12 @@ const Message = () => {
       }),
   });
 
+  // Determine other user ID for profile link
+  const otherUserId =
+    conversationData?.sellerId === currentUser?._id
+      ? conversationData?.buyerId
+      : conversationData?.sellerId;
+
   const mutation = useMutation({
     mutationFn: (message) => {
       return newRequest.post(`/messages`, message);
@@ -144,7 +150,7 @@ const Message = () => {
             ← Back to Messages
           </Link>
           <div className="chat-info">
-            <div className="chat-user-info">
+            <Link to={`/profile/${otherUserId}`} className="chat-user-info">
               <img
                 src={conversationData?.otherUser?.img || "/img/noavatar.png"}
                 alt={`${
@@ -162,7 +168,7 @@ const Message = () => {
                   </span>
                 )}
               </div>
-            </div>
+            </Link>
             <span className="message-count">{data?.length || 0} messages</span>
           </div>
         </div>

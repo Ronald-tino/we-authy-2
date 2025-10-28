@@ -100,6 +100,18 @@
       .conversation-avatar {
         position: relative;
         flex-shrink: 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 4px;
+        border-radius: 50%;
+        margin: -4px;
+
+        &:hover {
+          .avatar {
+            border-color: var(--green-bright);
+            transform: scale(1.05);
+          }
+        }
 
         .avatar {
           width: 48px;
@@ -107,6 +119,7 @@
           border-radius: 50%;
           object-fit: cover;
           border: 2px solid var(--border-secondary);
+          transition: all 0.3s ease;
 
           @media screen and (max-width: 768px) {
             width: 40px;
@@ -129,6 +142,8 @@
       .conversation-content {
         flex: 1;
         min-width: 0;
+        text-decoration: none;
+        cursor: pointer;
 
         .conversation-header {
           display: flex;
@@ -149,6 +164,7 @@
               overflow: hidden;
               text-overflow: ellipsis;
               max-width: 200px;
+              transition: color 0.3s ease;
 
               @media screen and (max-width: 768px) {
                 font-size: 15px;

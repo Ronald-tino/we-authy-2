@@ -65,6 +65,25 @@
           display: flex;
           align-items: center;
           gap: 12px;
+          text-decoration: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          padding: 8px;
+          border-radius: 8px;
+          margin: -8px;
+
+          &:hover {
+            background: rgba(22, 219, 101, 0.05);
+
+            .chat-user-avatar {
+              border-color: var(--green-bright);
+              transform: scale(1.05);
+            }
+
+            .chat-user-details h2 {
+              color: var(--green-bright);
+            }
+          }
 
           .chat-user-avatar {
             width: 40px;
@@ -72,6 +91,7 @@
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--border-secondary);
+            transition: all 0.3s ease;
 
             @media screen and (max-width: 480px) {
               width: 36px;
@@ -85,6 +105,7 @@
               font-size: 18px;
               font-weight: 600;
               margin: 0 0 2px 0;
+              transition: color 0.3s ease;
 
               @media screen and (max-width: 480px) {
                 font-size: 16px;

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import CountrySelect from "../../components/CountrySelect/CountrySelect";
+import StarRating from "../../components/StarRating/StarRating";
 import upload from "../../utils/upload";
 import "./Profile.scss";
 
@@ -52,9 +54,14 @@ const Toast = ({ message, type, onClose }) => {
 };
 
 function Profile() {
+  const { userId: viewingUserId } = useParams(); // User ID from URL params
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   // Handle both nested {info: {_id}} and flat {_id} structure
-  const userId = currentUser?.info?._id || currentUser?._id;
+  const currentUserId = currentUser?.info?._id || currentUser?._id;
+
+  // Determine if viewing own profile or someone else's
+  const isOwnProfile = !viewingUserId || viewingUserId === currentUserId;
+  const userId = viewingUserId || currentUserId;
 
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -65,17 +72,41 @@ function Profile() {
   const queryClient = useQueryClient();
 
   // Fetch user data from the API
+  // Use public endpoint if viewing someone else's profile
   const {
     isLoading,
     error,
     data: userData,
   } = useQuery({
-    queryKey: ["user", userId],
+    queryKey: ["user", userId, isOwnProfile],
     queryFn: async () => {
-      const res = await newRequest.get(`/users/${userId}`);
-      return res.data;
+      const endpoint = isOwnProfile
+        ? `/users/${userId}`
+        : `/users/public/${userId}`;
+
+      try {
+        const res = await newRequest.get(endpoint);
+        return res.data;
+      } catch (err) {
+        // Fallback: If public endpoint fails and user is logged in, try authenticated endpoint
+        if (!isOwnProfile && err.response?.status === 404) {
+          console.warn(
+            "Public endpoint failed, trying authenticated endpoint as fallback"
+          );
+          try {
+            const fallbackRes = await newRequest.get(`/users/${userId}`);
+            // Remove sensitive data client-side if we had to use auth endpoint
+            const { email, phone, password, ...publicData } = fallbackRes.data;
+            return publicData;
+          } catch (fallbackErr) {
+            throw err; // Throw original error if fallback also fails
+          }
+        }
+        throw err;
+      }
     },
     enabled: !!userId,
+    retry: false, // Don't retry since we have custom fallback logic
   });
 
   const [profileData, setProfileData] = useState({
@@ -353,7 +384,7 @@ function Profile() {
                       <span>Uploading...</span>
                     </div>
                   )}
-                  {isEditing && !uploadingImage && (
+                  {isOwnProfile && isEditing && !uploadingImage && (
                     <>
                       <button
                         className="avatar-edit-btn"
@@ -421,9 +452,26 @@ function Profile() {
                   </svg>
                   {profileData.location || "Not specified"}
                 </p>
+
+                {/* Star Rating Display */}
+                {userData && userData.starNumber > 0 && (
+                  <div className="profile-rating">
+                    <StarRating
+                      rating={userData.totalStars / userData.starNumber}
+                      totalReviews={userData.starNumber}
+                      size="medium"
+                      showNumber={true}
+                    />
+                  </div>
+                )}
+
                 <div className="profile-stats">
                   <div className="stat">
-                    <span className="stat-value">{profileData.rating}</span>
+                    <span className="stat-value">
+                      {userData && userData.starNumber > 0
+                        ? (userData.totalStars / userData.starNumber).toFixed(1)
+                        : "N/A"}
+                    </span>
                     <span className="stat-label">Rating</span>
                   </div>
                   <div className="stat">
@@ -445,7 +493,21 @@ function Profile() {
             </div>
 
             <div className="header-actions">
-              {!isEditing && (
+              {!isOwnProfile && (
+                <div className="public-profile-badge">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M3 12h12"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Public Profile
+                </div>
+              )}
+              {isOwnProfile && !isEditing && (
                 <button
                   className="action-btn primary"
                   onClick={() => setIsEditing(true)}
@@ -484,7 +546,7 @@ function Profile() {
               >
                 <h2 className="section-title">About</h2>
                 <div className="section-content">
-                  {isEditing ? (
+                  {isOwnProfile && isEditing ? (
                     <div className="input-group">
                       <textarea
                         className={`bio-input ${errors.bio ? "error" : ""}`}
@@ -514,56 +576,19 @@ function Profile() {
               </motion.div>
 
               {/* Contact Information */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="profile-section"
-              >
-                <h2 className="section-title">Contact Information</h2>
-                <div className="section-content">
-                  <div className="info-grid">
-                    <div className="info-item">
-                      <label className="info-label">Email</label>
-                      <div className="info-value-with-icon">
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <span className="info-value">{profileData.email}</span>
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <label className="info-label">Phone</label>
-                      {isEditing ? (
-                        <div className="input-group">
-                          <input
-                            type="tel"
-                            className={`info-input ${
-                              errors.phone ? "error" : ""
-                            }`}
-                            value={profileData.phone}
-                            onChange={(e) =>
-                              handleInputChange("phone", e.target.value)
-                            }
-                            placeholder="+1 (555) 123-4567"
-                          />
-                          {errors.phone && (
-                            <span className="error-text">{errors.phone}</span>
-                          )}
-                        </div>
-                      ) : (
+              {/* Only show contact info section for own profile */}
+              {isOwnProfile && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="profile-section"
+                >
+                  <h2 className="section-title">Contact Information</h2>
+                  <div className="section-content">
+                    <div className="info-grid">
+                      <div className="info-item">
+                        <label className="info-label">Email</label>
                         <div className="info-value-with-icon">
                           <svg
                             width="16"
@@ -572,7 +597,7 @@ function Profile() {
                             fill="none"
                           >
                             <path
-                              d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                               stroke="currentColor"
                               strokeWidth="2"
                               strokeLinecap="round"
@@ -580,62 +605,104 @@ function Profile() {
                             />
                           </svg>
                           <span className="info-value">
-                            {profileData.phone || "Not provided"}
+                            {profileData.email}
                           </span>
                         </div>
-                      )}
-                    </div>
+                      </div>
 
-                    <div className="info-item">
-                      <label className="info-label">
-                        Location <span className="required">*</span>
-                      </label>
-                      {isEditing ? (
-                        <div className="input-group">
-                          <CountrySelect
-                            value={profileData.location}
-                            onChange={(e) =>
-                              handleInputChange("location", e.target.value)
-                            }
-                            placeholder="Select your country"
-                            className={errors.location ? "error" : ""}
-                          />
-                          {errors.location && (
-                            <span className="error-text">
-                              {errors.location}
+                      <div className="info-item">
+                        <label className="info-label">Phone</label>
+                        {isEditing ? (
+                          <div className="input-group">
+                            <input
+                              type="tel"
+                              className={`info-input ${
+                                errors.phone ? "error" : ""
+                              }`}
+                              value={profileData.phone}
+                              onChange={(e) =>
+                                handleInputChange("phone", e.target.value)
+                              }
+                              placeholder="+1 (555) 123-4567"
+                            />
+                            {errors.phone && (
+                              <span className="error-text">{errors.phone}</span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="info-value-with-icon">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            <span className="info-value">
+                              {profileData.phone || "Not provided"}
                             </span>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="info-value-with-icon">
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
-                              stroke="currentColor"
-                              strokeWidth="2"
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="info-item">
+                        <label className="info-label">
+                          Location <span className="required">*</span>
+                        </label>
+                        {isEditing ? (
+                          <div className="input-group">
+                            <CountrySelect
+                              value={profileData.location}
+                              onChange={(e) =>
+                                handleInputChange("location", e.target.value)
+                              }
+                              placeholder="Select your country"
+                              className={errors.location ? "error" : ""}
                             />
-                            <circle
-                              cx="12"
-                              cy="10"
-                              r="3"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            />
-                          </svg>
-                          <span className="info-value">
-                            {profileData.location}
-                          </span>
-                        </div>
-                      )}
+                            {errors.location && (
+                              <span className="error-text">
+                                {errors.location}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="info-value-with-icon">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                              <circle
+                                cx="12"
+                                cy="10"
+                                r="3"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                            </svg>
+                            <span className="info-value">
+                              {profileData.location}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              )}
 
               {/* Activity Summary */}
               <motion.div
@@ -727,9 +794,9 @@ function Profile() {
             </div>
           </div>
 
-          {/* Sticky Bottom Save Bar - Only show in edit mode */}
+          {/* Sticky Bottom Save Bar - Only show in edit mode on own profile */}
           <AnimatePresence>
-            {isEditing && (
+            {isOwnProfile && isEditing && (
               <motion.div
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}

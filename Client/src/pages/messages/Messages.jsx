@@ -96,13 +96,21 @@ const Messages = () => {
                 ? !conversation.readBySeller
                 : !conversation.readByBuyer;
 
+              // Get other user ID for profile link
+              const otherUserId = isSellerInConversation
+                ? conversation.buyerId
+                : conversation.sellerId;
+
               return (
-                <Link
-                  to={`/message/${conversation.id}`}
+                <div
                   className={`conversation-card ${isUnread ? "unread" : ""}`}
                   key={conversation.id}
                 >
-                  <div className="conversation-avatar">
+                  <Link
+                    to={`/profile/${otherUserId}`}
+                    className="conversation-avatar"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <img
                       src={conversation.otherUser?.img || "/img/noavatar.png"}
                       alt={`${
@@ -111,9 +119,12 @@ const Messages = () => {
                       className="avatar"
                     />
                     {isUnread && <div className="unread-indicator"></div>}
-                  </div>
+                  </Link>
 
-                  <div className="conversation-content">
+                  <Link
+                    to={`/message/${conversation.id}`}
+                    className="conversation-content"
+                  >
                     <div className="conversation-header">
                       <div className="conversation-name-container">
                         <h3 className="conversation-name">
@@ -134,7 +145,7 @@ const Messages = () => {
                       {conversation?.lastMessage?.substring(0, 80)}
                       {conversation?.lastMessage?.length > 80 && "..."}
                     </p>
-                  </div>
+                  </Link>
 
                   <div className="conversation-actions">
                     {isUnread && (
@@ -151,7 +162,7 @@ const Messages = () => {
                       </button>
                     )}
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>

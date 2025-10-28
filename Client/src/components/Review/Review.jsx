@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import { Link } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import fixCloudinaryUrl from "../../utils/fixCloudinaryUrl";
 import "./Review.scss";
@@ -14,7 +15,7 @@ const Review = ({ review }) => {
 
   return (
     <div className="review">
-      <div className="user">
+      <Link to={`/profile/${review.userId}`} className="user">
         {isLoading ? (
           <div className="loading">Loading user...</div>
         ) : error ? (
@@ -34,7 +35,7 @@ const Review = ({ review }) => {
             </div>
           </>
         )}
-      </div>
+      </Link>
 
       <div className="stars">
         {Array(review.star)
