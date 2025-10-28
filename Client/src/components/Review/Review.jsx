@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import newRequest from "../../utils/newRequest";
+import fixCloudinaryUrl from "../../utils/fixCloudinaryUrl";
 import "./Review.scss";
 const Review = ({ review }) => {
   const { isLoading, error, data } = useQuery({
@@ -22,7 +23,7 @@ const Review = ({ review }) => {
           <>
             <img
               className="pp"
-              src={data?.img || "/img/noavatar.png"}
+              src={fixCloudinaryUrl(data?.img) || "/img/noavatar.png"}
               alt={data?.username || "User"}
             />
             <div className="info">

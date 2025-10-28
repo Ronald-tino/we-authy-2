@@ -3,6 +3,7 @@ import "./GigCard.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
+import fixCloudinaryUrl from "../../utils/fixCloudinaryUrl";
 import {
   calculateDaysRemaining,
   getExpirationMessage,
@@ -170,7 +171,7 @@ const GigCard = ({ item }) => {
               src={
                 isLoading || error
                   ? "/img/noavatar.png"
-                  : data?.img || "/img/noavatar.png"
+                  : fixCloudinaryUrl(data?.img) || "/img/noavatar.png"
               }
               alt={isLoading || error ? "User" : data?.username || "User"}
             />
@@ -371,7 +372,7 @@ const GigCard = ({ item }) => {
                 <div className="gig-card__interested-item" key={u._id}>
                   <img
                     className="gig-card__interested-avatar"
-                    src={u.img || "/img/noavatar.png"}
+                    src={fixCloudinaryUrl(u.img) || "/img/noavatar.png"}
                     alt={u.username || "User"}
                   />
                   <span className="gig-card__interested-name">

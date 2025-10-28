@@ -3,6 +3,7 @@ import "./Gig.scss";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
+import fixCloudinaryUrl from "../../utils/fixCloudinaryUrl";
 import Reviews from "../../components/Reviews/Reviews";
 import {
   calculateDaysRemaining,
@@ -303,7 +304,10 @@ function Gig() {
             <div className="seller">
               <h2>About The Seller</h2>
               <div className="seller__user">
-                <img src={dataUser?.img || "/img/noavatar.png"} alt="" />
+                <img
+                  src={fixCloudinaryUrl(dataUser?.img) || "/img/noavatar.png"}
+                  alt=""
+                />
                 <div className="seller__info">
                   <span>{dataUser?.username}</span>
                   {avgStars() > 0 && (
