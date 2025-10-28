@@ -6,7 +6,7 @@ import createError from "../utils/createError.js";
 ////////////////////////////////////////////////////////
 export const register = async (req, res, next) => {
   try {
-    const hash = await bcrypt.hash(req.body.password, 5); // Add 'await' here
+    const hash = await bcrypt.hash(req.body.password, 10); // Secure hash rounds
     const newUser = new User({
       ...req.body,
       password: hash,
@@ -19,7 +19,8 @@ export const register = async (req, res, next) => {
         id: newUser._id,
         isSeller: newUser.isSeller,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" } // Token expires in 7 days
     );
 
     const { password, ...info } = newUser._doc;
@@ -62,7 +63,8 @@ export const login = async (req, res, next) => {
         id: user._id,
         isSeller: user.isSeller,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" } // Token expires in 7 days
     );
     //////////////////////////////////////////////////////
     const { password: _password, ...info } = user._doc;
