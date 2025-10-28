@@ -89,7 +89,7 @@ function Navbar() {
         <div className="logo">
           <Link className="link" to="/">
             <img
-              src="/img/OFFICIAL-LOGO.svg"
+              src="https://res.cloudinary.com/dzmrfifoq/image/upload/v1761657923/OFFICIAL-LOGO_ccpbzm.png"
               alt="LuggageShare Logo"
               className="logo-img official"
               width="180"

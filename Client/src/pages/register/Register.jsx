@@ -80,7 +80,7 @@ function Register() {
           >
             <div className="logo">
               <img
-                src="/img/OFFICIAL-LOGO.svg"
+                src="https://res.cloudinary.com/dzmrfifoq/image/upload/v1761657923/OFFICIAL-LOGO_ccpbzm.png"
                 alt="LuggageShare Logo"
                 className="logo-img"
                 width="180"
