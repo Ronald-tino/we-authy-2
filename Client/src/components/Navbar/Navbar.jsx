@@ -137,7 +137,14 @@ function Navbar() {
             to="/gigs"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Explore Gigs
+            Explore Luggage
+          </Link>
+          <Link
+            className={`link${pathname === "/containers" ? " active" : ""}`}
+            to="/containers"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Explore Containers
           </Link>
           <Link
             className={`link${pathname === "/orders" ? " active" : ""}`}
@@ -155,7 +162,7 @@ function Navbar() {
           </Link>
 
           {/* Desktop-only items */}
-          <span className="desktop-only">LugShare Business</span>
+          <span className="desktop-only">Container Share</span>
 
           {!isSeller && currentUser && (
             <Link
@@ -242,22 +249,46 @@ function Navbar() {
                       </div>
                       {isInSellerMode && (
                         <>
-                          <Link
-                            className="link"
-                            to="/mygigs"
-                            onClick={() => setMobileMenuOpen(false)}
-                            role="menuitem"
-                          >
-                            My Gigs
-                          </Link>
-                          <Link
-                            className="link"
-                            to="/add"
-                            onClick={() => setMobileMenuOpen(false)}
-                            role="menuitem"
-                          >
-                            Add New Gig
-                          </Link>
+                          <div className="business-section">
+                            <span className="section-title">Luggage Share</span>
+                            <Link
+                              className="link sub-link"
+                              to="/mygigs"
+                              onClick={() => setMobileMenuOpen(false)}
+                              role="menuitem"
+                            >
+                              My Gigs
+                            </Link>
+                            <Link
+                              className="link sub-link"
+                              to="/add"
+                              onClick={() => setMobileMenuOpen(false)}
+                              role="menuitem"
+                            >
+                              Add New Gig
+                            </Link>
+                          </div>
+                          <div className="business-section">
+                            <span className="section-title">
+                              Container Share
+                            </span>
+                            <Link
+                              className="link sub-link"
+                              to="/myContainers"
+                              onClick={() => setMobileMenuOpen(false)}
+                              role="menuitem"
+                            >
+                              My Containers
+                            </Link>
+                            <Link
+                              className="link sub-link"
+                              to="/add-container"
+                              onClick={() => setMobileMenuOpen(false)}
+                              role="menuitem"
+                            >
+                              Add New Container
+                            </Link>
+                          </div>
                         </>
                       )}
                     </>

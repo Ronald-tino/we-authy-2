@@ -9,6 +9,10 @@ import Add from "./pages/add/Add";
 import Gig from "./pages/gig/Gig";
 import Gigs from "./pages/gigs/Gigs";
 import About from "./pages/about/About";
+import AddContainer from "./pages/addContainer/AddContainer";
+import Container from "./pages/container/Container";
+import Containers from "./pages/containers/Containers";
+import MyContainers from "./pages/myContainers/MyContainers";
 
 import Messages from "./pages/messages/Messages";
 import Orders from "./pages/orders/Orders";
@@ -67,6 +71,22 @@ function App() {
         {
           path: "/MyGigs",
           element: <MyGigs />,
+        },
+        {
+          path: "/add-container",
+          element: <AddContainer />,
+        },
+        {
+          path: "/container/:id",
+          element: <Container />,
+        },
+        {
+          path: "/containers",
+          element: <Containers />,
+        },
+        {
+          path: "/myContainers",
+          element: <MyContainers />,
         },
         {
           path: "/messages",

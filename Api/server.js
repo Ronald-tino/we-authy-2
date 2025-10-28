@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
 import gigRoute from "./routes/gig.route.js";
+import containerRoute from "./routes/container.route.js";
 import reviewRoute from "./routes/review.route.js";
 import orderRoute from "./routes/order.route.js";
 import conversationRoute from "./routes/conversation.route.js";
@@ -68,6 +69,7 @@ const connect = async () => {
 // Fix: Add missing / in all routes
 app.use("/api/users", userRoute);
 app.use("/api/gigs", gigRoute);
+app.use("/api/containers", containerRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/conversations", conversationRoute);
