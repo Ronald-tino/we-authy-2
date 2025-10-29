@@ -44,6 +44,7 @@ function Register() {
 
       const res = await newRequest.post("/auth/register", {
         ...user,
+        username: user.username.trim().toLowerCase(),
         img: url,
       });
 

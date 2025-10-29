@@ -9,6 +9,7 @@ export const register = async (req, res, next) => {
     const hash = await bcrypt.hash(req.body.password, 10); // Secure hash rounds
     const newUser = new User({
       ...req.body,
+      username: req.body.username.trim().toLowerCase(),
       password: hash,
     });
     await newUser.save();
@@ -48,7 +49,7 @@ export const login = async (req, res, next) => {
       return next(createError(400, "Username and password are required"));
     }
 
-    const trimmedUsername = username.trim();
+    const trimmedUsername = username.trim().toLowerCase();
     const user = await User.findOne({ username: trimmedUsername });
     // Use generic error messages to avoid leaking which field was wrong
     if (!user) return next(createError(401, "Invalid username or password"));

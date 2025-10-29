@@ -19,7 +19,10 @@ function Login() {
     setError(null);
     setIsSubmitting(true);
     try {
-      const res = await newRequest.post("/auth/login", { username, password });
+      const res = await newRequest.post("/auth/login", {
+        username: username.trim().toLowerCase(),
+        password,
+      });
       localStorage.setItem("currentUser", JSON.stringify(res.data));
 
       // Dispatch custom event to notify context of user update

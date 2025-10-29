@@ -153,3 +153,4 @@ Duration: 3 seconds, infinite loop
 This visual guide complements the technical documentation and helps understand the UI structure at a glance.
 
 
+
