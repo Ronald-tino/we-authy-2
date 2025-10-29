@@ -2,6 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
 import { useMode } from "../../context/ModeContext";
+import {
+  MdHome,
+  MdInfo,
+  MdLuggage,
+  MdInventory2,
+  MdShoppingBag,
+  MdMessage,
+  MdPerson,
+  MdSettings,
+  MdWork,
+  MdAdd,
+  MdInventory,
+  MdAddBox,
+  MdLogout,
+} from "react-icons/md";
 import "./Navbar.scss";
 
 function Navbar() {
@@ -123,6 +138,7 @@ function Navbar() {
             to="/"
             onClick={() => setMobileMenuOpen(false)}
           >
+            <MdHome className="mobile-icon" />
             Home
           </Link>
           <Link
@@ -130,6 +146,7 @@ function Navbar() {
             to="/about"
             onClick={() => setMobileMenuOpen(false)}
           >
+            <MdInfo className="mobile-icon" />
             About
           </Link>
           <Link
@@ -137,6 +154,7 @@ function Navbar() {
             to="/gigs"
             onClick={() => setMobileMenuOpen(false)}
           >
+            <MdLuggage className="mobile-icon" />
             Explore Luggage
           </Link>
           <Link
@@ -144,6 +162,7 @@ function Navbar() {
             to="/containers"
             onClick={() => setMobileMenuOpen(false)}
           >
+            <MdInventory2 className="mobile-icon" />
             Explore Containers
           </Link>
           <Link
@@ -151,6 +170,7 @@ function Navbar() {
             to="/orders"
             onClick={() => setMobileMenuOpen(false)}
           >
+            <MdShoppingBag className="mobile-icon" />
             Orders
           </Link>
           <Link
@@ -158,11 +178,11 @@ function Navbar() {
             to="/messages"
             onClick={() => setMobileMenuOpen(false)}
           >
+            <MdMessage className="mobile-icon" />
             Messages
           </Link>
 
           {/* Desktop-only items */}
-          <span className="desktop-only">Container Share</span>
 
           {!isSeller && currentUser && (
             <Link
@@ -190,114 +210,124 @@ function Navbar() {
                 }
               }}
             >
-              <img
-                src={currentUser?.img || "/img/noavatar.png"}
-                alt="Profile"
-              />
-              <span className="desktop-only">
-                {currentUser?.username || "Sign in"}
-              </span>
-              <span className="mobile-only">
-                {currentUser?.username || "Profile"}
-              </span>
-              {open && (
-                <div className="options" role="menu" aria-label="User options">
-                  <Link
-                    className="link"
-                    to="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                    role="menuitem"
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    className="link"
-                    to="/settings"
-                    onClick={() => setMobileMenuOpen(false)}
-                    role="menuitem"
-                  >
-                    Settings
-                  </Link>
-                  {isSeller && (
-                    <>
-                      <div className="mode-toggle-container">
-                        <button
-                          className={`mode-toggle ${
-                            currentMode === "seller"
-                              ? "seller-active"
-                              : "user-active"
-                          }`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggleMode();
-                          }}
-                          role="menuitem"
-                        >
-                          {currentMode === "seller" ? (
-                            <>
-                              <span className="mode-icon">👤</span>
-                              <span>Switch to User Mode</span>
-                            </>
-                          ) : (
-                            <>
-                              <span className="mode-icon">💼</span>
-                              <span>Switch to Seller Mode</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      {isInSellerMode && (
+              <div className="user-info">
+                <img
+                  src={currentUser?.img || "/img/noavatar.png"}
+                  alt="Profile"
+                />
+                <span className="desktop-only">
+                  {currentUser?.username || "Sign in"}
+                </span>
+                <span className="mobile-only">
+                  {currentUser?.username || "Profile"}
+                </span>
+              </div>
+              {/* Desktop: show on click, Mobile: always show */}
+              <div
+                className={`options ${
+                  open ? "desktop-open" : ""
+                } mobile-always-open`}
+                role="menu"
+                aria-label="User options"
+              >
+                {isSeller && (
+                  <div className="mode-toggle-container">
+                    <button
+                      className={`mode-toggle ${
+                        currentMode === "seller"
+                          ? "seller-active"
+                          : "user-active"
+                      }`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleMode();
+                      }}
+                      role="menuitem"
+                    >
+                      {currentMode === "seller" ? (
                         <>
-                          <div className="business-section">
-                            <span className="section-title">Luggage Share</span>
-                            <Link
-                              className="link sub-link"
-                              to="/mygigs"
-                              onClick={() => setMobileMenuOpen(false)}
-                              role="menuitem"
-                            >
-                              My Gigs
-                            </Link>
-                            <Link
-                              className="link sub-link"
-                              to="/add"
-                              onClick={() => setMobileMenuOpen(false)}
-                              role="menuitem"
-                            >
-                              Add New Gig
-                            </Link>
-                          </div>
-                          <div className="business-section">
-                            <span className="section-title">
-                              Container Share
-                            </span>
-                            <Link
-                              className="link sub-link"
-                              to="/myContainers"
-                              onClick={() => setMobileMenuOpen(false)}
-                              role="menuitem"
-                            >
-                              My Containers
-                            </Link>
-                            <Link
-                              className="link sub-link"
-                              to="/add-container"
-                              onClick={() => setMobileMenuOpen(false)}
-                              role="menuitem"
-                            >
-                              Add New Container
-                            </Link>
-                          </div>
+                          <span className="mode-icon">👤</span>
+                          <span>Switch to User Mode</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="mode-icon">💼</span>
+                          <span>Switch to Seller Mode</span>
                         </>
                       )}
-                    </>
-                  )}
-                  <Link className="link" onClick={handleLogout} role="menuitem">
-                    Logout
-                  </Link>
-                </div>
-              )}
+                    </button>
+                  </div>
+                )}
+                <Link
+                  className="link"
+                  to="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  role="menuitem"
+                >
+                  <MdPerson className="mobile-icon" />
+                  Profile
+                </Link>
+                <Link
+                  className="link"
+                  to="/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  role="menuitem"
+                >
+                  <MdSettings className="mobile-icon" />
+                  Settings
+                </Link>
+                {isSeller && isInSellerMode && (
+                  <>
+                    <div className="business-section">
+                      <span className="section-title">Luggage Share</span>
+                      <Link
+                        className="link sub-link"
+                        to="/mygigs"
+                        onClick={() => setMobileMenuOpen(false)}
+                        role="menuitem"
+                      >
+                        <MdWork className="mobile-icon" />
+                        My Gigs
+                      </Link>
+                      <Link
+                        className="link sub-link"
+                        to="/add"
+                        onClick={() => setMobileMenuOpen(false)}
+                        role="menuitem"
+                      >
+                        <MdAdd className="mobile-icon" />
+                        Add New Gig
+                      </Link>
+                    </div>
+                    <div className="business-section">
+                      <span className="section-title">Container Share</span>
+                      <Link
+                        className="link sub-link"
+                        to="/myContainers"
+                        onClick={() => setMobileMenuOpen(false)}
+                        role="menuitem"
+                      >
+                        <MdInventory className="mobile-icon" />
+                        My Containers
+                      </Link>
+                      <Link
+                        className="link sub-link"
+                        to="/add-container"
+                        onClick={() => setMobileMenuOpen(false)}
+                        role="menuitem"
+                      >
+                        <MdAddBox className="mobile-icon" />
+                        Add New Container
+                      </Link>
+                    </div>
+                  </>
+                )}
+                <Link className="link" onClick={handleLogout} role="menuitem">
+                  <MdLogout className="mobile-icon" />
+                  Logout
+                </Link>
+              </div>
             </div>
           ) : (
             <>
