@@ -20,6 +20,8 @@ import Message from "./pages/message/Message";
 import Profile from "./pages/profile/Profile";
 import Settings from "./pages/settings/Settings";
 import BecomeSeller from "./pages/becomeSeller/BecomeSeller";
+import Privacy from "./pages/privacy/Privacy";
+import Terms from "./pages/terms/Terms";
 import "./App.scss";
 import MyGigs from "./pages/myGigs/MyGigs";
 import {
@@ -115,6 +117,14 @@ function App() {
         {
           path: "/become-seller",
           element: <BecomeSeller />,
+        },
+        {
+          path: "/privacy-policy",
+          element: <Privacy />,
+        },
+        {
+          path: "/terms-of-service",
+          element: <Terms />,
         },
       ],
     },

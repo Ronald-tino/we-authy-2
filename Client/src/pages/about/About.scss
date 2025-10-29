@@ -1,5 +1,4 @@
 .about-page {
-  
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -142,7 +141,8 @@
             width: 24px;
             height: 24px;
             flex-shrink: 0;
-            filter: brightness(0) saturate(100%) invert(73%) sepia(51%) saturate(1447%) hue-rotate(101deg) brightness(95%) contrast(93%);
+            filter: brightness(0) saturate(100%) invert(73%) sepia(51%)
+              saturate(1447%) hue-rotate(101deg) brightness(95%) contrast(93%);
 
             @media screen and (max-width: 480px) {
               width: 20px;
@@ -278,6 +278,111 @@
             span {
               color: var(--green-bright);
             }
+          }
+        }
+      }
+    }
+  }
+
+  .legal-section {
+    display: flex;
+    justify-content: center;
+    padding: 80px 20px 100px;
+    background-color: var(--bg-tertiary);
+
+    @media screen and (max-width: 768px) {
+      padding: 60px 16px 100px;
+    }
+
+    @media screen and (max-width: 480px) {
+      padding: 40px 12px 100px;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+
+      h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+
+        @media screen and (max-width: 768px) {
+          font-size: 1.75rem;
+        }
+
+        @media screen and (max-width: 480px) {
+          font-size: 1.5rem;
+        }
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        margin-bottom: 32px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+
+        @media screen and (max-width: 768px) {
+          font-size: 1rem;
+        }
+
+        @media screen and (max-width: 480px) {
+          font-size: 0.95rem;
+          margin-bottom: 24px;
+        }
+      }
+
+      .legal-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        @media screen and (max-width: 480px) {
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .legal-button {
+          display: inline-block;
+          padding: 14px 32px;
+          background-color: var(--bg-secondary);
+          color: var(--text-primary);
+          border: 2px solid var(--green-bright);
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 600;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          cursor: pointer;
+
+          @media screen and (max-width: 768px) {
+            padding: 12px 28px;
+            font-size: 0.95rem;
+          }
+
+          @media screen and (max-width: 480px) {
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            width: 100%;
+            max-width: 280px;
+          }
+
+          &:hover {
+            background-color: var(--green-bright);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(22, 219, 101, 0.3);
+          }
+
+          &:active {
+            transform: translateY(0);
           }
         }
       }

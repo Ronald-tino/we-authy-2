@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./About.scss";
 
 function About() {
@@ -20,8 +21,6 @@ function About() {
   return (
     <main className="about-page">
       <div className="container">
-        
-
         <section className="trustedBy">
           <div className="container">
             <h1>TrustedBy</h1>
@@ -117,6 +116,25 @@ function About() {
             </div>
             <div className="item">
               <img src="/img/plane.png.png" alt="" />
+            </div>
+          </div>
+        </section>
+
+        <section className="legal-section">
+          <div className="container">
+            <h2>Legal Information</h2>
+            <p>
+              Your privacy and security are important to us. Please review our
+              legal documents to understand how we operate and protect your
+              information.
+            </p>
+            <div className="legal-buttons">
+              <Link to="/privacy-policy" className="legal-button">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-of-service" className="legal-button">
+                Terms of Service
+              </Link>
             </div>
           </div>
         </section>
