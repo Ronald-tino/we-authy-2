@@ -121,3 +121,6 @@ Thumbs.db
 *.bak
 *.backup
 .vercel
+
+# local only
+inspiration/EnchantQuest/
