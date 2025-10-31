@@ -71,7 +71,7 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await newRequest.post("/auth/logout");
-      localStorage.setItem("currentUser", null);
+      localStorage.removeItem("currentUser");
       localStorage.removeItem("userMode"); // Clear mode on logout
 
       // Dispatch custom event to notify context of user update

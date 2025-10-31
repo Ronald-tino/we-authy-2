@@ -30,7 +30,10 @@ export const register = async (req, res, next) => {
         ? { httpOnly: true, sameSite: "none", secure: true }
         : { httpOnly: true };
 
-    res.cookie("accessToken", token, cookieOptions).status(201).send({ info });
+    res
+      .cookie("accessToken", token, cookieOptions)
+      .status(201)
+      .send({ info, token });
   } catch (err) {
     next(err);
   }
@@ -74,7 +77,10 @@ export const login = async (req, res, next) => {
         ? { httpOnly: true, sameSite: "none", secure: true }
         : { httpOnly: true };
 
-    res.cookie("accessToken", token, cookieOptions).status(200).send({ info });
+    res
+      .cookie("accessToken", token, cookieOptions)
+      .status(200)
+      .send({ info, token });
     //////////////////////////////////////////////////////
   } catch (err) {
     next(err);

@@ -11,4 +11,16 @@ const newRequest = axios.create({
   },
 });
 
+newRequest.interceptors.request.use((config) => {
+  try {
+    const stored = localStorage.getItem("currentUser");
+    const parsed = stored ? JSON.parse(stored) : null;
+    const token = parsed?.token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  } catch (_) {}
+  return config;
+});
+
 export default newRequest;

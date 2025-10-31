@@ -30,20 +30,19 @@ const extractPublicId = (url) => {
 ////////////////////////////////////////////////////////
 
 export const deleteUser = async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  const token = req.cookies.accessToken;
-  if (!token) {
-    return res.status(401).send("Unauthorized Please Login");
-  }
-  jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return next(createError(404, "User not found"));
+    }
     if (req.userId !== user._id.toString()) {
       return next(createError(403, "You can delete only your account"));
     }
     await User.findByIdAndDelete(req.params.id);
     res.status(200).send("User has been deleted");
-  });
-
-  // await User.findByIdAndDelete(req.params.id);
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const getUser = async (req, res, next) => {
@@ -130,9 +129,13 @@ export const becomeSeller = async (req, res, next) => {
     // Send updated token as cookie along with user data
     // Return in same format as login/register: { info: userData }
     res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-      })
+      .cookie(
+        "accessToken",
+        token,
+        process.env.NODE_ENV === "production"
+          ? { httpOnly: true, sameSite: "none", secure: true }
+          : { httpOnly: true }
+      )
       .status(200)
       .json({ info: updatedUser });
   } catch (err) {

@@ -2,7 +2,12 @@ import jwt from "jsonwebtoken";
 import createError from "../utils/createError.js";
 
 export const verifyToken = (req, res, next) => {
-  const token = req.cookies.accessToken;
+  const cookieToken = req.cookies.accessToken;
+  const authHeader = req.headers.authorization || "";
+  const headerToken = authHeader.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : null;
+  const token = cookieToken || headerToken;
   if (!token) {
     return next(createError(401, "Unauthorized Please Login"));
   }

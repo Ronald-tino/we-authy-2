@@ -48,6 +48,7 @@ const corsOptions = {
     if (allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error("Not allowed by CORS"));
   },
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
