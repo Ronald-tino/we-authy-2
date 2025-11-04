@@ -5,8 +5,9 @@ import {
   getPublicUser,
   becomeSeller,
   updateUser,
+  migrateGooglePhotos,
 } from "../controllers/user.controller.js";
-import { verifyToken } from "../middleware/jwt.js";
+import { verifyToken } from "../middleware/firebaseAuth.js";
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ router.get("/public/:id", getPublicUser);
 // Protected routes (auth required)
 // Specific routes MUST come before parameterized routes (/:id)
 router.put("/become-seller", verifyToken, becomeSeller);
+router.post("/migrate-google-photos", verifyToken, migrateGooglePhotos);
 
 // Parameterized routes (/:id) - MUST come last
 router.delete("/:id", verifyToken, deleteUser);

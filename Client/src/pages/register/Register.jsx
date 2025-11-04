@@ -6,6 +6,7 @@ import newRequest from "../../utils/newRequest";
 import { useNavigate, Link } from "react-router-dom";
 import BackgroundGradient from "../../components/ui/background-gradient";
 import CountrySelect from "../../components/CountrySelect/CountrySelect";
+import { signUp } from "../../firebase/auth";
 
 function Register() {
   const [file, setFile] = useState(null);
@@ -17,6 +18,7 @@ function Register() {
     country: "",
     isSeller: false,
     desc: "",
+    phone: "",
   });
 
   const [error, setError] = useState(null);
@@ -35,29 +37,64 @@ function Register() {
       return { ...prev, isSeller: e.target.checked };
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      // Only attempt upload if a file was selected
-      const url = file ? await upload(file) : "";
+    setError(null);
 
-      const res = await newRequest.post("/auth/register", {
-        ...user,
+    // Validate required fields
+    if (!user.username || !user.email || !user.password || !user.country) {
+      setError(
+        "Please fill in all required fields (username, email, password, country)"
+      );
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Template pattern: Create Firebase user first
+      const userCredential = await signUp(user.email, user.password);
+      const firebaseUser = userCredential.user;
+
+      // Upload profile image if provided
+      const imgUrl = file ? await upload(file) : "";
+
+      // Template pattern: After Firebase user creation, write to database (MongoDB in our case)
+      // Wait for successful MongoDB creation before navigating
+      const syncResponse = await newRequest.post("/auth/firebase-user", {
+        firebaseUid: firebaseUser.uid,
+        email: firebaseUser.email,
         username: user.username.trim().toLowerCase(),
-        img: url,
+        img: imgUrl,
+        country: user.country,
+        phone: user.phone || "",
+        desc: user.desc || "",
+        isSeller: user.isSeller || false,
       });
 
-      // Store user data in localStorage (auto-login)
-      localStorage.setItem("currentUser", JSON.stringify(res.data));
+      // Verify MongoDB user was created successfully
+      if (!syncResponse.data?.user) {
+        throw new Error("Failed to create user profile. Please try again.");
+      }
 
-      // Dispatch custom event to notify context of user update
-      window.dispatchEvent(new Event("userUpdated"));
-
+      // AuthContext will automatically sync via onAuthStateChanged
       setLoading(false);
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong!");
+      let message = "Something went wrong!";
+      if (err.code === "auth/email-already-in-use") {
+        message = "An account with this email already exists";
+      } else if (err.code === "auth/invalid-email") {
+        message = "Invalid email address";
+      } else if (err.code === "auth/weak-password") {
+        message = "Password should be at least 6 characters";
+      } else if (err.response?.data?.message) {
+        message = err.response.data.message;
+      } else if (err.message) {
+        message = err.message;
+      }
+      setError(message);
       setLoading(false);
     }
   };
@@ -275,9 +312,22 @@ function Register() {
               </div>
             </div>
 
+            {error && (
+              <motion.div
+                className="error-message"
+                role="alert"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                {String(error)}
+              </motion.div>
+            )}
+
             <motion.button
               type="submit"
               className="register-button"
+              disabled={loading}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.5 }}

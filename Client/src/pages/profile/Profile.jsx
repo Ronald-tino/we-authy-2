@@ -6,6 +6,7 @@ import newRequest from "../../utils/newRequest";
 import CountrySelect from "../../components/CountrySelect/CountrySelect";
 import StarRating from "../../components/StarRating/StarRating";
 import upload from "../../utils/upload";
+import { useAuth } from "../../context/AuthContext";
 import "./Profile.scss";
 
 // Simple toast notification component
@@ -54,25 +55,38 @@ const Toast = ({ message, type, onClose }) => {
 };
 
 function Profile() {
-  const { userId: viewingUserId } = useParams(); // User ID from URL params
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  // Handle both nested {info: {_id}} and flat {_id} structure
-  const currentUserId = currentUser?.info?._id || currentUser?._id;
+  // ALL hooks must be called first, before any conditional returns
+  const { userId: viewingUserId } = useParams();
+  const { currentUser, refreshUser, loading: authLoading } = useAuth();
+  const queryClient = useQueryClient();
 
-  // Determine if viewing own profile or someone else's
-  const isOwnProfile = !viewingUserId || viewingUserId === currentUserId;
-  const userId = viewingUserId || currentUserId;
-
+  // All useState hooks (must be before any conditional returns)
   const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState({
+    username: "",
+    email: "",
+    bio: "",
+    location: "",
+    phone: "",
+    img: "",
+  });
+  const [originalData, setOriginalData] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
   const [uploadingImage, setUploadingImage] = useState(false);
-  const fileInputRef = useRef(null);
-  const queryClient = useQueryClient();
 
-  // Fetch user data from the API
-  // Use public endpoint if viewing someone else's profile
+  // useRef hooks
+  const fileInputRef = useRef(null);
+
+  // Derived values (after all hooks, before useQuery)
+  const currentUserId =
+    currentUser?.firebaseUid || currentUser?.info?._id || currentUser?._id;
+  const isOwnProfile = !viewingUserId || viewingUserId === currentUserId;
+  const userId = viewingUserId || currentUserId;
+  const safeBio = typeof profileData?.bio === "string" ? profileData.bio : "";
+
+  // useQuery MUST come before any conditional returns
   const {
     isLoading,
     error,
@@ -88,7 +102,6 @@ function Profile() {
         const res = await newRequest.get(endpoint);
         return res.data;
       } catch (err) {
-        // Fallback: If public endpoint fails and user is logged in, try authenticated endpoint
         if (!isOwnProfile && err.response?.status === 404) {
           console.warn(
             "Public endpoint failed, trying authenticated endpoint as fallback"
@@ -96,31 +109,21 @@ function Profile() {
           try {
             const fallbackRes = await newRequest.get(`/users/${userId}`);
             // Remove sensitive data client-side if we had to use auth endpoint
+            // eslint-disable-next-line no-unused-vars
             const { email, phone, password, ...publicData } = fallbackRes.data;
             return publicData;
-          } catch (fallbackErr) {
-            throw err; // Throw original error if fallback also fails
+          } catch {
+            throw err;
           }
         }
         throw err;
       }
     },
     enabled: !!userId,
-    retry: false, // Don't retry since we have custom fallback logic
+    retry: false,
   });
 
-  const [profileData, setProfileData] = useState({
-    username: "",
-    email: "",
-    bio: "",
-    location: "",
-    phone: "",
-    img: "",
-  });
-
-  const [originalData, setOriginalData] = useState({});
-
-  // Update profileData when userData is fetched
+  // useEffect hooks (must come before conditional returns)
   useEffect(() => {
     if (userData) {
       const data = {
@@ -187,10 +190,11 @@ function Profile() {
         err.response?.data?.message || "Failed to update profile";
       setToast({ type: "error", message: errorMessage });
     },
-    onSuccess: (data) => {
-      // Update localStorage with new user data
-      const updatedUser = { ...currentUser, info: data.info };
-      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+    onSuccess: async () => {
+      // Refresh user data in AuthContext to sync updated profile
+      if (refreshUser) {
+        await refreshUser();
+      }
 
       setIsEditing(false);
       setToast({ type: "success", message: "Profile updated successfully!" });
@@ -199,12 +203,24 @@ function Profile() {
 
       // Update original data with new values
       setOriginalData(profileData);
+
+      // Invalidate queries to refetch updated data
+      await queryClient.invalidateQueries(["user", userId]);
     },
     onSettled: () => {
       // Refetch to ensure sync
       queryClient.invalidateQueries(["user", userId]);
     },
   });
+
+  // NOW conditional returns (after all hooks)
+  if (authLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userId && currentUser) {
+    console.warn("User is logged in but doesn't have MongoDB ID yet");
+  }
 
   const handleInputChange = (field, value) => {
     setProfileData((prev) => ({
@@ -228,7 +244,9 @@ function Profile() {
       newErrors.phone = "Phone number must be at least 10 characters";
     }
 
-    if (profileData.bio && profileData.bio.length > 500) {
+    // Safety check - ensure bio is a string before checking length
+    const bioLength = (profileData.bio || "").length;
+    if (bioLength > 500) {
       newErrors.bio = "Bio must be less than 500 characters";
     }
 
@@ -377,6 +395,12 @@ function Profile() {
                     src={imagePreview || profileData.img || "/img/noavatar.png"}
                     alt="Profile"
                     className="profile-avatar"
+                    crossOrigin="anonymous"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/img/noavatar.png";
+                    }}
                   />
                   {uploadingImage && (
                     <div className="upload-overlay">
@@ -550,7 +574,7 @@ function Profile() {
                     <div className="input-group">
                       <textarea
                         className={`bio-input ${errors.bio ? "error" : ""}`}
-                        value={profileData.bio}
+                        value={safeBio}
                         onChange={(e) =>
                           handleInputChange("bio", e.target.value)
                         }
@@ -562,9 +586,7 @@ function Profile() {
                         {errors.bio && (
                           <span className="error-text">{errors.bio}</span>
                         )}
-                        <span className="char-count">
-                          {profileData.bio.length}/500
-                        </span>
+                        <span className="char-count">{safeBio.length}/500</span>
                       </div>
                     </div>
                   ) : (

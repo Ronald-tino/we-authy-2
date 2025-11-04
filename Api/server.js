@@ -1,6 +1,10 @@
+// MUST load environment variables FIRST before any other imports
+import dotenv from "dotenv";
+dotenv.config();
+
+// Now import everything else
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
 import gigRoute from "./routes/gig.route.js";
@@ -14,7 +18,6 @@ import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 //////////////////////////////
 const app = express();
-dotenv.config();
 mongoose.set("strictQuery", true);
 
 // Configure Cloudinary
@@ -46,6 +49,13 @@ const corsOptions = {
     // Allow non-browser requests (no origin)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow Firebase auth domains
+    if (
+      origin.includes(".firebaseapp.com") ||
+      origin.includes(".googleapis.com")
+    ) {
+      return callback(null, true);
+    }
     return callback(new Error("Not allowed by CORS"));
   },
 };
@@ -58,9 +68,9 @@ app.use(cookieParser());
 const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO, {
-      dbName: "Lug-db", // <-- Add this line
+      dbName: "lugshare-2", // Changed from "Lug-db" to fresh database
     });
-    console.log("Connected to MongoDB");
+    console.log("Connected to MongoDB (lugshare-2)");
   } catch (error) {
     console.log(error);
   }

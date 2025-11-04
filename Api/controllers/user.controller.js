@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import createError from "../utils/createError.js";
 import { cloudinary } from "../server.js";
+import { uploadGooglePhotoToCloudinary, isGooglePhotoUrl } from "../utils/uploadGooglePhoto.js";
 
 // Helper function to extract public_id from Cloudinary URL
 const extractPublicId = (url) => {
@@ -30,25 +31,56 @@ const extractPublicId = (url) => {
 ////////////////////////////////////////////////////////
 
 export const deleteUser = async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  const token = req.cookies.accessToken;
-  if (!token) {
-    return res.status(401).send("Unauthorized Please Login");
-  }
-  jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
+  try {
+    // Support both MongoDB _id and firebaseUid
+    let user;
+    try {
+      user = await User.findOne({
+        $or: [
+          { _id: req.params.id },
+          { firebaseUid: req.params.id }
+        ]
+      });
+    } catch (castErr) {
+      if (castErr.name === 'CastError') {
+        user = await User.findOne({ firebaseUid: req.params.id });
+      } else {
+        throw castErr;
+      }
+    }
+
+    if (!user) {
+      return next(createError(404, "User not found"));
+    }
     if (req.userId !== user._id.toString()) {
       return next(createError(403, "You can delete only your account"));
     }
-    await User.findByIdAndDelete(req.params.id);
+    await User.findByIdAndDelete(user._id);
     res.status(200).send("User has been deleted");
-  });
-
-  // await User.findByIdAndDelete(req.params.id);
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const getUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
+    // Support both MongoDB _id and firebaseUid
+    let user;
+    try {
+      user = await User.findOne({
+        $or: [
+          { _id: req.params.id },
+          { firebaseUid: req.params.id }
+        ]
+      });
+    } catch (castErr) {
+      // If _id format is invalid (CastError), try firebaseUid only
+      if (castErr.name === 'CastError') {
+        user = await User.findOne({ firebaseUid: req.params.id });
+      } else {
+        throw castErr;
+      }
+    }
 
     if (!user) {
       return next(createError(404, "User not found"));
@@ -64,9 +96,27 @@ export const getPublicUser = async (req, res, next) => {
   try {
     console.log("📖 Fetching public profile for user:", req.params.id);
 
-    const user = await User.findById(req.params.id).select(
-      "username img country desc isSeller totalStars starNumber tripsCompleted createdAt"
-    );
+    // Support both MongoDB _id and firebaseUid
+    let user;
+    try {
+      user = await User.findOne({
+        $or: [
+          { _id: req.params.id },
+          { firebaseUid: req.params.id }
+        ]
+      }).select(
+        "username img country desc isSeller totalStars starNumber tripsCompleted createdAt firebaseUid"
+      );
+    } catch (castErr) {
+      // If _id format is invalid (CastError), try firebaseUid only
+      if (castErr.name === 'CastError') {
+        user = await User.findOne({ firebaseUid: req.params.id }).select(
+          "username img country desc isSeller totalStars starNumber tripsCompleted createdAt firebaseUid"
+        );
+      } else {
+        throw castErr;
+      }
+    }
 
     if (!user) {
       console.log("❌ User not found:", req.params.id);
@@ -130,9 +180,13 @@ export const becomeSeller = async (req, res, next) => {
     // Send updated token as cookie along with user data
     // Return in same format as login/register: { info: userData }
     res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-      })
+      .cookie(
+        "accessToken",
+        token,
+        process.env.NODE_ENV === "production"
+          ? { httpOnly: true, sameSite: "none", secure: true }
+          : { httpOnly: true }
+      )
       .status(200)
       .json({ info: updatedUser });
   } catch (err) {
@@ -145,15 +199,36 @@ export const updateUser = async (req, res, next) => {
     const userId = req.userId; // From JWT middleware
     const { phone, desc, country, img } = req.body;
 
-    // Validate that user is updating their own profile
-    if (userId !== req.params.id) {
-      return next(createError(403, "You can only update your own profile"));
-    }
-
-    // Get current user to check old image
-    const currentUser = await User.findById(userId);
+    // Get current user by MongoDB _id (userId from middleware)
+    let currentUser = await User.findById(userId);
     if (!currentUser) {
       return next(createError(404, "User not found"));
+    }
+
+    // Support both MongoDB _id and firebaseUid in params
+    let targetUser;
+    try {
+      targetUser = await User.findOne({
+        $or: [
+          { _id: req.params.id },
+          { firebaseUid: req.params.id }
+        ]
+      });
+    } catch (castErr) {
+      if (castErr.name === 'CastError') {
+        targetUser = await User.findOne({ firebaseUid: req.params.id });
+      } else {
+        throw castErr;
+      }
+    }
+
+    if (!targetUser) {
+      return next(createError(404, "User not found"));
+    }
+
+    // Validate that user is updating their own profile
+    if (userId !== targetUser._id.toString()) {
+      return next(createError(403, "You can only update your own profile"));
     }
 
     // Build update object with only provided fields
@@ -180,12 +255,12 @@ export const updateUser = async (req, res, next) => {
     if (img !== undefined && img.trim() !== "") {
       // Delete old image from Cloudinary if it exists and is different from new image
       if (
-        currentUser.img &&
-        currentUser.img.includes("cloudinary") &&
-        currentUser.img !== img.trim()
+        targetUser.img &&
+        targetUser.img.includes("cloudinary") &&
+        targetUser.img !== img.trim()
       ) {
         try {
-          const publicId = extractPublicId(currentUser.img);
+          const publicId = extractPublicId(targetUser.img);
           if (publicId) {
             await cloudinary.uploader.destroy(publicId);
             console.log(`Deleted old profile image: ${publicId}`);
@@ -198,9 +273,9 @@ export const updateUser = async (req, res, next) => {
       updateData.img = img.trim();
     }
 
-    // Update user profile
+    // Update user profile using the MongoDB _id
     const updatedUser = await User.findByIdAndUpdate(
-      userId,
+      targetUser._id,
       { $set: updateData },
       { new: true } // Return updated document
     ).select("-password"); // Exclude password from response
@@ -212,6 +287,104 @@ export const updateUser = async (req, res, next) => {
     // Update localStorage format - return in same format as login/register
     res.status(200).json({ info: updatedUser });
   } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Migration endpoint to upload all Google profile photos to Cloudinary
+ * This will find all users with Google photo URLs and upload them to Cloudinary
+ */
+export const migrateGooglePhotos = async (req, res, next) => {
+  try {
+    console.log("🔄 Starting Google photo migration to Cloudinary...");
+
+    // Find all users with Google photo URLs
+    const usersWithGooglePhotos = await User.find({
+      img: { $regex: "googleusercontent.com", $options: "i" },
+    });
+
+    console.log(`📊 Found ${usersWithGooglePhotos.length} users with Google photos`);
+
+    const results = {
+      total: usersWithGooglePhotos.length,
+      successful: 0,
+      failed: 0,
+      skipped: 0,
+      details: [],
+    };
+
+    // Process each user
+    for (const user of usersWithGooglePhotos) {
+      try {
+        const googlePhotoUrl = user.img;
+        
+        if (!isGooglePhotoUrl(googlePhotoUrl)) {
+          console.log(`⏭️ Skipping user ${user._id} - not a valid Google photo URL`);
+          results.skipped++;
+          results.details.push({
+            userId: user._id,
+            username: user.username,
+            status: "skipped",
+            reason: "Not a valid Google photo URL",
+          });
+          continue;
+        }
+
+        console.log(`📸 Processing user ${user.username} (${user._id})`);
+        
+        // Upload to Cloudinary
+        const cloudinaryUrl = await uploadGooglePhotoToCloudinary(
+          googlePhotoUrl,
+          user.firebaseUid || user._id.toString()
+        );
+
+        if (cloudinaryUrl) {
+          // Update user with new Cloudinary URL
+          user.img = cloudinaryUrl;
+          await user.save();
+          
+          results.successful++;
+          results.details.push({
+            userId: user._id,
+            username: user.username,
+            status: "success",
+            oldUrl: googlePhotoUrl,
+            newUrl: cloudinaryUrl,
+          });
+          console.log(`✅ Successfully migrated photo for ${user.username}`);
+        } else {
+          results.failed++;
+          results.details.push({
+            userId: user._id,
+            username: user.username,
+            status: "failed",
+            reason: "Failed to upload to Cloudinary",
+            oldUrl: googlePhotoUrl,
+          });
+          console.log(`❌ Failed to migrate photo for ${user.username}`);
+        }
+      } catch (error) {
+        console.error(`Error processing user ${user._id}:`, error);
+        results.failed++;
+        results.details.push({
+          userId: user._id,
+          username: user.username,
+          status: "error",
+          reason: error.message,
+        });
+      }
+    }
+
+    console.log("✅ Migration completed!");
+    console.log(`📊 Results: ${results.successful} successful, ${results.failed} failed, ${results.skipped} skipped`);
+
+    res.status(200).json({
+      message: "Google photo migration completed",
+      results,
+    });
+  } catch (err) {
+    console.error("Error during migration:", err);
     next(err);
   }
 };

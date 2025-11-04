@@ -7,15 +7,23 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      index: true, // Add index for faster lookups
     },
     email: {
       type: String,
       required: true,
       unique: true,
+      index: true, // Add index for faster lookups
+    },
+    firebaseUid: {
+      type: String,
+      required: true, // Changed from false - now required for Firebase-first auth
+      unique: true,
+      index: true, // Add index for faster lookups
     },
     password: {
       type: String,
-      required: true,
+      required: false, // Optional - Firebase handles authentication
     },
     img: {
       type: String,

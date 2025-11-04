@@ -9,7 +9,7 @@ import {
   toggleInterest,
   getInterestedUsers,
 } from "../controllers/gig.controller.js";
-import { verifyToken } from "../middleware/jwt.js";
+import { verifyToken } from "../middleware/firebaseAuth.js";
 
 const router = express.Router();
 

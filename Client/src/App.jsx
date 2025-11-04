@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
+import CompleteProfile from "./pages/completeProfile/CompleteProfile";
+import PasswordReset from "./pages/passwordReset/PasswordReset";
 import Add from "./pages/add/Add";
 import Gig from "./pages/gig/Gig";
 import Gigs from "./pages/gigs/Gigs";
@@ -30,6 +32,7 @@ import {
   // useQuery,
 } from "@tanstack/react-query";
 import { ModeProvider } from "./context/ModeContext";
+import { AuthProvider } from "./context/AuthContext";
 ///////////////////////////////////////////
 function App() {
   const queryClient = new QueryClient();
@@ -37,10 +40,12 @@ function App() {
     return (
       <div className="app">
         <QueryClientProvider client={queryClient}>
-          <ModeProvider>
-            <Navbar />
-            <Outlet />
-          </ModeProvider>
+          <AuthProvider>
+            <ModeProvider>
+              <Navbar />
+              <Outlet />
+            </ModeProvider>
+          </AuthProvider>
         </QueryClientProvider>
       </div>
     );
@@ -131,17 +136,49 @@ function App() {
     {
       path: "/login",
       element: (
-        <AuthLayout queryClient={queryClient}>
-          <Login />
-        </AuthLayout>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AuthLayout queryClient={queryClient}>
+              <Login />
+            </AuthLayout>
+          </AuthProvider>
+        </QueryClientProvider>
       ),
     },
     {
       path: "/register",
       element: (
-        <AuthLayout queryClient={queryClient}>
-          <Register />
-        </AuthLayout>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AuthLayout queryClient={queryClient}>
+              <Register />
+            </AuthLayout>
+          </AuthProvider>
+        </QueryClientProvider>
+      ),
+    },
+    {
+      path: "/password-reset",
+      element: (
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AuthLayout queryClient={queryClient}>
+              <PasswordReset />
+            </AuthLayout>
+          </AuthProvider>
+        </QueryClientProvider>
+      ),
+    },
+    {
+      path: "/complete-profile",
+      element: (
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AuthLayout queryClient={queryClient}>
+              <CompleteProfile />
+            </AuthLayout>
+          </AuthProvider>
+        </QueryClientProvider>
       ),
     },
   ]);

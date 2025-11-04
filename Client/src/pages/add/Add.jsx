@@ -9,7 +9,7 @@ import CountrySelect from "../../components/CountrySelect/CountrySelect";
 
 const Add = () => {
   const [state, dispatch] = useReducer(gigReducer, INITIAL_STATE);
-  const { isInSellerMode, isSeller } = useMode();
+  const { isInSellerMode, isSeller, currentUser, user } = useMode();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -107,8 +107,23 @@ const Add = () => {
       return;
     }
 
-    console.log("Submitting gig with data:", state);
-    mutation.mutate(state);
+    // Get userId from currentUser or user
+    const userId = currentUser?._id || user?._id;
+
+    if (!userId) {
+      alert("User ID not found. Please log in again.");
+      console.error("User ID missing:", { currentUser, user });
+      return;
+    }
+
+    // Ensure userId is set in the gig data
+    const gigData = {
+      ...state,
+      userId: userId,
+    };
+
+    console.log("Submitting gig with data:", gigData);
+    mutation.mutate(gigData);
   };
 
   return (

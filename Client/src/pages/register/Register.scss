@@ -326,4 +326,73 @@
       }
     }
   }
+
+  .error-message {
+    color: #fca5a5;
+    font-size: 14px;
+    text-align: center;
+    padding: 12px;
+    background-color: #7f1d1d;
+    border: 1px solid #dc2626;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #374151;
+    }
+
+    span {
+      padding: 0 16px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+  }
+
+  .google-register-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px 24px;
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #374151;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    @media screen and (max-width: 480px) {
+      padding: 14px 20px;
+      font-size: 14px;
+    }
+
+    &:hover {
+      background-color: #f9fafb;
+      border-color: #16db65;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import getCurrentUser from "../utils/getCurrentUser";
+import { useAuth } from "./AuthContext";
 
 const ModeContext = createContext();
 
@@ -12,28 +12,14 @@ export const useMode = () => {
 };
 
 export const ModeProvider = ({ children }) => {
+  // Get currentUser from AuthContext
+  // ModeProvider must be nested inside AuthProvider (see App.jsx)
+  const { currentUser } = useAuth();
   const [currentMode, setCurrentMode] = useState(() => {
     // Initialize from localStorage if available
     const savedMode = localStorage.getItem("userMode");
     return savedMode || "user";
   });
-
-  // Use state to track current user for proper reactivity
-  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
-
-  // Listen for changes to localStorage
-  useEffect(() => {
-    const handleUserUpdate = () => {
-      setCurrentUser(getCurrentUser());
-    };
-
-    // Listen for custom user update event
-    window.addEventListener("userUpdated", handleUserUpdate);
-
-    return () => {
-      window.removeEventListener("userUpdated", handleUserUpdate);
-    };
-  }, []);
 
   const user = currentUser?.info || currentUser;
   const isSeller = user?.isSeller || false;
@@ -47,7 +33,7 @@ export const ModeProvider = ({ children }) => {
       currentMode,
       isInSellerMode: isSeller && currentMode === "seller",
     });
-  }, [currentUser, user, isSeller, currentMode]);
+  }, [user, isSeller, currentMode]);
 
   // Persist mode to localStorage whenever it changes
   useEffect(() => {
@@ -84,6 +70,8 @@ export const ModeProvider = ({ children }) => {
   const isInSellerMode = isSeller && currentMode === "seller";
 
   const value = {
+    currentUser,
+    user,
     currentMode,
     isInSellerMode,
     isSeller,

@@ -202,6 +202,12 @@ const Message = () => {
                             : "/img/noavatar.png"
                         }
                         alt="User avatar"
+                        crossOrigin="anonymous"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/img/noavatar.png";
+                        }}
                       />
                     </div>
                     <div className="message-content">

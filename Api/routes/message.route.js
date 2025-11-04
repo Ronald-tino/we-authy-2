@@ -3,7 +3,7 @@ import {
   createMessage,
   getMessages,
 } from "../controllers/message.controller.js";
-import { verifyToken } from "../middleware/jwt.js";
+import { verifyToken } from "../middleware/firebaseAuth.js";
 
 const router = express.Router();
 

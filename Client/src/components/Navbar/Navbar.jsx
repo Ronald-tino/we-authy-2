@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import newRequest from "../../utils/newRequest";
+import { useAuth } from "../../context/AuthContext";
 import { useMode } from "../../context/ModeContext";
+import { signOut } from "../../firebase/auth";
 import {
   MdHome,
   MdInfo,
@@ -61,25 +62,17 @@ function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [open, mobileMenuOpen]);
-  const stored = localStorage.getItem("currentUser");
-  const parsed = stored ? JSON.parse(stored) : null;
-  // some responses are { info: {...} } — prefer the info object if present
-  const currentUser = parsed?.info ?? parsed;
 
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await newRequest.post("/auth/logout");
-      localStorage.setItem("currentUser", null);
+      await signOut();
       localStorage.removeItem("userMode"); // Clear mode on logout
-
-      // Dispatch custom event to notify context of user update
-      window.dispatchEvent(new Event("userUpdated"));
-
       navigate("/");
     } catch (err) {
-      console.log(err);
+      console.error("Error signing out:", err);
     }
   };
 
@@ -214,6 +207,12 @@ function Navbar() {
                 <img
                   src={currentUser?.img || "/img/noavatar.png"}
                   alt="Profile"
+                  crossOrigin="anonymous"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = "/img/noavatar.png";
+                  }}
                 />
                 <span className="desktop-only">
                   {currentUser?.username || "Sign in"}
