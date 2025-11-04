@@ -61,23 +61,30 @@ function Login() {
       // Get Firebase token for API call
       const token = await getCurrentUserToken();
 
-      // Check if user has completed their profile in MongoDB
+      // Check if user exists in MongoDB (does NOT auto-create)
       try {
-        const response = await newRequest.post("/auth/firebase-user", {
+        const response = await newRequest.post("/auth/check-user", {
           firebaseUid: firebaseUser.uid,
-          email: firebaseUser.email,
-          img: firebaseUser.photoURL,
         });
 
-        const mongoUser = response.data?.user;
+        if (!response.data?.exists) {
+          // User doesn't exist in MongoDB - redirect to registration
+          navigate("/register", {
+            state: {
+              fromGoogleSignIn: true,
+              message: "Please create an account first",
+              firebaseUser: {
+                email: firebaseUser.email,
+                photoURL: firebaseUser.photoURL,
+                uid: firebaseUser.uid,
+              },
+            },
+          });
+          return;
+        }
 
-        // Check if profile is incomplete (missing username or country)
-        if (
-          !mongoUser?.username ||
-          !mongoUser?.country ||
-          mongoUser.country === "Not specified"
-        ) {
-          // Redirect to profile completion
+        if (!response.data?.profileComplete) {
+          // User exists but profile is incomplete
           navigate("/complete-profile", {
             state: {
               fromGoogle: true,
@@ -94,21 +101,19 @@ function Login() {
         // Profile is complete - proceed to home
         navigate("/");
       } catch (err) {
-        // If MongoDB user doesn't exist or error, redirect to complete profile
-        if (err.response?.status === 404 || err.response?.status === 401) {
-          navigate("/complete-profile", {
-            state: {
-              fromGoogle: true,
-              firebaseUser: {
-                email: firebaseUser.email,
-                photoURL: firebaseUser.photoURL,
-                uid: firebaseUser.uid,
-              },
+        // If check fails, assume user doesn't exist and redirect to registration
+        console.error("Error checking user:", err);
+        navigate("/register", {
+          state: {
+            fromGoogleSignIn: true,
+            message: "Please create an account first",
+            firebaseUser: {
+              email: firebaseUser.email,
+              photoURL: firebaseUser.photoURL,
+              uid: firebaseUser.uid,
             },
-          });
-          return;
-        }
-        throw err;
+          },
+        });
       }
     } catch (err) {
       let message = "Failed to sign in with Google";

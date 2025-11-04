@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Sync MongoDB user data when Firebase user changes
+  // This function ONLY fetches existing users, it does NOT create new ones
   const syncMongoUser = async (firebaseUid, firebaseEmail, displayName, photoURL) => {
     try {
       if (!firebaseUid) {
@@ -36,26 +37,50 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      // Try to fetch/create MongoDB user data
-      // This endpoint auto-creates minimal records if user doesn't exist
+      // Check if user exists in MongoDB (does NOT auto-create)
       try {
-        const response = await newRequest.post("/auth/firebase-user", {
+        const response = await newRequest.post("/auth/check-user", {
           firebaseUid,
-          email: firebaseEmail,
-          img: photoURL, // Pass Firebase photo for auto-creation
         });
 
-        if (response.data?.user) {
+        if (response.data?.exists && response.data?.user) {
+          // User exists and has complete profile
           setMongoUser(response.data.user);
+        } else if (response.data?.exists && !response.data?.profileComplete) {
+          // User exists but profile incomplete - still set partial data
+          setMongoUser({ firebaseUid, email: firebaseEmail });
         } else {
+          // User doesn't exist
           setMongoUser(null);
         }
       } catch (error) {
-        // If there's an error, user might not exist yet or token is invalid
-        if (error.response?.status === 404 || error.response?.status === 401) {
-          setMongoUser(null);
+        // If endpoint returns 404 or doesn't exist, try legacy endpoint as fallback
+        if (error.response?.status === 404 || error.message?.includes('404')) {
+          console.warn("⚠️ /auth/check-user endpoint not found. Using legacy /auth/firebase-user endpoint. Please restart backend server.");
+          
+          // Fallback to old endpoint temporarily (won't auto-create if backend is updated)
+          try {
+            const fallbackResponse = await newRequest.post("/auth/firebase-user", {
+              firebaseUid,
+              email: firebaseEmail,
+            });
+            
+            if (fallbackResponse.data?.user) {
+              setMongoUser(fallbackResponse.data.user);
+            } else {
+              setMongoUser(null);
+            }
+          } catch (fallbackError) {
+            // If fallback also fails with 404, user doesn't exist - this is fine for new users
+            if (fallbackError.response?.status === 404) {
+              setMongoUser(null);
+            } else {
+              console.error("Error in fallback sync:", fallbackError);
+              setMongoUser(null);
+            }
+          }
         } else {
-          console.error("Error syncing MongoDB user:", error);
+          // Other errors
           setMongoUser(null);
         }
       }

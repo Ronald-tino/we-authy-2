@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
 import AuthLayout from "./components/AuthLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -65,7 +66,11 @@ function App() {
         },
         {
           path: "/add",
-          element: <Add />,
+          element: (
+            <ProtectedRoute>
+              <Add />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/gig/:id",
@@ -77,11 +82,19 @@ function App() {
         },
         {
           path: "/MyGigs",
-          element: <MyGigs />,
+          element: (
+            <ProtectedRoute>
+              <MyGigs />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/add-container",
-          element: <AddContainer />,
+          element: (
+            <ProtectedRoute>
+              <AddContainer />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/container/:id",
@@ -93,23 +106,43 @@ function App() {
         },
         {
           path: "/myContainers",
-          element: <MyContainers />,
+          element: (
+            <ProtectedRoute>
+              <MyContainers />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/messages",
-          element: <Messages />,
+          element: (
+            <ProtectedRoute>
+              <Messages />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/orders",
-          element: <Orders />,
+          element: (
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/message/:id",
-          element: <Message />,
+          element: (
+            <ProtectedRoute>
+              <Message />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/profile",
-          element: <Profile />,
+          element: (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/profile/:userId",
@@ -117,11 +150,19 @@ function App() {
         },
         {
           path: "/settings",
-          element: <Settings />,
+          element: (
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/become-seller",
-          element: <BecomeSeller />,
+          element: (
+            <ProtectedRoute>
+              <BecomeSeller />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/privacy-policy",

@@ -9,6 +9,9 @@ import CountrySelect from "../../components/CountrySelect/CountrySelect";
 import { signUp, signInWithGoogle, linkEmailPassword } from "../../firebase/auth";
 
 function Register() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   // Signup method state: null (initial), 'google', 'email'
   const [signupMethod, setSignupMethod] = useState(null);
   
@@ -36,8 +39,31 @@ function Register() {
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [infoMessage, setInfoMessage] = useState(null);
 
-  const navigate = useNavigate();
+  // Handle redirect from Login (Google Sign-In without account)
+  React.useEffect(() => {
+    if (location.state?.fromGoogleSignIn && location.state?.firebaseUser) {
+      const { firebaseUser, message } = location.state;
+      
+      // Show info message
+      if (message) {
+        setInfoMessage(message);
+      }
+      
+      // Pre-populate with Google user data
+      setGoogleUserData(firebaseUser);
+      setSignupMethod('google');
+      setUser((prev) => ({
+        ...prev,
+        email: firebaseUser.email || "",
+        img: firebaseUser.photoURL || "",
+      }));
+      
+      // Clear the location state to prevent re-triggering
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname]);
 
   const handleChange = (e) => {
     setUser((prev) => {
@@ -307,6 +333,27 @@ function Register() {
         <p className="register-subtitle">Choose how you'd like to sign up</p>
       </motion.div>
 
+      {infoMessage && (
+        <motion.div
+          className="info-message"
+          role="alert"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          style={{
+            backgroundColor: "rgba(22, 219, 101, 0.1)",
+            border: "1px solid rgba(22, 219, 101, 0.3)",
+            color: "#16db65",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            marginBottom: "16px",
+            textAlign: "center",
+          }}
+        >
+          {String(infoMessage)}
+        </motion.div>
+      )}
+
       <div className="signup-method-selector">
         <motion.button
           type="button"
@@ -415,6 +462,27 @@ function Register() {
         <h2 className="register-title">Complete Your Profile</h2>
         <p className="register-subtitle">Just a few more details to get started</p>
       </motion.div>
+
+      {infoMessage && (
+        <motion.div
+          className="info-message"
+          role="alert"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          style={{
+            backgroundColor: "rgba(22, 219, 101, 0.1)",
+            border: "1px solid rgba(22, 219, 101, 0.3)",
+            color: "#16db65",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            marginBottom: "16px",
+            textAlign: "center",
+          }}
+        >
+          {String(infoMessage)}
+        </motion.div>
+      )}
 
       <motion.form
         onSubmit={handleGoogleRegistrationSubmit}

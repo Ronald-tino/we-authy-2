@@ -137,6 +137,54 @@ export const checkUsernameAvailability = async (req, res, next) => {
 };
 
 /**
+ * Check if a user exists in MongoDB and if their profile is complete
+ * This endpoint is used during sign-in to determine routing
+ */
+export const checkUserExists = async (req, res, next) => {
+  try {
+    const { firebaseUid } = req.body;
+
+    if (!firebaseUid || typeof firebaseUid !== "string") {
+      return next(createError(400, "Firebase UID is required"));
+    }
+
+    // Check if user exists in MongoDB
+    const user = await User.findOne({ firebaseUid });
+
+    if (!user) {
+      return res.status(200).json({
+        exists: false,
+        profileComplete: false,
+        message: "User not found in database",
+      });
+    }
+
+    // Check if profile is complete (username and country are required)
+    const profileComplete =
+      user.username &&
+      user.username !== "" &&
+      !user.username.includes("_") && // Temp usernames have underscores
+      user.country &&
+      user.country !== "Not specified";
+
+    return res.status(200).json({
+      exists: true,
+      profileComplete,
+      user: profileComplete ? {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        img: user.img,
+        country: user.country,
+        isSeller: user.isSeller,
+      } : null,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
  * Helper function to delete a Firebase user
  * Used for cleanup when MongoDB user creation fails
  */
@@ -235,56 +283,32 @@ export const syncFirebaseUser = async (req, res, next) => {
 
       await user.save();
     } else {
-      isNewUser = true;
-
-      // Auto-create user with minimal data if username/country not provided
-      if (!username || !country) {
-        // Create minimal record for Firebase-only users (e.g., Google sign-in without registration)
-        const tempUsername =
-          email.split("@")[0].toLowerCase() + "_" + firebaseUid.slice(0, 6);
-
-        // Check if temp username exists and find unique one
-        let finalUsername = tempUsername;
-        let counter = 1;
-        while (await User.findOne({ username: finalUsername })) {
-          finalUsername = `${tempUsername}_${counter}`;
-          counter++;
-        }
-
-        const newUser = new User({
-          username: finalUsername,
-          email,
-          firebaseUid,
-          country: country || "Not specified", // Temporary value - user can update later
-          img: processedImg || "",
-          phone: phone || "",
-          desc: desc || "",
-          isSeller: false,
-          password: "",
-        });
-
-        await newUser.save();
-        user = newUser;
-      } else {
-        // Full registration with username/country provided
-        
-        // Create new user - let MongoDB's unique constraints handle duplicates
-        const newUser = new User({
-          username: username.trim().toLowerCase(),
-          email,
-          firebaseUid,
-          img: processedImg || "",
-          country,
-          phone: phone || "",
-          desc: desc || "",
-          isSeller: isSeller || false,
-          password: "", // No password needed - Firebase handles auth
-        });
-
-        // Try to save - if duplicate exists, catch block will handle cleanup
-        await newUser.save();
-        user = newUser;
+      // User does not exist in MongoDB
+      // Only create if username AND country are provided (full registration)
+      if (!username || !country || country === "Not specified") {
+        // User is trying to sign in without completing registration
+        return next(createError(404, "User not found. Please complete registration first."));
       }
+
+      // Full registration with username/country provided
+      isNewUser = true;
+      
+      // Create new user - let MongoDB's unique constraints handle duplicates
+      const newUser = new User({
+        username: username.trim().toLowerCase(),
+        email,
+        firebaseUid,
+        img: processedImg || "",
+        country,
+        phone: phone || "",
+        desc: desc || "",
+        isSeller: isSeller || false,
+        password: "", // No password needed - Firebase handles auth
+      });
+
+      // Try to save - if duplicate exists, catch block will handle cleanup
+      await newUser.save();
+      user = newUser;
     }
 
     const { password, ...info } = user._doc;
@@ -332,5 +356,78 @@ export const syncFirebaseUser = async (req, res, next) => {
     // Handle other errors
     console.error('Error in syncFirebaseUser:', err);
     next(err);
+  }
+};
+
+/**
+ * Upload profile image to Cloudinary (server-side fallback)
+ * This endpoint handles image uploads when client-side upload fails
+ */
+export const uploadProfileImage = async (req, res, next) => {
+  try {
+    // Check if file was uploaded
+    if (!req.file) {
+      return next(createError(400, "No file uploaded"));
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return next(createError(400, "Invalid file type. Only images are allowed."));
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (req.file.size > maxSize) {
+      return next(createError(400, "File too large. Maximum size is 5MB."));
+    }
+
+    // Import cloudinary from server.js
+    const { cloudinary } = await import("../server.js");
+
+    // Upload to Cloudinary using upload_stream
+    const uploadResult = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "profile-photos",
+          public_id: `user_${req.firebaseUid || Date.now()}_${Date.now()}`,
+          resource_type: "image",
+          overwrite: true,
+          transformation: [
+            { width: 400, height: 400, crop: "fill", gravity: "face" },
+            { quality: "auto", fetch_format: "auto" },
+          ],
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+
+      // Write file buffer to stream
+      uploadStream.end(req.file.buffer);
+    });
+
+    console.log(`✅ Successfully uploaded profile image to Cloudinary: ${uploadResult.secure_url}`);
+
+    res.status(200).json({
+      success: true,
+      url: uploadResult.secure_url,
+      public_id: uploadResult.public_id,
+    });
+  } catch (err) {
+    console.error("❌ Error uploading image to Cloudinary:", err.message);
+    
+    // Provide specific error messages
+    if (err.message?.includes('Invalid image file')) {
+      return next(createError(400, "Invalid image file"));
+    } else if (err.message?.includes('File size')) {
+      return next(createError(400, "File size exceeds limit"));
+    }
+    
+    return next(createError(500, "Failed to upload image. Please try again."));
   }
 };
