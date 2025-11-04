@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import createError from "../utils/createError.js";
 import { uploadGooglePhotoToCloudinary, isGooglePhotoUrl } from "../utils/uploadGooglePhoto.js";
+import admin from "firebase-admin";
 
 ////////////////////////////////////////////////////////
 export const register = async (req, res, next) => {
@@ -92,6 +93,73 @@ export const logout = async (req, res) => {
     .clearCookie("accessToken", clearOptions)
     .status(200)
     .send("User has been logged out");
+};
+
+/**
+ * Check if username is available
+ * This endpoint should be called BEFORE creating a Firebase account
+ */
+export const checkUsernameAvailability = async (req, res, next) => {
+  try {
+    const { username } = req.body;
+
+    if (!username || typeof username !== "string") {
+      return next(createError(400, "Username is required"));
+    }
+
+    const normalizedUsername = username.trim().toLowerCase();
+
+    if (normalizedUsername.length < 3) {
+      return next(createError(400, "Username must be at least 3 characters"));
+    }
+
+    if (normalizedUsername.length > 20) {
+      return next(createError(400, "Username must be at most 20 characters"));
+    }
+
+    // Check if username exists
+    const existingUser = await User.findOne({ username: normalizedUsername });
+
+    if (existingUser) {
+      return res.status(200).json({
+        available: false,
+        message: "Username is already taken",
+      });
+    }
+
+    return res.status(200).json({
+      available: true,
+      message: "Username is available",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Helper function to delete a Firebase user
+ * Used for cleanup when MongoDB user creation fails
+ */
+const deleteFirebaseUser = async (firebaseUid) => {
+  try {
+    if (!firebaseUid) {
+      console.error("❌ Cannot delete Firebase user: UID is missing");
+      return false;
+    }
+
+    await admin.auth().deleteUser(firebaseUid);
+    console.log(`✅ Successfully deleted Firebase user: ${firebaseUid}`);
+    return true;
+  } catch (error) {
+    // If user already deleted, that's fine - mission accomplished
+    if (error.code === 'auth/user-not-found') {
+      console.log(`ℹ️ Firebase user ${firebaseUid} already deleted (cleanup already ran)`);
+      return true;
+    }
+    
+    console.error(`❌ Failed to delete Firebase user ${firebaseUid}:`, error.message);
+    return false;
+  }
 };
 
 /**
@@ -199,34 +267,8 @@ export const syncFirebaseUser = async (req, res, next) => {
         user = newUser;
       } else {
         // Full registration with username/country provided
-        // Check if username or email already exists
-        const existingUser = await User.findOne({
-          $or: [{ username: username.trim().toLowerCase() }, { email }],
-        });
-
-        if (existingUser) {
-          // If user exists but doesn't have firebaseUid, link it
-          if (!existingUser.firebaseUid) {
-            existingUser.firebaseUid = firebaseUid;
-            if (email !== existingUser.email) existingUser.email = email;
-            await existingUser.save();
-            const { password, ...info } = existingUser._doc;
-
-            // Check if profile is complete
-            const profileComplete =
-              info.username && info.country && info.country !== "Not specified";
-
-            return res.status(200).json({
-              user: info,
-              message: "User linked to Firebase account",
-              profileComplete,
-            });
-          } else {
-            return next(createError(400, "Username or email already exists"));
-          }
-        }
-
-        // Create new user with full data
+        
+        // Create new user - let MongoDB's unique constraints handle duplicates
         const newUser = new User({
           username: username.trim().toLowerCase(),
           email,
@@ -239,6 +281,7 @@ export const syncFirebaseUser = async (req, res, next) => {
           password: "", // No password needed - Firebase handles auth
         });
 
+        // Try to save - if duplicate exists, catch block will handle cleanup
         await newUser.save();
         user = newUser;
       }
@@ -260,6 +303,34 @@ export const syncFirebaseUser = async (req, res, next) => {
       isNewUser,
     });
   } catch (err) {
+    // If MongoDB save failed, cleanup Firebase account if it was just created
+    if (err.code === 11000 || err.name === 'MongoServerError') {
+      // Duplicate key error - username or email already exists
+      const { firebaseUid } = req.body;
+      
+      if (firebaseUid) {
+        console.log(`⚠️ MongoDB duplicate key error. Cleaning up Firebase user: ${firebaseUid}`);
+        
+        // Attempt cleanup (gracefully handles already-deleted case)
+        const cleanedUp = await deleteFirebaseUser(firebaseUid);
+        
+        if (cleanedUp) {
+          console.log(`✅ Cleanup completed for ${firebaseUid}`);
+        }
+      }
+      
+      // Return specific error based on which field was duplicate
+      if (err.message.includes('username')) {
+        return next(createError(400, "Username is already taken. Please choose a different username."));
+      } else if (err.message.includes('email')) {
+        return next(createError(400, "Email is already registered. Please use a different email."));
+      }
+      
+      return next(createError(400, "Username or email already exists"));
+    }
+    
+    // Handle other errors
+    console.error('Error in syncFirebaseUser:', err);
     next(err);
   }
 };
