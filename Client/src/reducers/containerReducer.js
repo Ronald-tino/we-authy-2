@@ -1,5 +1,4 @@
 export const INITIAL_STATE = {
-  userId: JSON.parse(localStorage.getItem("currentUser"))?._id,
   title: "",
   about: "", // Detailed description of the container service
   containerType: "20ft", // Default to 20ft container

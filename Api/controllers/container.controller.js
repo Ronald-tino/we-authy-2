@@ -88,8 +88,8 @@ export const createContainer = async (req, res, next) => {
   }
 
   const newContainer = new Container({
-    userId: req.userId,
     ...req.body,
+    userId: req.userId, // Set after spread to ensure it's not overwritten
   });
 
   try {

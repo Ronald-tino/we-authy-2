@@ -56,8 +56,8 @@ export const createGig = async (req, res, next) => {
   }
 
   const newGig = new Gig({
-    userId: req.userId,
     ...req.body,
+    userId: req.userId, // Set after spread to ensure it's not overwritten
   });
 
   try {
