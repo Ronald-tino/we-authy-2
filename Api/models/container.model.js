@@ -44,9 +44,17 @@ const ContainerSchema = new Schema(
       type: Number,
       required: true, // in cubic meters
     },
+    originalSpaceCBM: {
+      type: Number,
+      default: null, // stores initial space value for tracking changes
+    },
     priceRMB: {
       type: Number,
       required: true, // per CBM in ¥
+    },
+    originalPriceRMB: {
+      type: Number,
+      default: null, // stores initial price value for tracking changes
     },
     // Timeline
     departureDate: {

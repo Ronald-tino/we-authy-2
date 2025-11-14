@@ -90,6 +90,8 @@ export const createContainer = async (req, res, next) => {
   const newContainer = new Container({
     ...req.body,
     userId: req.userId, // Set after spread to ensure it's not overwritten
+    originalSpaceCBM: req.body.availableSpaceCBM, // Store initial space value
+    originalPriceRMB: req.body.priceRMB, // Store initial price value
   });
 
   try {
@@ -148,9 +150,14 @@ export const updateContainer = async (req, res, next) => {
       }
     }
 
+    // Prevent updating original values (they should never change)
+    const updateData = { ...req.body };
+    delete updateData.originalSpaceCBM;
+    delete updateData.originalPriceRMB;
+
     const updatedContainer = await Container.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 

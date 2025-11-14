@@ -1,359 +1,498 @@
 .myGigs {
   display: flex;
   justify-content: center;
-  color: var(--text-secondary);
-  padding: 0 20px;
-  background-color: var(--bg-primary);
+  color: #d0d0d0;
   min-height: 100vh;
-
-  @media screen and (max-width: 768px) {
-    padding: 0 16px;
-  }
-
-  @media screen and (max-width: 480px) {
-    padding: 0 12px;
-  }
+  padding: 40px 20px;
 
   .container {
-    max-width: 1400px;
     width: 100%;
-    padding: 50px 0px;
-
-    @media screen and (max-width: 768px) {
-      padding: 30px 0px;
-    }
-
-    @media screen and (max-width: 480px) {
-      padding: 20px 0px;
-    }
+    max-width: 1400px;
 
     .title {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
 
       h1 {
-        color: var(--text-primary);
+        font-size: 32px;
+        color: #16db65;
+        font-weight: 700;
       }
 
-      button {
-        background-color: var(--green-medium);
-        color: var(--text-primary);
-        font-weight: 500;
+      .add-btn {
+        background: #16db65;
+        color: #0f0f0f;
         border: none;
-        padding: 10px;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
         cursor: pointer;
-        border-radius: 5px;
         transition: all 0.3s ease;
 
         &:hover {
-          background-color: var(--green-bright);
+          background: #12c957;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(22, 219, 101, 0.3);
         }
       }
     }
 
-    table {
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      background-color: var(--bg-tertiary);
-      border-radius: 8px;
-      border: 1px solid var(--border-secondary);
+    .loading,
+    .error {
+      text-align: center;
+      padding: 60px 20px;
+      font-size: 18px;
+      color: #8b8b8b;
+    }
 
+    .error {
+      color: #ff5722;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+
+      p {
+        font-size: 18px;
+        color: #8b8b8b;
+        margin-bottom: 24px;
+      }
+
+      .add-btn {
+        background: #16db65;
+        color: #0f0f0f;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #12c957;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(22, 219, 101, 0.3);
+        }
+      }
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 24px;
+      
       @media screen and (max-width: 768px) {
-        font-size: 14px;
-      }
-
-      @media screen and (max-width: 480px) {
-        font-size: 12px;
-      }
-
-      tr {
-        height: 50px;
-        display: table;
-        width: 100%;
-        border-bottom: 1px solid var(--border-primary);
-
-        @media screen and (max-width: 480px) {
-          height: auto;
-          min-height: 40px;
-        }
-
-        th {
-          text-align: left;
-          color: var(--text-primary);
-          font-weight: 600;
-          padding: 10px;
-
-          @media screen and (max-width: 480px) {
-            padding: 8px 4px;
-          }
-        }
-
-        td {
-          color: var(--text-secondary);
-          padding: 10px;
-
-          @media screen and (max-width: 480px) {
-            padding: 8px 4px;
-          }
-
-          sup {
-            font-size: 12px;
-
-            @media screen and (max-width: 480px) {
-              font-size: 10px;
-            }
-          }
-
-          // Number cell styling
-          &.number-cell {
-            color: var(--text-primary);
-            font-weight: 700;
-            font-size: 16px;
-            text-align: center;
-            width: 40px;
-            background-color: rgba(22, 219, 101, 0.1);
-
-            @media screen and (max-width: 768px) {
-              font-size: 14px;
-              width: 30px;
-            }
-
-            @media screen and (max-width: 480px) {
-              font-size: 12px;
-              width: 25px;
-            }
-          }
-
-          // Route styling
-          .route {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-
-            @media screen and (max-width: 768px) {
-              font-size: 12px;
-              gap: 4px;
-            }
-
-            .city {
-              color: var(--text-primary);
-              font-weight: 500;
-              white-space: nowrap;
-            }
-
-            .arrow {
-              color: var(--green-bright);
-              font-size: 16px;
-              font-weight: bold;
-
-              @media screen and (max-width: 768px) {
-                font-size: 14px;
-              }
-            }
-          }
-
-          // Title cell
-          &.title-cell {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
-            @media screen and (max-width: 768px) {
-              max-width: 150px;
-            }
-          }
-
-          // Price cell
-          &.price-cell {
-            font-weight: 600;
-
-            .amount {
-              color: var(--green-bright);
-              font-size: 15px;
-
-              @media screen and (max-width: 768px) {
-                font-size: 14px;
-              }
-            }
-
-            .currency {
-              color: var(--green-bright);
-              margin-left: 2px;
-              font-size: 14px;
-
-              @media screen and (max-width: 768px) {
-                font-size: 13px;
-              }
-            }
-          }
-
-          // Space cell
-          &.space-cell {
-            color: var(--text-primary);
-            font-weight: 500;
-          }
-
-          // Expires cell
-          &.expires-cell {
-            .expiration-status {
-              display: inline-flex;
-              align-items: center;
-              padding: 4px 10px;
-              border-radius: 4px;
-              transition: all 0.3s ease;
-
-              .days {
-                font-weight: 600;
-                font-size: 15px;
-
-                @media screen and (max-width: 768px) {
-                  font-size: 14px;
-                }
-              }
-
-              .label {
-                font-size: 13px;
-
-                @media screen and (max-width: 768px) {
-                  font-size: 12px;
-                }
-              }
-
-              // Active status (more than 7 days remaining)
-              &--active {
-                background: rgba(22, 219, 101, 0.05);
-
-                .days {
-                  color: #16db65;
-                }
-
-                .label {
-                  color: #16db65;
-                  opacity: 0.8;
-                }
-              }
-
-              // Expiring soon (2-7 days remaining)
-              &--expiring-soon {
-                background: rgba(255, 167, 38, 0.1);
-
-                .days {
-                  color: #ffa726;
-                }
-
-                .label {
-                  color: #ffa726;
-                  opacity: 0.8;
-                }
-              }
-
-              // Urgent (1-2 days remaining)
-              &--urgent {
-                background: rgba(255, 87, 34, 0.15);
-                animation: pulse-urgent 2s ease-in-out infinite;
-
-                .days {
-                  color: #ff5722;
-                }
-
-                .label {
-                  color: #ff5722;
-                  opacity: 0.8;
-                }
-              }
-
-              // Expired
-              &--expired {
-                background: transparent;
-                padding: 0;
-              }
-            }
-
-            .complete-btn {
-              background-color: var(--green-medium);
-              color: var(--text-primary);
-              font-weight: 500;
-              border: none;
-              padding: 6px 12px;
-              cursor: pointer;
-              border-radius: 4px;
-              transition: all 0.3s ease;
-              font-size: 13px;
-
-              @media screen and (max-width: 768px) {
-                font-size: 12px;
-                padding: 4px 8px;
-              }
-
-              &:hover {
-                background-color: var(--green-bright);
-              }
-
-              &:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-              }
-            }
-
-            .completed-badge {
-              display: inline-flex;
-              align-items: center;
-              padding: 4px 10px;
-              border-radius: 4px;
-              background: rgba(22, 219, 101, 0.15);
-              color: #16db65;
-              font-weight: 600;
-              font-size: 13px;
-
-              @media screen and (max-width: 768px) {
-                font-size: 12px;
-                padding: 3px 8px;
-              }
-            }
-          }
-
-          .delete {
-            width: 20px;
-            cursor: pointer;
-            filter: brightness(0) saturate(100%) invert(27%) sepia(93%)
-              saturate(7471%) hue-rotate(356deg) brightness(104%) contrast(117%);
-            transition: filter 0.3s ease;
-
-            &:hover {
-              filter: brightness(0) saturate(100%) invert(17%) sepia(93%)
-                saturate(7471%) hue-rotate(356deg) brightness(104%)
-                contrast(117%);
-            }
-
-            @media screen and (max-width: 480px) {
-              width: 16px;
-            }
-          }
-        }
-
-        &:nth-child(even) {
-          background-color: rgba(5, 140, 66, 0.05);
-        }
-
-        &:last-child {
-          border-bottom: none;
-        }
+        grid-template-columns: 1fr;
       }
     }
   }
 }
 
-// Pulse animation for urgent status
-@keyframes pulse-urgent {
-  0%,
-  100% {
-    opacity: 1;
+// Owner Gig Card Component
+.owner-gig-card {
+  background: #0f0f0f;
+  border: 1px solid #1f2f25;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &:hover {
+    border-color: #16db65;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(22, 219, 101, 0.15);
   }
-  50% {
-    opacity: 0.7;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__id {
+    font-size: 12px;
+    color: #8b8b8b;
+    font-weight: 600;
+  }
+
+  &__status {
+    font-size: 12px;
+    color: #16db65;
+    background: rgba(22, 219, 101, 0.1);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  &__title {
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  &__route {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 12px 0;
+
+    .route-point {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+
+      &--white {
+        background: #ffffff;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+      }
+
+      &--green {
+        background: #16db65;
+        box-shadow: 0 0 8px rgba(22, 219, 101, 0.5);
+      }
+    }
+
+    .code {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+
+      &--white {
+        color: #ffffff;
+      }
+
+      &--green {
+        color: #16db65;
+      }
+    }
+
+    .route-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 0;
+      height: 20px;
+    }
+
+    .dash {
+      height: 2px;
+      flex: 1;
+      min-width: 40px;
+      background-image: repeating-linear-gradient(
+        to right,
+        #ffffff 0,
+        #ffffff 8px,
+        transparent 8px,
+        transparent 16px
+      );
+
+      &--long {
+        min-width: 60px;
+      }
+    }
+
+    .plane {
+      color: #ffffff;
+      font-size: 18px;
+      background: #0f0f0f;
+      padding: 0 6px;
+    }
+  }
+
+  &__locations {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 8px;
+
+    .location {
+      font-size: 13px;
+      color: #ffffff;
+      line-height: 1.4;
+
+      &--departure {
+        text-align: left;
+      }
+
+      &--destination {
+        text-align: right;
+      }
+    }
+  }
+
+  &__expiration {
+    text-align: center;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+
+    &--active {
+      color: #16db65;
+      background: rgba(22, 219, 101, 0.05);
+    }
+
+    &--expiring-soon {
+      color: #ffa726;
+      background: rgba(255, 167, 38, 0.1);
+    }
+
+    &--urgent {
+      color: #ff5722;
+      background: rgba(255, 87, 34, 0.15);
+    }
+
+    &--expired {
+      color: #e53935;
+      background: rgba(229, 57, 53, 0.15);
+    }
+
+    .completed-badge {
+      color: #16db65;
+      font-weight: 700;
+    }
+
+    .complete-btn {
+      background: #16db65;
+      color: #0f0f0f;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #12c957;
+      }
+    }
+  }
+
+  &__editable-section {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border: 1px solid #1f2f25;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+
+      .label {
+        font-size: 11px;
+        color: #8b8b8b;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .edit-icon-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 4px;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+
+        &:hover {
+          background: rgba(22, 219, 101, 0.1);
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    .value-display {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .value {
+        font-size: 20px;
+        color: #ffffff;
+        font-weight: 700;
+
+        &.highlight {
+          color: #16db65;
+        }
+      }
+
+      .original-value {
+        font-size: 12px;
+        color: #8b8b8b;
+        font-weight: 500;
+      }
+
+      .was-price {
+        font-size: 12px;
+        color: #8b8b8b;
+        font-weight: 500;
+        text-decoration: line-through;
+      }
+    }
+
+    .edit-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .edit-input {
+        width: 100%;
+        padding: 10px 12px;
+        background: #0a0a0a;
+        border: 1px solid #16db65;
+        border-radius: 6px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+
+        &:focus {
+          outline: none;
+          border-color: #1ef970;
+          box-shadow: 0 0 0 3px rgba(22, 219, 101, 0.1);
+        }
+      }
+
+      .edit-buttons {
+        display: flex;
+        gap: 8px;
+
+        button {
+          flex: 1;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-weight: 600;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          border: none;
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+        }
+
+        .save-btn {
+          background: #16db65;
+          color: #0f0f0f;
+
+          &:hover:not(:disabled) {
+            background: #12c957;
+          }
+        }
+
+        .cancel-btn {
+          background: transparent;
+          color: #8b8b8b;
+          border: 1px solid #4b4b4b;
+
+          &:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+
+  &__stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    font-size: 13px;
+
+    .stat {
+      color: #16db65;
+      font-weight: 600;
+    }
+
+    .separator {
+      color: #4b4b4b;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+
+    .delete-btn {
+      flex: 1;
+      padding: 10px 16px;
+      background: rgba(229, 57, 53, 0.1);
+      border: 1px solid #e53935;
+      color: #e53935;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+
+      &:hover {
+        background: rgba(229, 57, 53, 0.2);
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .myGigs {
+    padding: 24px 16px;
+
+    .container {
+      .title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+
+  .owner-gig-card {
+    padding: 20px;
+
+    &__title {
+      font-size: 16px;
+    }
+
+    &__route {
+      .code {
+        font-size: 24px;
+      }
+    }
   }
 }

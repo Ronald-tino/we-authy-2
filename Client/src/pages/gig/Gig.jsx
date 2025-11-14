@@ -227,11 +227,15 @@ function Gig() {
                   </svg>
                 </div>
                 <div className="gig-details__info-content">
-                  <span className="gig-details__label">Available Space</span>
-                  <span className="gig-details__value">
-                    {data?.availableSpace || 40} kg
-                  </span>
-                  <span className="gig-details__subtext">Booked 0 kg</span>
+                  <span className="gig-details__label">Capacity</span>
+                  <div className="gig-details__capacity-section">
+                    <span className="gig-details__capacity-total">
+                      Total: {data?.originalSpace || data?.availableSpace || 0} kg
+                    </span>
+                    <span className="gig-details__capacity-available">
+                      Available: {data?.availableSpace || 0} kg
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -251,10 +255,22 @@ function Gig() {
                   </svg>
                 </div>
                 <div className="gig-details__info-content">
-                  <span className="gig-details__label">Price</span>
-                  <span className="gig-details__value gig-details__value--highlight">
-                    {pricePerKg() || 120}¥ per kg
-                  </span>
+                  <span className="gig-details__label">Price per kg</span>
+                  {data?.originalPriceRMB && 
+                   data.originalPriceRMB !== data.priceRMB ? (
+                    <div className="gig-details__price-section">
+                      <span className="gig-details__price-strikethrough">
+                        ¥{data.originalPriceRMB}
+                      </span>
+                      <span className="gig-details__price-now">
+                        Now: ¥{data?.priceRMB || 0}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="gig-details__value gig-details__value--highlight">
+                      ¥{data?.priceRMB || 0}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

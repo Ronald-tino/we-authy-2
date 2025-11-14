@@ -58,6 +58,8 @@ export const createGig = async (req, res, next) => {
   const newGig = new Gig({
     ...req.body,
     userId: req.userId, // Set after spread to ensure it's not overwritten
+    originalSpace: req.body.availableSpace, // Store initial space value
+    originalPriceRMB: req.body.priceRMB, // Store initial price value
   });
 
   try {
@@ -104,9 +106,14 @@ export const updateGig = async (req, res, next) => {
       }
     }
 
+    // Prevent updating original values (they should never change)
+    const updateData = { ...req.body };
+    delete updateData.originalSpace;
+    delete updateData.originalPriceRMB;
+
     const updatedGig = await Gig.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 

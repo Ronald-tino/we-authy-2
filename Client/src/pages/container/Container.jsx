@@ -207,8 +207,18 @@ function Container() {
               <div className="pricing-box">
                 <div className="pricing-box__icon">📦</div>
                 <div className="pricing-box__content">
-                  <span className="pricing-box__label">Available Space</span>
+                  <span className="pricing-box__label">Total Capacity</span>
                   <span className="pricing-box__value">
+                    {data.originalSpaceCBM || data.availableSpaceCBM} CBM
+                  </span>
+                </div>
+              </div>
+
+              <div className="pricing-box">
+                <div className="pricing-box__icon">📊</div>
+                <div className="pricing-box__content">
+                  <span className="pricing-box__label">Available Space</span>
+                  <span className="pricing-box__value pricing-box__value--available">
                     {data.availableSpaceCBM} CBM
                   </span>
                 </div>
@@ -218,9 +228,21 @@ function Container() {
                 <div className="pricing-box__icon">💰</div>
                 <div className="pricing-box__content">
                   <span className="pricing-box__label">Price per CBM</span>
-                  <span className="pricing-box__value pricing-box__value--highlight">
-                    ¥{data.priceRMB}
-                  </span>
+                  {data.originalPriceRMB && 
+                   data.originalPriceRMB !== data.priceRMB ? (
+                    <div className="pricing-box__price-section">
+                      <span className="pricing-box__price-strikethrough">
+                        ¥{data.originalPriceRMB}
+                      </span>
+                      <span className="pricing-box__price-now">
+                        Now: ¥{data.priceRMB}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="pricing-box__value pricing-box__value--highlight">
+                      ¥{data.priceRMB}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -228,7 +250,7 @@ function Container() {
                 <div className="pricing-box__icon">💵</div>
                 <div className="pricing-box__content">
                   <span className="pricing-box__label">
-                    Total Capacity Value
+                    Total Available Value
                   </span>
                   <span className="pricing-box__value">
                     ¥{(data.availableSpaceCBM * data.priceRMB).toLocaleString()}
@@ -303,6 +325,12 @@ function Container() {
                   </span>
                 </div>
                 <div className="quick-info__item">
+                  <span className="quick-info__label">Total Capacity:</span>
+                  <span className="quick-info__value">
+                    {data.originalSpaceCBM || data.availableSpaceCBM} CBM
+                  </span>
+                </div>
+                <div className="quick-info__item">
                   <span className="quick-info__label">Available Space:</span>
                   <span className="quick-info__value">
                     {data.availableSpaceCBM} CBM
@@ -310,7 +338,18 @@ function Container() {
                 </div>
                 <div className="quick-info__item">
                   <span className="quick-info__label">Price per CBM:</span>
-                  <span className="quick-info__value">¥{data.priceRMB}</span>
+                  <span className="quick-info__value">
+                    {data.originalPriceRMB && 
+                     data.originalPriceRMB !== data.priceRMB ? (
+                      <>
+                        <span className="quick-info__strikethrough">¥{data.originalPriceRMB}</span>
+                        {" "}
+                        <span className="quick-info__now">¥{data.priceRMB}</span>
+                      </>
+                    ) : (
+                      `¥${data.priceRMB}`
+                    )}
+                  </span>
                 </div>
                 <div className="quick-info__item">
                   <span className="quick-info__label">Tax Clearance:</span>

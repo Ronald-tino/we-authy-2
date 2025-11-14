@@ -1,9 +1,9 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import "./Add.scss";
 import { gigReducer, INITIAL_STATE } from "../../reducers/gigReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import newRequest from "../../utils/newRequest";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useMode } from "../../context/ModeContext";
 import CountrySelect from "../../components/CountrySelect/CountrySelect";
 
@@ -12,6 +12,7 @@ const Add = () => {
   const { isInSellerMode, isSeller, currentUser, user } = useMode();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Redirect if user is not in seller mode
   useEffect(() => {
@@ -65,7 +66,10 @@ const Add = () => {
       return;
     }
 
-    if (!state.about || state.about.trim().length < 50) {
+    // Get final description (combine fields if needed)
+    const finalAbout = getFinalDescription();
+    
+    if (!finalAbout || finalAbout.trim().length < 50) {
       alert(
         "Please provide a detailed description (minimum 50 characters). Include what types of goods you can transport."
       );
@@ -116,212 +120,312 @@ const Add = () => {
       return;
     }
 
-    // Ensure userId is set in the gig data
+    // Ensure userId is set in the gig data and combine description fields
     const gigData = {
       ...state,
       userId: userId,
+      about: finalAbout,
     };
 
     console.log("Submitting gig with data:", gigData);
     mutation.mutate(gigData);
   };
 
+  // Helper to check if value is still the default prefilled text
+  const isDefaultValue = (value, defaultValue) => {
+    if (!value || !defaultValue) return false;
+    return value.trim() === defaultValue.trim();
+  };
+
+  // Combine structured fields into 'about' if main field is empty, otherwise use main field
+  const getFinalDescription = () => {
+    if (state.about && state.about.trim().length > 0) {
+      return state.about;
+    }
+    // If main field is empty, combine structured fields
+    const parts = [];
+    // Only include fields that have been modified (not just placeholder text)
+    const defaultGoodsCan = INITIAL_STATE.goodsCan;
+    const defaultGoodsCannot = INITIAL_STATE.goodsCannot;
+    
+    if (state.goodsCan && !isDefaultValue(state.goodsCan, defaultGoodsCan)) {
+      parts.push(`Goods I CAN transport:\n${state.goodsCan}`);
+    }
+    if (state.goodsCannot && !isDefaultValue(state.goodsCannot, defaultGoodsCannot)) {
+      parts.push(`Goods I CANNOT transport:\n${state.goodsCannot}`);
+    }
+    return parts.join('\n\n') || '';
+  };
+
   return (
     <div className="add">
+      {/* Mobile Top Bar */}
+      <div className="add-top-bar">
+        <Link to="/" className="add-logo">
+          <img
+            src="https://res.cloudinary.com/dzmrfifoq/image/upload/v1761657923/OFFICIAL-LOGO_ccpbzm.png"
+            alt="LUGGAGE-SHARE Logo"
+            className="add-logo-img"
+          />
+        </Link>
+        <button
+          className="add-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={mobileMenuOpen ? "open" : ""}></span>
+          <span className={mobileMenuOpen ? "open" : ""}></span>
+          <span className={mobileMenuOpen ? "open" : ""}></span>
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="add-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+          <div className="add-menu-content" onClick={(e) => e.stopPropagation()}>
+            <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+            <Link to="/gigs" onClick={() => setMobileMenuOpen(false)}>Explore Luggage</Link>
+            <Link to="/mygigs" onClick={() => setMobileMenuOpen(false)}>My Gigs</Link>
+            <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
+          </div>
+        </div>
+      )}
+
       <div className="add-container">
-        <div className="add-header">
-          <h1 className="add-title">Add New Gig</h1>
-          <p className="add-subtitle">
-            Create a new luggage space listing for travelers
-          </p>
+        <div className="add-form-wrapper">
+          <h2 className="add-page-title">Listing Information</h2>
+
+          <form className="add-form" onSubmit={handleSubmit}>
+            {/* Listing Title */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="title">
+                Listing Title <span className="required-indicator">*</span>
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                name="title"
+                id="title"
+                placeholder="e.g. Dubai to Lahore - Reliable Luggage Transport Service"
+                value={state.title || ""}
+                onChange={handleChange}
+                maxLength="100"
+                required
+              />
+              <span className="form-helper">
+                Create a clear, descriptive title for your luggage transport service
+              </span>
+            </div>
+
+            {/* Service Description - Main Textarea */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="about">
+                Service Description <span className="required-indicator">*</span>
+              </label>
+              <textarea
+                className="form-textarea form-textarea-main"
+                name="about"
+                id="about"
+                placeholder="Start typing your service description here..."
+                value={state.about || ""}
+                onChange={handleChange}
+                minLength="50"
+                required
+              />
+              <span className="form-helper">
+                <strong>⚠️ IMPORTANT:</strong> Provide a detailed description of your service. Minimum 50 characters.
+              </span>
+            </div>
+
+            {/* Goods I CAN Transport */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="goodsCan">
+                Goods I CAN Transport
+              </label>
+              <textarea
+                className={`form-textarea ${isDefaultValue(state.goodsCan, INITIAL_STATE.goodsCan) ? 'prefilled' : ''}`}
+                name="goodsCan"
+                id="goodsCan"
+                value={state.goodsCan || ""}
+                onChange={(e) => {
+                  dispatch({
+                    type: "CHANGE_INPUT",
+                    payload: { name: e.target.name, value: e.target.value },
+                  });
+                }}
+                rows="5"
+              />
+              <span className="form-helper">
+                List the types of goods you can safely transport (one per line or bulleted) - optional
+              </span>
+            </div>
+
+            {/* Goods I CANNOT Transport */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="goodsCannot">
+                Goods I CANNOT Transport
+              </label>
+              <textarea
+                className={`form-textarea ${isDefaultValue(state.goodsCannot, INITIAL_STATE.goodsCannot) ? 'prefilled' : ''}`}
+                name="goodsCannot"
+                id="goodsCannot"
+                value={state.goodsCannot || ""}
+                onChange={(e) => {
+                  dispatch({
+                    type: "CHANGE_INPUT",
+                    payload: { name: e.target.name, value: e.target.value },
+                  });
+                }}
+                rows="5"
+              />
+              <span className="form-helper">
+                Clearly specify what you cannot transport to avoid misunderstandings (optional)
+              </span>
+            </div>
+
+            {/* Departure Information */}
+            <div className="form-section-divider"></div>
+            <h3 className="form-section-title">Departure Information</h3>
+
+            <div className="form-group">
+              <CountrySelect
+                name="departureCountry"
+                id="departureCountry"
+                value={state.departureCountry || ""}
+                onChange={handleChange}
+                label="Departure Country"
+                placeholder="Select departure country"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="departureCity">
+                Departure City <span className="required-indicator">*</span>
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                name="departureCity"
+                id="departureCity"
+                placeholder="e.g. Dubai"
+                value={state.departureCity || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Destination Information */}
+            <div className="form-section-divider"></div>
+            <h3 className="form-section-title">Destination Information</h3>
+
+            <div className="form-group">
+              <CountrySelect
+                name="destinationCountry"
+                id="destinationCountry"
+                value={state.destinationCountry || ""}
+                onChange={handleChange}
+                label="Destination Country"
+                placeholder="Select destination country"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="destinationCity">
+                Destination City <span className="required-indicator">*</span>
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                name="destinationCity"
+                id="destinationCity"
+                placeholder="e.g. Lahore"
+                value={state.destinationCity || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Pricing & Details */}
+            <div className="form-section-divider"></div>
+            <h3 className="form-section-title">Pricing & Details</h3>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="availableSpace">
+                Available Space (kg) <span className="required-indicator">*</span>
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                name="availableSpace"
+                id="availableSpace"
+                placeholder="e.g. 15"
+                value={state.availableSpace || ""}
+                onChange={handleChange}
+                min="0.5"
+                step="0.5"
+                required
+              />
+              <span className="form-helper">
+                How many kilograms of luggage space can you offer?
+              </span>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="priceRMB">
+                Price per kg (¥ RMB) <span className="required-indicator">*</span>
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                name="priceRMB"
+                id="priceRMB"
+                placeholder="e.g. 120"
+                value={state.priceRMB || ""}
+                onChange={handleChange}
+                min="1"
+                step="1"
+                required
+              />
+              <span className="form-helper">
+                Set your price per kilogram in Chinese Yuan (¥)
+              </span>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="expirationDays">
+                Expiration (days) <span className="required-indicator">*</span>
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                name="expirationDays"
+                id="expirationDays"
+                placeholder="e.g. 22"
+                value={state.expirationDays || ""}
+                onChange={handleChange}
+                min="1"
+                required
+              />
+              <span className="form-helper">
+                How many days until this offer expires?
+              </span>
+            </div>
+
+            {/* Hidden submit button for form validation */}
+            <button type="submit" style={{ display: "none" }} />
+          </form>
         </div>
 
-        <div className="add-form">
-          {/* Listing Title and Description */}
-          <div className="form-sections">
-            <div className="full-width-section">
-              <h2 className="section-title">Listing Information</h2>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="title">
-                  Listing Title *
-                </label>
-                <input
-                  className="form-input"
-                  type="text"
-                  name="title"
-                  id="title"
-                  placeholder="e.g. Dubai to Lahore - Reliable Luggage Transport Service"
-                  onChange={handleChange}
-                  maxLength="100"
-                />
-                <span className="form-helper">
-                  Create a clear, descriptive title for your luggage transport
-                  service
-                </span>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="about">
-                  Service Description * (What goods can you transport?)
-                </label>
-                <textarea
-                  className="form-textarea"
-                  name="about"
-                  id="about"
-                  placeholder="Example: I'm traveling from Dubai to Lahore and have 15kg of extra luggage space available. I can transport the following items:
-
-• Electronics (phones, tablets, laptops - sealed in original packaging)
-• Clothing and textiles
-• Documents and small packages
-• Cosmetics and personal care items
-• Small gifts and souvenirs
-
-I CANNOT transport:
-✗ Prohibited items (weapons, drugs, etc.)
-✗ Liquids over 100ml
-✗ Fragile glass items
-✗ Perishable food items
-
-I'm a verified traveler with 5+ years experience. All items will be handled with care and delivered promptly. I'll provide tracking updates throughout the journey."
-                  onChange={handleChange}
-                  rows="10"
-                  minLength="50"
-                />
-                <span className="form-helper">
-                  <strong>⚠️ IMPORTANT:</strong> You MUST specify what types of
-                  goods you can and cannot transport. Include any restrictions,
-                  handling instructions, and your experience level. Minimum 50
-                  characters.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="form-sections">
-            <div className="left-section">
-              <h2 className="section-title">Departure Information</h2>
-
-              <div className="form-group">
-                <CountrySelect
-                  name="departureCountry"
-                  id="departureCountry"
-                  value={state.departureCountry || ""}
-                  onChange={handleChange}
-                  label="Departure Country"
-                  placeholder="Select departure country"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="departureCity">
-                  Departure City *
-                </label>
-                <input
-                  className="form-input"
-                  type="text"
-                  name="departureCity"
-                  id="departureCity"
-                  placeholder="e.g. Dubai"
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="availableSpace">
-                  Available Space (kg) *
-                </label>
-                <input
-                  className="form-input"
-                  type="number"
-                  name="availableSpace"
-                  id="availableSpace"
-                  placeholder="e.g. 15"
-                  min="0.5"
-                  step="0.5"
-                  onChange={handleChange}
-                />
-                <span className="form-helper">
-                  How many kilograms of luggage space can you offer?
-                </span>
-              </div>
-            </div>
-
-            <div className="right-section">
-              <h2 className="section-title">Destination Information</h2>
-
-              <div className="form-group">
-                <CountrySelect
-                  name="destinationCountry"
-                  id="destinationCountry"
-                  value={state.destinationCountry || ""}
-                  onChange={handleChange}
-                  label="Destination Country"
-                  placeholder="Select destination country"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="destinationCity">
-                  Destination City *
-                </label>
-                <input
-                  className="form-input"
-                  type="text"
-                  name="destinationCity"
-                  id="destinationCity"
-                  placeholder="e.g. Lahore"
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="priceRMB">
-                  Price per kg (¥ RMB) *
-                </label>
-                <input
-                  className="form-input"
-                  type="number"
-                  name="priceRMB"
-                  id="priceRMB"
-                  placeholder="e.g. 120"
-                  min="1"
-                  step="1"
-                  onChange={handleChange}
-                />
-                <span className="form-helper">
-                  Set your price per kilogram in Chinese Yuan (¥)
-                </span>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" htmlFor="expirationDays">
-                  Expiration (days) *
-                </label>
-                <input
-                  className="form-input"
-                  type="number"
-                  name="expirationDays"
-                  id="expirationDays"
-                  placeholder="e.g. 22"
-                  min="1"
-                  onChange={handleChange}
-                />
-                <span className="form-helper">
-                  How many days until this offer expires?
-                </span>
-              </div>
-            </div>
-          </div>
-
+        {/* Fixed Bottom CTA Button */}
+        <div className="add-cta-container">
           <button
-            className="form-button create-btn"
+            className="add-cta-button"
             onClick={handleSubmit}
             disabled={mutation.isPending}
           >
-            {mutation.isPending ? "Creating Gig..." : "Create Gig"}
+            {mutation.isPending ? "Creating..." : "Create Gig"}
           </button>
         </div>
       </div>

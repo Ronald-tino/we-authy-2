@@ -566,6 +566,56 @@
       }
     }
 
+    // Capacity Section
+    &__capacity-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    &__capacity-total,
+    &__capacity-available {
+      font-size: 16px;
+      color: #ffffff;
+      font-weight: 600;
+
+      @media screen and (max-width: 480px) {
+        font-size: 14px;
+      }
+    }
+
+    &__capacity-available {
+      color: #16db65;
+    }
+
+    // Price Section
+    &__price-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    &__price-strikethrough {
+      font-size: 15px;
+      color: #8b8b8b;
+      font-weight: 500;
+      text-decoration: line-through;
+
+      @media screen and (max-width: 480px) {
+        font-size: 13px;
+      }
+    }
+
+    &__price-now {
+      font-size: 18px;
+      color: #16db65;
+      font-weight: 700;
+
+      @media screen and (max-width: 480px) {
+        font-size: 16px;
+      }
+    }
+
     // Title Section
     &__title {
       margin-bottom: 24px;

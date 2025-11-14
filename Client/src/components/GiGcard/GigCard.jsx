@@ -296,11 +296,15 @@ const GigCard = ({ item }) => {
               </svg>
             </div>
             <div className="gig-card__info-content">
-              <span className="gig-card__label">Available Space</span>
-              <span className="gig-card__value">
-                {item?.availableSpace || 40} kg
-              </span>
-              <span className="gig-card__subtext">Booked 0 kg</span>
+              <span className="gig-card__label">Capacity</span>
+              <div className="gig-card__capacity-section">
+                <span className="gig-card__capacity-total">
+                  Total: {item?.originalSpace || item?.availableSpace || 0} kg
+                </span>
+                <span className="gig-card__capacity-available">
+                  Available: {item?.availableSpace || 0} kg
+                </span>
+              </div>
             </div>
           </div>
 
@@ -320,10 +324,22 @@ const GigCard = ({ item }) => {
               </svg>
             </div>
             <div className="gig-card__info-content">
-              <span className="gig-card__label">Price</span>
-              <span className="gig-card__value gig-card__value--highlight">
-                {pricePerKg() || 120}¥ per kg
-              </span>
+              <span className="gig-card__label">Price per kg</span>
+              {item?.originalPriceRMB && 
+               item.originalPriceRMB !== item.priceRMB ? (
+                <div className="gig-card__price-section">
+                  <span className="gig-card__price-strikethrough">
+                    ¥{item.originalPriceRMB}
+                  </span>
+                  <span className="gig-card__price-now">
+                    Now: ¥{item?.priceRMB || 0}
+                  </span>
+                </div>
+              ) : (
+                <span className="gig-card__value gig-card__value--highlight">
+                  ¥{item?.priceRMB || 0}
+                </span>
+              )}
             </div>
           </div>
         </div>

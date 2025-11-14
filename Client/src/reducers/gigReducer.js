@@ -1,6 +1,8 @@
 export const INITIAL_STATE = {
   title: "",
   about: "", // Required: Detailed description of the luggage service
+  goodsCan: "• Electronics (phones, tablets, laptops - sealed in original packaging)\n• Clothing and textiles\n• Documents and small packages\n• Cosmetics and personal care items\n• Small gifts and souvenirs", // Optional: Goods I CAN transport (prefilled)
+  goodsCannot: "✗ Prohibited items (weapons, drugs, etc.)\n✗ Liquids over 100ml\n✗ Fragile glass items\n✗ Perishable food items", // Optional: Goods I CANNOT transport (prefilled)
   departureCountry: "",
   departureCity: "",
   destinationCountry: "",

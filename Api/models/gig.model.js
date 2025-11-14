@@ -41,9 +41,17 @@ const GigSchema = new Schema(
       type: Number,
       required: true, // in kg
     },
+    originalSpace: {
+      type: Number,
+      default: null, // stores initial space value for tracking changes
+    },
     priceRMB: {
       type: Number,
       required: true, // per kg in ¥
+    },
+    originalPriceRMB: {
+      type: Number,
+      default: null, // stores initial price value for tracking changes
     },
     expirationDays: {
       type: Number,

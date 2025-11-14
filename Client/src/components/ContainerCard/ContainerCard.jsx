@@ -309,10 +309,15 @@ const ContainerCard = ({ item }) => {
               </svg>
             </div>
             <div className="container-card__info-content">
-              <span className="container-card__label">Available Space</span>
-              <span className="container-card__value">
-                {item?.availableSpaceCBM || 0} CBM
-              </span>
+              <span className="container-card__label">Capacity</span>
+              <div className="container-card__capacity-section">
+                <span className="container-card__capacity-total">
+                  Total: {item?.originalSpaceCBM || item?.availableSpaceCBM || 0} CBM
+                </span>
+                <span className="container-card__capacity-available">
+                  Available: {item?.availableSpaceCBM || 0} CBM
+                </span>
+              </div>
             </div>
           </div>
 
@@ -332,10 +337,22 @@ const ContainerCard = ({ item }) => {
               </svg>
             </div>
             <div className="container-card__info-content">
-              <span className="container-card__label">Price</span>
-              <span className="container-card__value container-card__value--highlight">
-                {item?.priceRMB || 0}¥ per CBM
-              </span>
+              <span className="container-card__label">Price per CBM</span>
+              {item?.originalPriceRMB && 
+               item.originalPriceRMB !== item.priceRMB ? (
+                <div className="container-card__price-section">
+                  <span className="container-card__price-strikethrough">
+                    ¥{item.originalPriceRMB}
+                  </span>
+                  <span className="container-card__price-now">
+                    Now: ¥{item?.priceRMB || 0}
+                  </span>
+                </div>
+              ) : (
+                <span className="container-card__value container-card__value--highlight">
+                  ¥{item?.priceRMB || 0}
+                </span>
+              )}
             </div>
           </div>
         </div>
